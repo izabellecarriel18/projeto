@@ -1,5 +1,6 @@
-import { Zap, Menu, X, User } from 'lucide-react';
+import { Zap, Menu, X, User, LogOut } from 'lucide-react';
 import { useState } from 'react';
+import { useAuth } from '../contexts/AuthContext';
 import AuthModal from './AuthModal';
 
 interface HeaderProps {
@@ -10,6 +11,7 @@ interface HeaderProps {
 export default function Header({ onNavigate, currentPage }: HeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [authModalOpen, setAuthModalOpen] = useState(false);
+  const { profile, signOut } = useAuth();
 
   const menuItems = [
     { id: 'home', label: 'MARCA' },
@@ -59,13 +61,28 @@ export default function Header({ onNavigate, currentPage }: HeaderProps) {
           ))}
         </nav>
 
-        <button
-          onClick={() => setAuthModalOpen(true)}
-          className="hidden lg:flex items-center gap-2 text-white hover:text-red-600 transition-colors"
-        >
-          <User className="w-5 h-5" />
-          <span className="text-sm font-medium">LOGIN</span>
-        </button>
+        {profile ? (
+          <div className="hidden lg:flex items-center gap-4">
+            <span className="text-sm font-medium text-white">
+              Olá, <span className="text-red-600">{profile.name}</span>
+            </span>
+            <button
+              onClick={signOut}
+              className="flex items-center gap-2 text-white hover:text-red-600 transition-colors"
+            >
+              <LogOut className="w-5 h-5" />
+              <span className="text-sm font-medium">SAIR</span>
+            </button>
+          </div>
+        ) : (
+          <button
+            onClick={() => setAuthModalOpen(true)}
+            className="hidden lg:flex items-center gap-2 text-white hover:text-red-600 transition-colors"
+          >
+            <User className="w-5 h-5" />
+            <span className="text-sm font-medium">LOGIN</span>
+          </button>
+        )}
 
         {mobileMenuOpen && (
           <div className="fixed inset-0 bg-black/95 backdrop-blur-sm lg:hidden">
@@ -83,16 +100,36 @@ export default function Header({ onNavigate, currentPage }: HeaderProps) {
                   {item.label}
                 </button>
               ))}
-              <button
-                onClick={() => {
-                  setAuthModalOpen(true);
-                  setMobileMenuOpen(false);
-                }}
-                className="flex items-center justify-center gap-2 text-white hover:text-red-600 transition-colors py-6 w-full border-b border-gray-700"
-              >
-                <User className="w-5 h-5" />
-                <span className="text-lg font-medium">LOGIN</span>
-              </button>
+              {profile ? (
+                <>
+                  <div className="flex items-center justify-center gap-2 text-white py-6 w-full border-b border-gray-700">
+                    <span className="text-lg font-medium">
+                      Olá, <span className="text-red-600">{profile.name}</span>
+                    </span>
+                  </div>
+                  <button
+                    onClick={() => {
+                      signOut();
+                      setMobileMenuOpen(false);
+                    }}
+                    className="flex items-center justify-center gap-2 text-white hover:text-red-600 transition-colors py-6 w-full border-b border-gray-700"
+                  >
+                    <LogOut className="w-5 h-5" />
+                    <span className="text-lg font-medium">SAIR</span>
+                  </button>
+                </>
+              ) : (
+                <button
+                  onClick={() => {
+                    setAuthModalOpen(true);
+                    setMobileMenuOpen(false);
+                  }}
+                  className="flex items-center justify-center gap-2 text-white hover:text-red-600 transition-colors py-6 w-full border-b border-gray-700"
+                >
+                  <User className="w-5 h-5" />
+                  <span className="text-lg font-medium">LOGIN</span>
+                </button>
+              )}
             </nav>
           </div>
         )}
