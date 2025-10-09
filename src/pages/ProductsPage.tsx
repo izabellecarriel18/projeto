@@ -281,24 +281,34 @@ export default function ProductsPage() {
             </div>
           )}
 
-          <div className="flex flex-col md:flex-row gap-3 sm:gap-4">
-            <div className="flex-1 relative">
-              <Search className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-gray-400" />
-              <input
-                type="text"
-                placeholder="Buscar modelos..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full bg-gray-800 text-white text-sm sm:text-base pl-10 sm:pl-12 pr-3 sm:pr-4 py-2.5 sm:py-3 rounded-lg border border-gray-700 focus:border-red-600 focus:outline-none"
-              />
+          {selectedCategory === 'bus_truck' && (
+            <div className="bg-gray-900/50 border border-red-600/50 rounded-lg p-4 sm:p-6 mb-4 sm:mb-6 text-center">
+              <p className="text-red-500 text-sm sm:text-base font-semibold uppercase">
+                DEVEM SER SOLICITADAS AS CRIAÇÕES PELO PERFIL.
+              </p>
             </div>
-            <button className="bg-green-600 hover:bg-green-700 text-white px-4 sm:px-6 py-2.5 sm:py-3 rounded-lg font-semibold text-sm sm:text-base transition-all whitespace-nowrap">
-              Solicitar Criação de Arquivo
-            </button>
-          </div>
+          )}
+
+          {selectedCategory !== 'bus_truck' && (
+            <div className="flex flex-col md:flex-row gap-3 sm:gap-4">
+              <div className="flex-1 relative">
+                <Search className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-gray-400" />
+                <input
+                  type="text"
+                  placeholder="Buscar modelos..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full bg-gray-800 text-white text-sm sm:text-base pl-10 sm:pl-12 pr-3 sm:pr-4 py-2.5 sm:py-3 rounded-lg border border-gray-700 focus:border-red-600 focus:outline-none"
+                />
+              </div>
+              <button className="bg-green-600 hover:bg-green-700 text-white px-4 sm:px-6 py-2.5 sm:py-3 rounded-lg font-semibold text-sm sm:text-base transition-all whitespace-nowrap">
+                Solicitar Criação de Arquivo
+              </button>
+            </div>
+          )}
         </div>
 
-        {filteredProducts.length === 0 ? (
+        {selectedCategory === 'bus_truck' ? null : filteredProducts.length === 0 ? (
           <div className="text-center py-12 sm:py-20">
             <ShoppingCart className="w-12 h-12 sm:w-16 sm:h-16 text-gray-600 mx-auto mb-4" />
             <p className="text-gray-400 text-lg sm:text-xl">Nenhum produto encontrado</p>
