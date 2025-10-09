@@ -25,7 +25,7 @@ export default function Differentials() {
   return (
     <section
       className="py-12 sm:py-20 relative bg-cover bg-center bg-no-repeat flex items-center"
-      style={{ backgroundImage: 'url(https://i.imgur.com/nHXjTtQ.jpg)', minHeight: '75vh' }}
+      style={{ backgroundImage: 'url(https://i.imgur.com/nHXjTtQ.jpg)', minHeight: '67.5vh' }}
     >
       <div className="absolute inset-0 bg-black/70"></div>
       <div className="relative z-10 max-w-4xl mx-auto w-full">

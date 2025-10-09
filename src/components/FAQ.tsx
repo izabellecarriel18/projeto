@@ -40,7 +40,7 @@ export default function FAQ({ category = 'general' }: FAQProps) {
   return (
     <section
       className="py-12 sm:py-20 relative bg-cover bg-center bg-no-repeat flex items-center"
-      style={{ backgroundImage: 'url(https://i.imgur.com/6FLvE4U.jpg)', minHeight: '75vh' }}
+      style={{ backgroundImage: 'url(https://i.imgur.com/6FLvE4U.jpg)', minHeight: '67.5vh' }}
     >
       <div className="absolute inset-0 bg-black/70"></div>
       <div className="container mx-auto px-4 sm:px-6 relative z-10 max-w-4xl">
