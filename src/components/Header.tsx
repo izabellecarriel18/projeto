@@ -1,5 +1,6 @@
 import { Zap, Menu, X, User } from 'lucide-react';
 import { useState } from 'react';
+import AuthModal from './AuthModal';
 
 interface HeaderProps {
   onNavigate: (page: string) => void;
@@ -8,6 +9,7 @@ interface HeaderProps {
 
 export default function Header({ onNavigate, currentPage }: HeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [authModalOpen, setAuthModalOpen] = useState(false);
 
   const menuItems = [
     { id: 'home', label: 'MARCA' },
@@ -57,7 +59,10 @@ export default function Header({ onNavigate, currentPage }: HeaderProps) {
           ))}
         </nav>
 
-        <button className="hidden lg:flex items-center gap-2 text-white hover:text-red-600 transition-colors">
+        <button
+          onClick={() => setAuthModalOpen(true)}
+          className="hidden lg:flex items-center gap-2 text-white hover:text-red-600 transition-colors"
+        >
           <User className="w-5 h-5" />
           <span className="text-sm font-medium">LOGIN</span>
         </button>
@@ -78,13 +83,21 @@ export default function Header({ onNavigate, currentPage }: HeaderProps) {
                   {item.label}
                 </button>
               ))}
-              <button className="flex items-center justify-center gap-2 text-white hover:text-red-600 transition-colors py-6 w-full border-b border-gray-700">
+              <button
+                onClick={() => {
+                  setAuthModalOpen(true);
+                  setMobileMenuOpen(false);
+                }}
+                className="flex items-center justify-center gap-2 text-white hover:text-red-600 transition-colors py-6 w-full border-b border-gray-700"
+              >
                 <User className="w-5 h-5" />
                 <span className="text-lg font-medium">LOGIN</span>
               </button>
             </nav>
           </div>
         )}
+
+        <AuthModal isOpen={authModalOpen} onClose={() => setAuthModalOpen(false)} />
       </div>
     </header>
   );
