@@ -41,16 +41,16 @@ export default function Header({ onNavigate, currentPage }: HeaderProps) {
           {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
         </button>
 
-        <nav className="hidden lg:flex gap-6 absolute left-1/2 transform -translate-x-1/2 ml-12">
-          {menuItems.map((item) => (
+        <nav className="hidden lg:flex gap-0 absolute left-1/2 transform -translate-x-1/2 ml-12">
+          {menuItems.map((item, index) => (
             <button
               key={item.id}
               onClick={() => handleNavigation(item.id)}
-              className={`text-sm font-medium transition-colors ${
+              className={`text-sm font-medium transition-colors px-6 ${
                 currentPage === item.id
                   ? 'text-red-600'
                   : 'text-white hover:text-red-600'
-              }`}
+              } ${index === 0 ? 'border-l border-gray-700' : ''} border-r border-gray-700`}
             >
               {item.label}
             </button>
