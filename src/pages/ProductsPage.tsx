@@ -181,7 +181,7 @@ export default function ProductsPage() {
         </div>
 
         <div className="backdrop-blur border border-gray-800 rounded-lg p-4 sm:p-6 mb-8 sm:mb-12">
-          <div className="flex flex-wrap gap-2 sm:gap-3 mb-4 sm:mb-6">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
             {categories.map((cat) => (
               <button
                 key={cat.id}
@@ -195,6 +195,11 @@ export default function ProductsPage() {
                 {cat.label}
               </button>
             ))}
+            {selectedCategory === 'bus_truck' && (
+              <button className="bg-green-600 hover:bg-green-700 text-white px-3 sm:px-4 md:px-6 py-2 rounded-lg font-medium text-sm sm:text-base transition-all whitespace-nowrap">
+                Solicitar Criação de Arquivo
+              </button>
+            )}
           </div>
 
           {selectedCategory === 'solid_cars' && (
@@ -290,20 +295,15 @@ export default function ProductsPage() {
           )}
 
           {selectedCategory !== 'bus_truck' && (
-            <div className="flex flex-col md:flex-row gap-3 sm:gap-4">
-              <div className="flex-1 relative">
-                <Search className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-gray-400" />
-                <input
-                  type="text"
-                  placeholder="Buscar modelos..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full bg-gray-800 text-white text-sm sm:text-base pl-10 sm:pl-12 pr-3 sm:pr-4 py-2.5 sm:py-3 rounded-lg border border-gray-700 focus:border-red-600 focus:outline-none"
-                />
-              </div>
-              <button className="bg-green-600 hover:bg-green-700 text-white px-4 sm:px-6 py-2.5 sm:py-3 rounded-lg font-semibold text-sm sm:text-base transition-all whitespace-nowrap">
-                Solicitar Criação de Arquivo
-              </button>
+            <div className="flex flex-1 relative">
+              <Search className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Buscar modelos..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full bg-gray-800 text-white text-sm sm:text-base pl-10 sm:pl-12 pr-3 sm:pr-4 py-2.5 sm:py-3 rounded-lg border border-gray-700 focus:border-red-600 focus:outline-none"
+              />
             </div>
           )}
         </div>
