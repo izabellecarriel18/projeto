@@ -26,7 +26,7 @@ export default function Hero({ onNavigate }: HeroProps) {
           <span className="text-red-600">Automotiva</span>
         </h1>
         <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-gray-300 mb-8 sm:mb-12 max-w-3xl mx-auto px-4">
-          Modelos 3D premium e cursos profissionais para elevar suas criações ao próximo nível
+          Modelos 3D prontos para impressão e renderização. Os Arquivos são feitos para todas às escalas e materiais de impressão.
         </p>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center px-4">
