@@ -45,7 +45,7 @@ const faqs = [
 
 export default function CoursesPage() {
   return (
-    <div className="min-h-screen pt-20 pb-20 bg-black">
+    <div className="min-h-screen pt-20 pb-20">
       <div className="container mx-auto px-4 sm:px-6">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-12">
           {courses.map((course, index) => (
@@ -60,7 +60,7 @@ export default function CoursesPage() {
                   className="w-full h-full object-cover"
                 />
               </div>
-              <div className="p-6 bg-black">
+              <div className="p-6 bg-black/40 backdrop-blur-sm">
                 <h3 className="text-white font-bold text-xl mb-3">{course.title}</h3>
                 <p className="text-gray-400 text-sm mb-4 leading-relaxed">{course.description}</p>
 
@@ -76,7 +76,7 @@ export default function CoursesPage() {
           ))}
         </div>
 
-        <div className="border border-gray-800 rounded-lg p-8 mb-8 bg-black">
+        <div className="border border-gray-800 rounded-lg p-8 mb-8 bg-black/40 backdrop-blur-sm">
           <h2 className="text-2xl font-bold text-white mb-6">Garantias e Suporte</h2>
           <div className="space-y-3">
             {benefits.map((benefit, index) => (
@@ -100,7 +100,7 @@ export default function CoursesPage() {
           </div>
         </div>
 
-        <div className="border border-gray-800 rounded-lg p-8 bg-black">
+        <div className="border border-gray-800 rounded-lg p-8 bg-black/40 backdrop-blur-sm">
           <h2 className="text-2xl font-bold text-white mb-6">FAQ de Cursos</h2>
           <div className="space-y-4">
             {faqs.map((faq, index) => (
