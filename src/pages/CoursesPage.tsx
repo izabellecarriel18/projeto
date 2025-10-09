@@ -1,5 +1,8 @@
-import { CheckCircle, ChevronDown } from 'lucide-react';
-import { useState } from 'react';
+import { CheckCircle, ChevronDown, Plus, Trash2 } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { supabase } from '../lib/supabase';
+import { useAuth } from '../contexts/AuthContext';
+import ImageUploadModal from '../components/ImageUploadModal';
 
 const courses = [
   {
@@ -44,11 +47,116 @@ const faqs = [
   },
 ];
 
+interface CourseImage {
+  id: string;
+  title: string;
+  description: string;
+  image_url: string;
+  order_index: number;
+  created_at: string;
+}
+
 export default function CoursesPage() {
+  const { profile } = useAuth();
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
+  const [courseImages, setCourseImages] = useState<CourseImage[]>([]);
+  const [showUploadModal, setShowUploadModal] = useState(false);
+  const isAdmin = profile?.role === 'admin';
+
+  useEffect(() => {
+    loadCourseImages();
+  }, []);
+
+  async function loadCourseImages() {
+    const { data } = await supabase
+      .from('course_images')
+      .select('*')
+      .order('order_index', { ascending: true });
+
+    if (data) {
+      setCourseImages(data);
+    }
+  }
+
+  async function deleteCourseImage(id: string, imageUrl: string) {
+    if (!confirm('Tem certeza que deseja deletar esta imagem?')) return;
+
+    try {
+      const filePath = imageUrl.split('/').slice(-2).join('/');
+
+      await supabase.storage.from('images').remove([filePath]);
+
+      const { error } = await supabase
+        .from('course_images')
+        .delete()
+        .eq('id', id);
+
+      if (error) throw error;
+
+      loadCourseImages();
+    } catch (error) {
+      console.error('Error deleting image:', error);
+      alert('Erro ao deletar imagem');
+    }
+  }
   return (
     <div className="min-h-screen pt-20 pb-20">
       <div className="container mx-auto">
+        {courseImages.length > 0 && (
+          <div className="mb-12 px-4">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl sm:text-3xl font-bold text-white">Galeria de Cursos</h2>
+              {isAdmin && (
+                <button
+                  onClick={() => setShowUploadModal(true)}
+                  className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-semibold flex items-center gap-2 transition-all"
+                >
+                  <Plus className="w-5 h-5" />
+                  Adicionar Imagem
+                </button>
+              )}
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {courseImages.map((img) => (
+                <div key={img.id} className="relative backdrop-blur border border-gray-800 rounded-lg overflow-hidden hover:border-red-600 transition-all group">
+                  <div className="aspect-video bg-gray-800 overflow-hidden">
+                    <img
+                      src={img.image_url}
+                      alt={img.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                    />
+                  </div>
+                  <div className="p-4">
+                    <h3 className="text-white font-semibold text-lg mb-1">{img.title}</h3>
+                    {img.description && (
+                      <p className="text-gray-400 text-sm">{img.description}</p>
+                    )}
+                  </div>
+                  {isAdmin && (
+                    <button
+                      onClick={() => deleteCourseImage(img.id, img.image_url)}
+                      className="absolute top-3 right-3 bg-red-600 hover:bg-red-700 text-white p-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {isAdmin && courseImages.length === 0 && (
+          <div className="mb-12 text-center px-4">
+            <button
+              onClick={() => setShowUploadModal(true)}
+              className="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-semibold flex items-center gap-2 mx-auto transition-all"
+            >
+              <Plus className="w-5 h-5" />
+              Adicionar Primeira Imagem
+            </button>
+          </div>
+        )}
         <div className="lg:hidden overflow-x-auto scrollbar-hide px-4 mb-12">
           <div className="flex gap-6 pb-4" style={{ width: 'max-content' }}>
             {courses.map((course, index) => (
@@ -166,6 +274,13 @@ export default function CoursesPage() {
           </div>
         </div>
       </div>
+
+      <ImageUploadModal
+        isOpen={showUploadModal}
+        onClose={() => setShowUploadModal(false)}
+        type="course"
+        onSuccess={loadCourseImages}
+      />
     </div>
   );
 }
