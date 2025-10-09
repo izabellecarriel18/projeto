@@ -1,4 +1,5 @@
-import { CheckCircle } from 'lucide-react';
+import { CheckCircle, ChevronDown } from 'lucide-react';
+import { useState } from 'react';
 
 const courses = [
   {
@@ -31,19 +32,20 @@ const checkout = {
 const faqs = [
   {
     question: 'Qual o nível recomendado para este curso?',
-    answer: '',
+    answer: 'Este curso é recomendado para iniciantes e intermediários que desejam aprimorar suas habilidades em modelagem automotiva 3D.',
   },
   {
     question: 'Quais softwares são usados?',
-    answer: '',
+    answer: 'Os principais softwares utilizados são Blender, Maya, 3ds Max e ZBrush, com foco em técnicas profissionais do mercado.',
   },
   {
     question: 'Os cursos oferecem certificado?',
-    answer: '',
+    answer: 'Sim, todos os cursos oferecem certificado de conclusão após a finalização de todos os módulos.',
   },
 ];
 
 export default function CoursesPage() {
+  const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
   return (
     <div className="min-h-screen pt-20 pb-20">
       <div className="container mx-auto">
@@ -133,11 +135,32 @@ export default function CoursesPage() {
 
         <div className="border border-gray-800 rounded-lg p-8 bg-black/40 backdrop-blur-sm mx-4">
           <h2 className="text-2xl font-bold text-white mb-6">FAQ de Cursos</h2>
-          <div className="space-y-4">
+          <div className="space-y-3">
             {faqs.map((faq, index) => (
-              <div key={index} className="border-b border-gray-800 pb-4 last:border-b-0">
-                <h3 className="text-white text-base font-medium mb-2">{faq.question}</h3>
-                {faq.answer && <p className="text-white text-sm">{faq.answer}</p>}
+              <div
+                key={index}
+                className="bg-gray-800/50 backdrop-blur border border-gray-700 rounded-lg overflow-hidden hover:border-red-600 transition-all"
+              >
+                <button
+                  onClick={() => setOpenFaqIndex(openFaqIndex === index ? null : index)}
+                  className="w-full px-4 sm:px-6 py-4 sm:py-5 flex items-center justify-between text-left"
+                >
+                  <span className="text-white font-semibold text-base sm:text-lg">
+                    {faq.question}
+                  </span>
+                  <ChevronDown
+                    className={`w-5 h-5 text-red-600 transition-transform flex-shrink-0 ml-2 ${
+                      openFaqIndex === index ? 'rotate-180' : ''
+                    }`}
+                  />
+                </button>
+                {openFaqIndex === index && (
+                  <div className="px-4 sm:px-6 pb-4 sm:pb-5">
+                    <p className="text-white text-sm sm:text-base leading-relaxed">
+                      {faq.answer}
+                    </p>
+                  </div>
+                )}
               </div>
             ))}
           </div>
