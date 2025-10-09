@@ -33,10 +33,6 @@ export default function FAQ({ category = 'general' }: FAQProps) {
     }
   }
 
-  if (faqs.length === 0) {
-    return null;
-  }
-
   return (
     <section
       className="py-12 sm:py-20 relative bg-cover bg-center bg-no-repeat flex items-center"
@@ -48,7 +44,12 @@ export default function FAQ({ category = 'general' }: FAQProps) {
           FAQ
         </h2>
 
-        <div className="max-w-2xl mx-auto space-y-3">
+        {faqs.length === 0 ? (
+          <div className="text-center text-gray-400">
+            <p>Carregando perguntas frequentes...</p>
+          </div>
+        ) : (
+          <div className="max-w-2xl mx-auto space-y-3">
           {faqs.map((faq, index) => (
             <div
               key={faq.id}
@@ -72,7 +73,8 @@ export default function FAQ({ category = 'general' }: FAQProps) {
               )}
             </div>
           ))}
-        </div>
+          </div>
+        )}
       </div>
     </section>
   );

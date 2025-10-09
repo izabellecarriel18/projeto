@@ -29,10 +29,6 @@ export default function Testimonials() {
     }
   }
 
-  if (testimonials.length === 0) {
-    return null;
-  }
-
   return (
     <section className="py-12 sm:py-20 flex items-center" style={{ minHeight: 'calc(12rem + 5rem)' }}>
       <div className="max-w-5xl mx-auto w-full">
@@ -40,7 +36,13 @@ export default function Testimonials() {
           Depoimentos
         </h2>
 
-        <div className="md:hidden overflow-x-auto scrollbar-hide px-4">
+        {testimonials.length === 0 ? (
+          <div className="text-center text-gray-400 px-4">
+            <p>Carregando depoimentos...</p>
+          </div>
+        ) : (
+        <>
+          <div className="md:hidden overflow-x-auto scrollbar-hide px-4">
           <div className="flex gap-4 pb-4" style={{ width: 'max-content' }}>
             {testimonials.map((testimonial) => (
               <div
@@ -93,6 +95,8 @@ export default function Testimonials() {
             </div>
           ))}
         </div>
+        </>
+        )}
       </div>
     </section>
   );
