@@ -8,20 +8,18 @@ interface HeaderProps {
 export default function Header({ onNavigate, currentPage }: HeaderProps) {
   return (
     <header className="fixed top-0 left-0 right-0 backdrop-blur-sm z-50 border-b border-gray-800">
-      <div className="container mx-auto px-6 py-4">
-        <div className="flex items-center justify-center mb-4">
-          <div
-            className="flex items-center gap-2 cursor-pointer"
-            onClick={() => onNavigate('home')}
-          >
-            <Zap className="w-8 h-8 text-red-600" />
-            <span className="text-xl font-bold text-white tracking-wider">
-              ULTIMATECAR<span className="text-red-600">3D</span>
-            </span>
-          </div>
+      <div className="container mx-auto px-6 py-4 flex items-center justify-between">
+        <div
+          className="flex items-center gap-2 cursor-pointer"
+          onClick={() => onNavigate('home')}
+        >
+          <Zap className="w-8 h-8 text-red-600" />
+          <span className="text-xl font-bold text-white tracking-wider">
+            ULTIMATECAR<span className="text-red-600">3D</span>
+          </span>
         </div>
 
-        <nav className="flex gap-6 justify-center">
+        <nav className="flex gap-6 absolute left-1/2 transform -translate-x-1/2">
           <button
             onClick={() => onNavigate('home')}
             className={`text-sm font-medium transition-colors ${
