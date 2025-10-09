@@ -19,7 +19,7 @@ export default function Header({ onNavigate, currentPage }: HeaderProps) {
           </span>
         </div>
 
-        <nav className="flex gap-8">
+        <nav className="flex gap-6">
           <button
             onClick={() => onNavigate('home')}
             className={`text-sm font-medium transition-colors ${
@@ -31,14 +31,54 @@ export default function Header({ onNavigate, currentPage }: HeaderProps) {
             Marca
           </button>
           <button
-            onClick={() => onNavigate('products')}
+            onClick={() => onNavigate('solid-cars')}
             className={`text-sm font-medium transition-colors ${
-              currentPage === 'products'
+              currentPage === 'solid-cars'
                 ? 'text-red-600'
                 : 'text-gray-300 hover:text-white'
             }`}
           >
-            Arquivos Prontos
+            Carros Sólidos
+          </button>
+          <button
+            onClick={() => onNavigate('complete-cars')}
+            className={`text-sm font-medium transition-colors ${
+              currentPage === 'complete-cars'
+                ? 'text-red-600'
+                : 'text-gray-300 hover:text-white'
+            }`}
+          >
+            Carros Completos
+          </button>
+          <button
+            onClick={() => onNavigate('wheels')}
+            className={`text-sm font-medium transition-colors ${
+              currentPage === 'wheels'
+                ? 'text-red-600'
+                : 'text-gray-300 hover:text-white'
+            }`}
+          >
+            Rodas
+          </button>
+          <button
+            onClick={() => onNavigate('bus-truck')}
+            className={`text-sm font-medium transition-colors ${
+              currentPage === 'bus-truck'
+                ? 'text-red-600'
+                : 'text-gray-300 hover:text-white'
+            }`}
+          >
+            Ônibus e Caminhão
+          </button>
+          <button
+            onClick={() => onNavigate('request-file')}
+            className={`text-sm font-medium transition-colors ${
+              currentPage === 'request-file'
+                ? 'text-red-600'
+                : 'text-gray-300 hover:text-white'
+            }`}
+          >
+            Solicitar Criação de Arquivo
           </button>
           <button
             onClick={() => onNavigate('courses')}
