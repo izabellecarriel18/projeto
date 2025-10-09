@@ -6,19 +6,19 @@ export default function Differentials() {
       icon: Shield,
       title: 'Qualidade Impecável',
       description:
-        'Modelos 3D com topologia profissional, otimizados para render e produção em qualquer software.',
+        'Modelos 3D de alta fidelidade, os mínimos detalhes são nosso foco.',
     },
     {
       icon: Zap,
       title: 'Técnicas Avançadas',
       description:
-        'Aprenda workflows modernos utilizados pelos melhores artistas 3D da indústria automotiva.',
+        'Cursos com técnicas de modelagem utilizadas por profissionais da indústria.',
     },
     {
       icon: Headphones,
       title: 'Suporte Especializado',
       description:
-        'Tire suas dúvidas diretamente com especialistas via WhatsApp e Direct. Resposta rápida garantida.',
+        'Suporte direto para tirar suas dúvidas e fazer orçamentos.',
     },
   ];
 
