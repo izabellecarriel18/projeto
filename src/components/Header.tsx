@@ -1,4 +1,4 @@
-import { Zap, Menu, X } from 'lucide-react';
+import { Zap, Menu, X, User } from 'lucide-react';
 import { useState } from 'react';
 
 interface HeaderProps {
@@ -57,6 +57,11 @@ export default function Header({ onNavigate, currentPage }: HeaderProps) {
           ))}
         </nav>
 
+        <button className="hidden lg:flex items-center gap-2 text-white hover:text-red-600 transition-colors">
+          <User className="w-5 h-5" />
+          <span className="text-sm font-medium">LOGIN</span>
+        </button>
+
         {mobileMenuOpen && (
           <div className="fixed inset-0 bg-black/95 backdrop-blur-sm lg:hidden">
             <nav className="flex flex-col items-center justify-center h-full gap-0 px-6">
@@ -73,6 +78,10 @@ export default function Header({ onNavigate, currentPage }: HeaderProps) {
                   {item.label}
                 </button>
               ))}
+              <button className="flex items-center justify-center gap-2 text-white hover:text-red-600 transition-colors py-6 w-full border-b border-gray-700">
+                <User className="w-5 h-5" />
+                <span className="text-lg font-medium">LOGIN</span>
+              </button>
             </nav>
           </div>
         )}
