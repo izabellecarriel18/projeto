@@ -28,18 +28,36 @@ export default function ProductsPage() {
   ];
 
   const brands = [
-    'Audi',
+    'AUDI',
     'BMW',
-    'Cadillac',
-    'Chevrolet',
-    'Ferrari',
-    'Ford',
-    'Honda',
-    'Lamborghini',
-    'Mercedes',
-    'Porsche',
-    'Toyota',
-    'Volkswagen',
+    'CADILLAC',
+    'CHEVROLET / GM',
+    'CITROËN',
+    'DAEWOO',
+    'DODGE',
+    'FERRARI',
+    'FIAT',
+    'FORD',
+    'HONDA',
+    'HYUNDAI',
+    'IVECO',
+    'KOENIGSEGG',
+    'MAZDA',
+    'MCLAREN',
+    'MERCEDES',
+    'MITSUBISHI',
+    'NISSAN',
+    'NOBLE',
+    'PEUGEOT',
+    'PORSCHE',
+    'PUMA',
+    'RENAULT',
+    'SCANIA',
+    'SUBARU',
+    'TOYOTA',
+    'TROLLER',
+    'VOLKSWAGEN',
+    'VOLVO',
   ];
 
   useEffect(() => {
@@ -110,31 +128,33 @@ export default function ProductsPage() {
             ))}
           </div>
 
-          <div className="flex flex-wrap gap-1.5 sm:gap-2 mb-4 sm:mb-6">
-            <button
-              onClick={() => setSelectedBrand('all')}
-              className={`px-2.5 sm:px-4 py-1 rounded text-xs sm:text-sm transition-all ${
-                selectedBrand === 'all'
-                  ? 'bg-red-600 text-white'
-                  : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
-              }`}
-            >
-              Todas Marcas
-            </button>
-            {brands.map((brand) => (
+          {selectedCategory === 'solid_cars' && (
+            <div className="flex flex-wrap gap-1.5 sm:gap-2 mb-4 sm:mb-6">
               <button
-                key={brand}
-                onClick={() => setSelectedBrand(brand)}
-                className={`px-2.5 sm:px-4 py-1 rounded text-xs sm:text-sm transition-all ${
-                  selectedBrand === brand
+                onClick={() => setSelectedBrand('all')}
+                className={`px-2.5 sm:px-4 py-1.5 rounded text-xs sm:text-sm font-medium transition-all ${
+                  selectedBrand === 'all'
                     ? 'bg-red-600 text-white'
-                    : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
+                    : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
                 }`}
               >
-                {brand}
+                TODOS
               </button>
-            ))}
-          </div>
+              {brands.map((brand) => (
+                <button
+                  key={brand}
+                  onClick={() => setSelectedBrand(brand)}
+                  className={`px-2.5 sm:px-4 py-1.5 rounded text-xs sm:text-sm font-medium transition-all ${
+                    selectedBrand === brand
+                      ? 'bg-red-600 text-white'
+                      : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+                  }`}
+                >
+                  {brand}
+                </button>
+              ))}
+            </div>
+          )}
 
           <div className="flex flex-col md:flex-row gap-3 sm:gap-4">
             <div className="flex-1 relative">
