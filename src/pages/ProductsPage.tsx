@@ -26,7 +26,7 @@ export default function ProductsPage() {
     { id: 'bus_truck', label: 'Ônibus e Caminhão' },
   ];
 
-  const brands = [
+  const solidCarsBrands = [
     'AUDI',
     'BMW',
     'CADILLAC',
@@ -56,6 +56,41 @@ export default function ProductsPage() {
     'TOYOTA',
     'TROLLER',
     'VOLKSWAGEN',
+    'VOLVO',
+  ];
+
+  const completeCarsBrands = [
+    'ACURA',
+    'BMW',
+    'CAIO',
+    'CHEVROLET / GM',
+    'COMIL',
+    'DKW',
+    'FIAT',
+    'FORD',
+    'HONDA',
+    'HYUNDAI',
+    'IVECO',
+    'LUCRA',
+    'MARCOPOLO',
+    'MAREA',
+    'MAZDA',
+    'MCLAREN',
+    'MERCEDES',
+    'MITSUBISHI',
+    'NIELSON',
+    'NISSAN',
+    'NOBLE',
+    'PEUGEOT',
+    'PORSCHE',
+    'RENAULT',
+    'SANTA MATILDE',
+    'SCANIA',
+    'SUBARU',
+    'SUZUKI',
+    'TOYOTA',
+    'TROLLER',
+    'URBANO MASCARELLO',
     'VOLVO',
   ];
 
@@ -137,7 +172,35 @@ export default function ProductsPage() {
               >
                 TODOS
               </button>
-              {brands.map((brand) => (
+              {solidCarsBrands.map((brand) => (
+                <button
+                  key={brand}
+                  onClick={() => setSelectedBrand(brand)}
+                  className={`px-2.5 sm:px-4 py-1.5 rounded text-xs sm:text-sm font-medium transition-all ${
+                    selectedBrand === brand
+                      ? 'bg-red-600 text-white'
+                      : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+                  }`}
+                >
+                  {brand}
+                </button>
+              ))}
+            </div>
+          )}
+
+          {selectedCategory === 'complete_cars' && (
+            <div className="flex flex-wrap gap-1.5 sm:gap-2 mb-4 sm:mb-6">
+              <button
+                onClick={() => setSelectedBrand('all')}
+                className={`px-2.5 sm:px-4 py-1.5 rounded text-xs sm:text-sm font-medium transition-all ${
+                  selectedBrand === 'all'
+                    ? 'bg-red-600 text-white'
+                    : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+                }`}
+              >
+                TODOS
+              </button>
+              {completeCarsBrands.map((brand) => (
                 <button
                   key={brand}
                   onClick={() => setSelectedBrand(brand)}
