@@ -10,8 +10,32 @@ interface Testimonial {
   text: string;
 }
 
+const DEFAULT_TESTIMONIALS: Testimonial[] = [
+  {
+    id: '1',
+    name: 'Carlos Silva',
+    avatar_url: 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=200',
+    rating: 5,
+    text: 'Os modelos 3D são incríveis! A qualidade da topologia é profissional e facilitou muito meu trabalho. Recomendo demais!'
+  },
+  {
+    id: '2',
+    name: 'Ana Costa',
+    avatar_url: 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=200',
+    rating: 5,
+    text: 'Aprendi técnicas que me ajudaram a conseguir trabalhos melhores. O suporte é excelente e sempre respondem rápido!'
+  },
+  {
+    id: '3',
+    name: 'Roberto Lima',
+    avatar_url: 'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=200',
+    rating: 5,
+    text: 'Melhor investimento que fiz na minha carreira 3D. Os arquivos são otimizados e prontos para usar em qualquer projeto.'
+  }
+];
+
 export default function Testimonials() {
-  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
+  const [testimonials, setTestimonials] = useState<Testimonial[]>(DEFAULT_TESTIMONIALS);
 
   useEffect(() => {
     loadTestimonials();
@@ -24,7 +48,7 @@ export default function Testimonials() {
       .order('created_at', { ascending: false })
       .limit(3);
 
-    if (data) {
+    if (data && data.length > 0) {
       setTestimonials(data);
     }
   }
@@ -36,11 +60,6 @@ export default function Testimonials() {
           Depoimentos
         </h2>
 
-        {testimonials.length === 0 ? (
-          <div className="text-center text-gray-400 px-4">
-            <p>Carregando depoimentos...</p>
-          </div>
-        ) : (
         <>
           <div className="md:hidden overflow-x-auto scrollbar-hide px-4">
           <div className="flex gap-4 pb-4" style={{ width: 'max-content' }}>
@@ -96,7 +115,6 @@ export default function Testimonials() {
           ))}
         </div>
         </>
-        )}
       </div>
     </section>
   );

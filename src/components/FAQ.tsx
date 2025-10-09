@@ -13,8 +13,29 @@ interface FAQProps {
   category?: string;
 }
 
+const DEFAULT_FAQS: FAQItem[] = [
+  {
+    id: '1',
+    question: 'Os modelos funcionam em qual software?',
+    answer: 'Fornecemos modelos no formato .STL, garantindo compatibilidade com 3ds Max, blender, auto cad, maya, sketchup, dentre outros.',
+    category: 'general'
+  },
+  {
+    id: '2',
+    question: 'Como funciona o suporte?',
+    answer: 'Oferecemos suporte via Direct e Whatzapp para todos os alunos e clientes, com o intuito de te auxiliar no que for necessário.',
+    category: 'general'
+  },
+  {
+    id: '3',
+    question: 'Quais softwares são usados no curso?',
+    answer: 'Nossos cursos utilizam 3ds Max, ensinando a instalação e seu uso.',
+    category: 'general'
+  }
+];
+
 export default function FAQ({ category = 'general' }: FAQProps) {
-  const [faqs, setFaqs] = useState<FAQItem[]>([]);
+  const [faqs, setFaqs] = useState<FAQItem[]>(DEFAULT_FAQS);
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   useEffect(() => {
@@ -28,7 +49,7 @@ export default function FAQ({ category = 'general' }: FAQProps) {
       .eq('category', category)
       .order('display_order', { ascending: true });
 
-    if (data) {
+    if (data && data.length > 0) {
       setFaqs(data);
     }
   }
@@ -44,12 +65,7 @@ export default function FAQ({ category = 'general' }: FAQProps) {
           FAQ
         </h2>
 
-        {faqs.length === 0 ? (
-          <div className="text-center text-gray-400">
-            <p>Carregando perguntas frequentes...</p>
-          </div>
-        ) : (
-          <div className="max-w-2xl mx-auto space-y-3">
+        <div className="max-w-2xl mx-auto space-y-3">
           {faqs.map((faq, index) => (
             <div
               key={faq.id}
@@ -74,7 +90,6 @@ export default function FAQ({ category = 'general' }: FAQProps) {
             </div>
           ))}
           </div>
-        )}
       </div>
     </section>
   );
