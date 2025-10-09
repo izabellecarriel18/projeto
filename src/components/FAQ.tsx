@@ -1,6 +1,8 @@
 import { ChevronDown } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
+import { useAuth } from '../contexts/AuthContext';
+import EditableBackgroundImage from './EditableBackgroundImage';
 
 interface FAQItem {
   id: string;
@@ -35,11 +37,15 @@ const DEFAULT_FAQS: FAQItem[] = [
 ];
 
 export default function FAQ({ category = 'general' }: FAQProps) {
+  const { profile } = useAuth();
   const [faqs, setFaqs] = useState<FAQItem[]>(DEFAULT_FAQS);
   const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const [faqImage, setFaqImage] = useState<string>('https://i.imgur.com/6FLvE4U.jpg');
+  const isAdmin = profile?.role === 'admin';
 
   useEffect(() => {
     loadFAQs();
+    loadFaqImage();
   }, [category]);
 
   async function loadFAQs() {
@@ -54,12 +60,28 @@ export default function FAQ({ category = 'general' }: FAQProps) {
     }
   }
 
+  async function loadFaqImage() {
+    const { data } = await supabase
+      .from('site_images')
+      .select('image_url, default_url')
+      .eq('slot_id', 'faq_bg')
+      .maybeSingle();
+
+    if (data) {
+      setFaqImage(data.image_url || data.default_url);
+    }
+  }
+
   return (
-    <section
-      className="py-12 sm:py-20 relative bg-cover bg-center bg-no-repeat flex items-center"
-      style={{ backgroundImage: 'url(https://i.imgur.com/6FLvE4U.jpg)', minHeight: '67.5vh' }}
+    <EditableBackgroundImage
+      slotId="faq_bg"
+      currentUrl={faqImage}
+      isAdmin={isAdmin}
+      onUpdate={loadFaqImage}
+      className="py-12 sm:py-20 flex items-center"
+      style={{ minHeight: '67.5vh' }}
+      overlayClassName="bg-black/70"
     >
-      <div className="absolute inset-0 bg-black/70"></div>
       <div className="container mx-auto px-4 sm:px-6 relative z-10 max-w-4xl">
         <h2 className="text-3xl sm:text-4xl font-bold text-white text-center mb-8 sm:mb-12">
           FAQ
@@ -91,6 +113,6 @@ export default function FAQ({ category = 'general' }: FAQProps) {
           ))}
           </div>
       </div>
-    </section>
+    </EditableBackgroundImage>
   );
 }
