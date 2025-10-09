@@ -14,7 +14,7 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-black">
+    <div className="min-h-screen">
       <Header onNavigate={handleNavigate} currentPage={currentPage} />
 
       {currentPage === 'home' && <HomePage onNavigate={handleNavigate} />}

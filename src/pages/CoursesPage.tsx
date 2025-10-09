@@ -66,7 +66,7 @@ export default function CoursesPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-black pt-24 pb-20">
+    <div className="min-h-screen pt-24 pb-20">
       <div className="container mx-auto px-6">
         <div className="text-center mb-12">
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
@@ -87,7 +87,7 @@ export default function CoursesPage() {
             {courses.map((course) => (
               <div
                 key={course.id}
-                className="bg-gray-900/50 backdrop-blur border border-gray-800 rounded-lg overflow-hidden hover:border-red-600 transition-all"
+                className="backdrop-blur border border-gray-800 rounded-lg overflow-hidden hover:border-red-600 transition-all"
               >
                 <div className="aspect-video bg-gray-800 overflow-hidden">
                   <img
@@ -146,7 +146,7 @@ export default function CoursesPage() {
           </div>
         )}
 
-        <div className="bg-gray-900/50 backdrop-blur border border-gray-800 rounded-lg p-8 mb-12">
+        <div className="backdrop-blur border border-gray-800 rounded-lg p-8 mb-12">
           <h2 className="text-2xl font-bold text-white mb-6 text-center">
             Garantias e Suporte
           </h2>
@@ -162,7 +162,7 @@ export default function CoursesPage() {
           </div>
         </div>
 
-        <div className="bg-gray-900/50 backdrop-blur border border-gray-800 rounded-lg p-8 mb-12">
+        <div className="backdrop-blur border border-gray-800 rounded-lg p-8 mb-12">
           <h2 className="text-2xl font-bold text-white mb-6 text-center">
             Checkout Simplificado
           </h2>

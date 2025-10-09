@@ -84,7 +84,7 @@ export default function ProductsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-black pt-24 pb-20">
+    <div className="min-h-screen pt-24 pb-20">
       <div className="container mx-auto px-6">
         <div className="text-center mb-12">
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">Modelos 3D</h1>
@@ -93,7 +93,7 @@ export default function ProductsPage() {
           </p>
         </div>
 
-        <div className="bg-gray-900/50 backdrop-blur border border-gray-800 rounded-lg p-6 mb-12">
+        <div className="backdrop-blur border border-gray-800 rounded-lg p-6 mb-12">
           <div className="flex flex-wrap gap-3 mb-6">
             {categories.map((cat) => (
               <button
@@ -163,7 +163,7 @@ export default function ProductsPage() {
             {filteredProducts.map((product) => (
               <div
                 key={product.id}
-                className="bg-gray-900/50 backdrop-blur border border-gray-800 rounded-lg overflow-hidden hover:border-red-600 transition-all group"
+                className="backdrop-blur border border-gray-800 rounded-lg overflow-hidden hover:border-red-600 transition-all group"
               >
                 <div className="aspect-video bg-gray-800 overflow-hidden">
                   <img

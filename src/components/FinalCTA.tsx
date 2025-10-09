@@ -6,7 +6,7 @@ interface FinalCTAProps {
 
 export default function FinalCTA({ onNavigate }: FinalCTAProps) {
   return (
-    <section className="py-20 bg-black">
+    <section className="py-20">
       <div className="container mx-auto px-6 text-center">
         <h2 className="text-4xl md:text-5xl font-bold text-white mb-8">
           Pronto para elevar suas modelagens?
