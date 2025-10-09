@@ -49,7 +49,7 @@ export default function Header({ onNavigate, currentPage }: HeaderProps) {
               className={`text-sm font-medium transition-colors ${
                 currentPage === item.id
                   ? 'text-red-600'
-                  : 'text-gray-300 hover:text-white'
+                  : 'text-white hover:text-red-600'
               }`}
             >
               {item.label}
@@ -67,7 +67,7 @@ export default function Header({ onNavigate, currentPage }: HeaderProps) {
                   className={`text-lg font-medium transition-colors ${
                     currentPage === item.id
                       ? 'text-red-600'
-                      : 'text-gray-300 hover:text-white'
+                      : 'text-white hover:text-red-600'
                   }`}
                 >
                   {item.label}

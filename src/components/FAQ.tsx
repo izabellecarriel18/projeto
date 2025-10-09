@@ -67,7 +67,7 @@ export default function FAQ({ category = 'general' }: FAQProps) {
               </button>
               {openIndex === index && (
                 <div className="px-4 sm:px-6 pb-4 sm:pb-5">
-                  <p className="text-gray-400 text-sm sm:text-base leading-relaxed">{faq.answer}</p>
+                  <p className="text-white text-sm sm:text-base leading-relaxed">{faq.answer}</p>
                 </div>
               )}
             </div>

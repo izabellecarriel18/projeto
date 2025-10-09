@@ -62,7 +62,7 @@ export default function CoursesPage() {
               </div>
               <div className="p-6 bg-black/40 backdrop-blur-sm">
                 <h3 className="text-white font-bold text-xl mb-3">{course.title}</h3>
-                <p className="text-gray-400 text-sm mb-4 leading-relaxed">{course.description}</p>
+                <p className="text-white text-sm mb-4 leading-relaxed">{course.description}</p>
 
                 <div className="bg-red-600 text-white text-center py-2 px-4 rounded mb-4 text-sm">
                   {course.price}
@@ -82,7 +82,7 @@ export default function CoursesPage() {
             {benefits.map((benefit, index) => (
               <div key={index} className="flex items-center gap-3">
                 <CheckCircle className="w-5 h-5 text-blue-500 flex-shrink-0" />
-                <span className="text-gray-300 text-sm">{benefit}</span>
+                <span className="text-white text-sm">{benefit}</span>
               </div>
             ))}
           </div>
@@ -94,7 +94,7 @@ export default function CoursesPage() {
             {checkout.items.map((item, index) => (
               <div key={index} className="flex items-start gap-3">
                 <CheckCircle className="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" />
-                <span className="text-gray-300 text-sm">{item}</span>
+                <span className="text-white text-sm">{item}</span>
               </div>
             ))}
           </div>
@@ -106,7 +106,7 @@ export default function CoursesPage() {
             {faqs.map((faq, index) => (
               <div key={index} className="border-b border-gray-800 pb-4 last:border-b-0">
                 <h3 className="text-white text-base font-medium mb-2">{faq.question}</h3>
-                {faq.answer && <p className="text-gray-400 text-sm">{faq.answer}</p>}
+                {faq.answer && <p className="text-white text-sm">{faq.answer}</p>}
               </div>
             ))}
           </div>

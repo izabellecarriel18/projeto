@@ -44,7 +44,7 @@ export default function Differentials() {
               </div>
               <div className="flex-1 text-center md:text-left">
                 <h3 className="text-xl sm:text-2xl font-bold text-white mb-2 sm:mb-3">{item.title}</h3>
-                <p className="text-gray-400 text-base sm:text-lg leading-relaxed">{item.description}</p>
+                <p className="text-white text-base sm:text-lg leading-relaxed">{item.description}</p>
               </div>
             </div>
           ))}

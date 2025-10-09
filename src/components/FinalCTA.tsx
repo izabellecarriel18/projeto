@@ -11,7 +11,7 @@ export default function FinalCTA({ onNavigate }: FinalCTAProps) {
         <h2 className="text-3xl sm:text-4xl font-bold text-white mb-6 sm:mb-8">
           Pronto para elevar suas modelagens?
         </h2>
-        <p className="text-base sm:text-lg text-gray-400 mb-8 sm:mb-10 max-w-xl mx-auto px-4">
+        <p className="text-base sm:text-lg text-white mb-8 sm:mb-10 max-w-xl mx-auto px-4">
           Acesse agora nossa biblioteca completa de modelos 3D profissionais e cursos especializados
         </p>
 

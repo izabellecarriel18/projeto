@@ -33,7 +33,7 @@ export default function AuthorityProof() {
             >
               <metric.icon className="w-10 h-10 sm:w-12 sm:h-12 text-red-600 mx-auto mb-3 sm:mb-4" />
               <div className="text-3xl sm:text-4xl font-bold text-white mb-2">{metric.value}</div>
-              <div className="text-gray-400 text-base sm:text-lg">{metric.label}</div>
+              <div className="text-white text-base sm:text-lg">{metric.label}</div>
             </div>
           ))}
         </div>
