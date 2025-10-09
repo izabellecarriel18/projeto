@@ -1,0 +1,51 @@
+import { Shield, Zap, Headphones } from 'lucide-react';
+
+export default function Differentials() {
+  const differentials = [
+    {
+      icon: Shield,
+      title: 'Qualidade Impecável',
+      description:
+        'Modelos 3D com topologia profissional, otimizados para render e produção em qualquer software.',
+    },
+    {
+      icon: Zap,
+      title: 'Técnicas Avançadas',
+      description:
+        'Aprenda workflows modernos utilizados pelos melhores artistas 3D da indústria automotiva.',
+    },
+    {
+      icon: Headphones,
+      title: 'Suporte Especializado',
+      description:
+        'Tire suas dúvidas diretamente com especialistas via WhatsApp e Direct. Resposta rápida garantida.',
+    },
+  ];
+
+  return (
+    <section className="py-20 bg-gray-900">
+      <div className="container mx-auto px-6">
+        <h2 className="text-4xl md:text-5xl font-bold text-white text-center mb-16">
+          Diferenciais
+        </h2>
+
+        <div className="space-y-8">
+          {differentials.map((item, index) => (
+            <div
+              key={index}
+              className="bg-gray-800/50 backdrop-blur border border-gray-700 rounded-lg p-8 flex flex-col md:flex-row items-center gap-6 hover:border-red-600 transition-all"
+            >
+              <div className="bg-red-600/10 p-6 rounded-full">
+                <item.icon className="w-12 h-12 text-red-600" />
+              </div>
+              <div className="flex-1 text-center md:text-left">
+                <h3 className="text-2xl font-bold text-white mb-3">{item.title}</h3>
+                <p className="text-gray-400 text-lg leading-relaxed">{item.description}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
