@@ -40,28 +40,28 @@ export default function Testimonials() {
           Depoimentos
         </h2>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
           {testimonials.map((testimonial) => (
             <div
               key={testimonial.id}
-              className="bg-gray-800/50 backdrop-blur border border-gray-700 rounded-lg p-6 hover:border-red-600 transition-all"
+              className="bg-gray-800/50 backdrop-blur border border-gray-700 rounded-lg p-4 sm:p-6 hover:border-red-600 transition-all"
             >
-              <div className="flex items-center gap-4 mb-4">
+              <div className="flex items-center gap-3 mb-3">
                 <img
                   src={testimonial.avatar_url}
                   alt={testimonial.name}
-                  className="w-16 h-16 rounded-full object-cover"
+                  className="w-12 h-12 rounded-full object-cover"
                 />
                 <div>
-                  <h3 className="text-white font-semibold text-lg">{testimonial.name}</h3>
+                  <h3 className="text-white font-semibold text-base">{testimonial.name}</h3>
                   <div className="flex gap-1">
                     {Array.from({ length: testimonial.rating }).map((_, i) => (
-                      <Star key={i} className="w-4 h-4 text-yellow-500 fill-yellow-500" />
+                      <Star key={i} className="w-3 h-3 text-yellow-500 fill-yellow-500" />
                     ))}
                   </div>
                 </div>
               </div>
-              <p className="text-gray-400 leading-relaxed">{testimonial.text}</p>
+              <p className="text-gray-400 text-sm leading-relaxed">{testimonial.text}</p>
             </div>
           ))}
         </div>
