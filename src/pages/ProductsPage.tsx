@@ -94,6 +94,43 @@ export default function ProductsPage() {
     'VOLVO',
   ];
 
+  const wheelsBrands = [
+    'ADVAN',
+    'AUDI',
+    'BBS',
+    'BINNO',
+    'BMW',
+    'BRW',
+    'CHEVROLET / GM',
+    'ENKEI',
+    'FIAT',
+    'FORD',
+    'HONDA',
+    'HYUNDAI',
+    'JEEP',
+    'KR',
+    'LOWRIDER',
+    'MANGELS',
+    'MERCEDES',
+    'MITSUBISHI',
+    'MOMO',
+    'NISSAN',
+    'OZ',
+    'PEUGEOT',
+    'PORSCHE',
+    'RAYS',
+    'RENAULT',
+    'RODA (GENERICAS)',
+    'SUBARU',
+    'TOYOTA',
+    'VOLCANO',
+    'VOLVO',
+    'VOSSEN',
+    'VOLKSWAGEN',
+    'WATANABE',
+    'WORK',
+  ];
+
   useEffect(() => {
     loadProducts();
   }, []);
@@ -201,6 +238,34 @@ export default function ProductsPage() {
                 TODOS
               </button>
               {completeCarsBrands.map((brand) => (
+                <button
+                  key={brand}
+                  onClick={() => setSelectedBrand(brand)}
+                  className={`px-2.5 sm:px-4 py-1.5 rounded text-xs sm:text-sm font-medium transition-all ${
+                    selectedBrand === brand
+                      ? 'bg-red-600 text-white'
+                      : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+                  }`}
+                >
+                  {brand}
+                </button>
+              ))}
+            </div>
+          )}
+
+          {selectedCategory === 'wheels' && (
+            <div className="flex flex-wrap gap-1.5 sm:gap-2 mb-4 sm:mb-6">
+              <button
+                onClick={() => setSelectedBrand('all')}
+                className={`px-2.5 sm:px-4 py-1.5 rounded text-xs sm:text-sm font-medium transition-all ${
+                  selectedBrand === 'all'
+                    ? 'bg-red-600 text-white'
+                    : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+                }`}
+              >
+                TODOS
+              </button>
+              {wheelsBrands.map((brand) => (
                 <button
                   key={brand}
                   onClick={() => setSelectedBrand(brand)}
