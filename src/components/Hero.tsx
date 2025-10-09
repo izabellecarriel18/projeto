@@ -6,7 +6,7 @@ interface HeroProps {
 
 export default function Hero({ onNavigate }: HeroProps) {
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden px-4 py-20 sm:py-0">
+    <section className="relative flex items-center justify-center overflow-hidden px-4" style={{ minHeight: '75vh' }}>
       <div
         className="absolute inset-0 z-0"
         style={{
