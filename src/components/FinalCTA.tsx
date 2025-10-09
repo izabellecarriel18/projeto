@@ -12,7 +12,7 @@ export default function FinalCTA({ onNavigate }: FinalCTAProps) {
           Pronto para elevar suas modelagens?
         </h2>
         <p className="text-base sm:text-lg text-white mb-8 sm:mb-10 max-w-xl mx-auto px-4">
-          Acesse agora nossa biblioteca completa de modelos 3D profissionais e cursos especializados
+          Acesse nossa biblioteca completa de modelos 3D profissionais e cursos especializados
         </p>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center px-4">
