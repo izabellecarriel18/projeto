@@ -34,10 +34,8 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
         if (error) throw error;
 
         setSuccess('Login realizado com sucesso!');
-        setTimeout(() => {
-          onClose();
-          resetForm();
-        }, 1500);
+        resetForm();
+        onClose();
       } else {
         const { error } = await supabase.auth.signUp({
           email,
@@ -52,12 +50,8 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
         if (error) throw error;
 
         setSuccess('Cadastro realizado com sucesso!');
-        setTimeout(() => {
-          setMode('login');
-          setPassword('');
-          setName('');
-          setSuccess('');
-        }, 1500);
+        resetForm();
+        onClose();
       }
     } catch (err: any) {
       setError(err.message || 'Ocorreu um erro. Tente novamente.');
