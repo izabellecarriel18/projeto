@@ -38,9 +38,9 @@ export default function FAQ({ category = 'general' }: FAQProps) {
   }
 
   return (
-    <section className="py-20">
-      <div className="container mx-auto px-6">
-        <h2 className="text-4xl md:text-5xl font-bold text-white text-center mb-16">
+    <section className="py-12 sm:py-20">
+      <div className="container mx-auto px-4 sm:px-6">
+        <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white text-center mb-8 sm:mb-16">
           Perguntas Frequentes
         </h2>
 
@@ -52,9 +52,9 @@ export default function FAQ({ category = 'general' }: FAQProps) {
             >
               <button
                 onClick={() => setOpenIndex(openIndex === index ? null : index)}
-                className="w-full px-6 py-5 flex items-center justify-between text-left"
+                className="w-full px-4 sm:px-6 py-4 sm:py-5 flex items-center justify-between text-left"
               >
-                <span className="text-white font-semibold text-lg">{faq.question}</span>
+                <span className="text-white font-semibold text-base sm:text-lg">{faq.question}</span>
                 <ChevronDown
                   className={`w-5 h-5 text-red-600 transition-transform ${
                     openIndex === index ? 'rotate-180' : ''
@@ -62,8 +62,8 @@ export default function FAQ({ category = 'general' }: FAQProps) {
                 />
               </button>
               {openIndex === index && (
-                <div className="px-6 pb-5">
-                  <p className="text-gray-400 leading-relaxed">{faq.answer}</p>
+                <div className="px-4 sm:px-6 pb-4 sm:pb-5">
+                  <p className="text-gray-400 text-sm sm:text-base leading-relaxed">{faq.answer}</p>
                 </div>
               )}
             </div>

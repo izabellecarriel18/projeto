@@ -23,24 +23,24 @@ export default function Differentials() {
   ];
 
   return (
-    <section className="py-20">
-      <div className="container mx-auto px-6">
-        <h2 className="text-4xl md:text-5xl font-bold text-white text-center mb-16">
+    <section className="py-12 sm:py-20">
+      <div className="container mx-auto px-4 sm:px-6">
+        <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white text-center mb-8 sm:mb-16">
           Diferenciais
         </h2>
 
-        <div className="space-y-8">
+        <div className="space-y-4 sm:space-y-8">
           {differentials.map((item, index) => (
             <div
               key={index}
-              className="bg-gray-800/50 backdrop-blur border border-gray-700 rounded-lg p-8 flex flex-col md:flex-row items-center gap-6 hover:border-red-600 transition-all"
+              className="bg-gray-800/50 backdrop-blur border border-gray-700 rounded-lg p-6 sm:p-8 flex flex-col md:flex-row items-center gap-4 sm:gap-6 hover:border-red-600 transition-all"
             >
-              <div className="bg-red-600/10 p-6 rounded-full">
-                <item.icon className="w-12 h-12 text-red-600" />
+              <div className="bg-red-600/10 p-4 sm:p-6 rounded-full">
+                <item.icon className="w-10 h-10 sm:w-12 sm:h-12 text-red-600" />
               </div>
               <div className="flex-1 text-center md:text-left">
-                <h3 className="text-2xl font-bold text-white mb-3">{item.title}</h3>
-                <p className="text-gray-400 text-lg leading-relaxed">{item.description}</p>
+                <h3 className="text-xl sm:text-2xl font-bold text-white mb-2 sm:mb-3">{item.title}</h3>
+                <p className="text-gray-400 text-base sm:text-lg leading-relaxed">{item.description}</p>
               </div>
             </div>
           ))}
