@@ -70,7 +70,7 @@ export default function CoursesPage() {
                     {course.price}
                   </div>
 
-                  <button className="w-full bg-transparent border border-gray-700 hover:border-red-600 text-white py-3 rounded font-semibold transition-all">
+                  <button className="w-full bg-red-600 hover:bg-red-700 hover:scale-105 text-white py-3 rounded font-semibold transition-all">
                     Ver Conteúdo
                   </button>
                 </div>
