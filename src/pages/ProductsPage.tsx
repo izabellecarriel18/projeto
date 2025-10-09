@@ -15,12 +15,11 @@ interface Product {
 export default function ProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
-  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [selectedCategory, setSelectedCategory] = useState<string>('solid_cars');
   const [selectedBrand, setSelectedBrand] = useState<string>('all');
   const [searchTerm, setSearchTerm] = useState<string>('');
 
   const categories = [
-    { id: 'all', label: 'Todos' },
     { id: 'solid_cars', label: 'Carros Sólidos' },
     { id: 'complete_cars', label: 'Carros Completos' },
     { id: 'wheels', label: 'Rodas' },
@@ -82,9 +81,7 @@ export default function ProductsPage() {
   function filterProducts() {
     let filtered = [...products];
 
-    if (selectedCategory !== 'all') {
-      filtered = filtered.filter((p) => p.category === selectedCategory);
-    }
+    filtered = filtered.filter((p) => p.category === selectedCategory);
 
     if (selectedBrand !== 'all') {
       filtered = filtered.filter((p) => p.brand === selectedBrand);
