@@ -11,11 +11,7 @@ export default function Header({ onNavigate, currentPage }: HeaderProps) {
 
   const menuItems = [
     { id: 'home', label: 'MARCA' },
-    { id: 'solid-cars', label: 'CARROS SÓLIDOS' },
-    { id: 'complete-cars', label: 'CARROS COMPLETOS' },
-    { id: 'wheels', label: 'RODAS' },
-    { id: 'bus-truck', label: 'ÔNIBUS E CAMINHÃO' },
-    { id: 'request-file', label: 'SOLICITAR CRIAÇÃO DE ARQUIVO' },
+    { id: 'products', label: 'ARQUIVOS' },
     { id: 'courses', label: 'CURSOS' },
   ];
 
