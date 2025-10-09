@@ -6,7 +6,7 @@ interface FinalCTAProps {
 
 export default function FinalCTA({ onNavigate }: FinalCTAProps) {
   return (
-    <section className="py-12 sm:py-20">
+    <section className="py-12 sm:py-20 flex items-center" style={{ minHeight: 'calc(12rem + 5rem)' }}>
       <div className="container mx-auto px-4 sm:px-6 text-center max-w-4xl">
         <h2 className="text-3xl sm:text-4xl font-bold text-white mb-6 sm:mb-8">
           Pronto para elevar suas modelagens?

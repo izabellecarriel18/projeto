@@ -34,7 +34,7 @@ export default function Testimonials() {
   }
 
   return (
-    <section className="py-12 sm:py-20">
+    <section className="py-12 sm:py-20 flex items-center" style={{ minHeight: 'calc(12rem + 5rem)' }}>
       <div className="container mx-auto px-4 sm:px-6 max-w-5xl">
         <h2 className="text-3xl sm:text-4xl font-bold text-white text-center mb-8 sm:mb-12">
           Depoimentos
