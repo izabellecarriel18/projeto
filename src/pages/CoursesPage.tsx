@@ -35,8 +35,8 @@ const faqs = [
     answer: 'Este curso é recomendado para iniciantes e intermediários que desejam aprimorar suas habilidades em modelagem automotiva 3D.',
   },
   {
-    question: 'Quais softwares são usados?',
-    answer: 'Os principais softwares utilizados são Blender, Maya, 3ds Max e ZBrush, com foco em técnicas profissionais do mercado.',
+    question: 'O que aprendo no curso?',
+    answer: 'O curso te ensina modelagem 3D, que serve para impressão, jogos ou renderização.',
   },
   {
     question: 'Os cursos oferecem certificado?',
