@@ -7,6 +7,18 @@ interface HeroProps {
 export default function Hero({ onNavigate }: HeroProps) {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden px-4 py-20 sm:py-0">
+      <div
+        className="absolute inset-0 z-0"
+        style={{
+          backgroundImage: 'url(https://i.imgur.com/HtRfEMb.jpeg)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+        }}
+      >
+        <div className="absolute inset-0 bg-black/60" />
+      </div>
+
       <div className="relative z-10 container mx-auto px-4 sm:px-6 text-center">
         <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-bold text-white mb-4 sm:mb-6 leading-tight">
           Domine a Modelagem 3D
