@@ -21,11 +21,11 @@ export default function AuthorityProof() {
           Provas de Autoridade
         </h2>
         <div className="md:hidden overflow-x-auto scrollbar-hide px-4">
-          <div className="flex gap-4 pb-4" style={{ width: 'max-content' }}>
+          <div className="flex gap-4 py-4" style={{ width: 'max-content', paddingLeft: '4px', paddingRight: '4px' }}>
             {metrics.map((metric, index) => (
               <div
                 key={index}
-                className="bg-red-600/10 backdrop-blur-sm border-2 border-red-600 rounded-2xl p-8 text-center hover:scale-105 transition-all flex-shrink-0"
+                className="bg-red-600/10 backdrop-blur-sm border-2 border-red-600 rounded-2xl p-8 text-center flex-shrink-0"
                 style={{ width: '280px' }}
               >
                 <div className="text-5xl font-bold text-red-600 mb-3">{metric.value}</div>
