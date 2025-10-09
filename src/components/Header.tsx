@@ -11,7 +11,7 @@ interface HeaderProps {
 export default function Header({ onNavigate, currentPage }: HeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [authModalOpen, setAuthModalOpen] = useState(false);
-  const { profile, signOut } = useAuth();
+  const { user, profile, loading, signOut } = useAuth();
 
   const menuItems = [
     { id: 'home', label: 'MARCA' },
@@ -61,27 +61,31 @@ export default function Header({ onNavigate, currentPage }: HeaderProps) {
           ))}
         </nav>
 
-        {profile ? (
-          <div className="hidden lg:flex items-center gap-4">
-            <span className="text-sm font-medium text-white">
-              Olá, <span className="text-red-600">{profile.name}</span>
-            </span>
-            <button
-              onClick={signOut}
-              className="flex items-center gap-2 text-white hover:text-red-600 transition-colors"
-            >
-              <LogOut className="w-5 h-5" />
-              <span className="text-sm font-medium">SAIR</span>
-            </button>
-          </div>
-        ) : (
-          <button
-            onClick={() => setAuthModalOpen(true)}
-            className="hidden lg:flex items-center gap-2 text-white hover:text-red-600 transition-colors"
-          >
-            <User className="w-5 h-5" />
-            <span className="text-sm font-medium">LOGIN</span>
-          </button>
+        {!loading && (
+          <>
+            {user && profile ? (
+              <div className="hidden lg:flex items-center gap-4">
+                <span className="text-sm font-medium text-white">
+                  Olá, <span className="text-red-600">{profile.name}</span>
+                </span>
+                <button
+                  onClick={signOut}
+                  className="flex items-center gap-2 text-white hover:text-red-600 transition-colors"
+                >
+                  <LogOut className="w-5 h-5" />
+                  <span className="text-sm font-medium">SAIR</span>
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={() => setAuthModalOpen(true)}
+                className="hidden lg:flex items-center gap-2 text-white hover:text-red-600 transition-colors"
+              >
+                <User className="w-5 h-5" />
+                <span className="text-sm font-medium">LOGIN</span>
+              </button>
+            )}
+          </>
         )}
 
         {mobileMenuOpen && (
@@ -100,7 +104,7 @@ export default function Header({ onNavigate, currentPage }: HeaderProps) {
                   {item.label}
                 </button>
               ))}
-              {profile ? (
+              {user && profile ? (
                 <>
                   <div className="flex items-center justify-center gap-2 text-white py-6 w-full border-b border-gray-700">
                     <span className="text-lg font-medium">
