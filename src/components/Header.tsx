@@ -1,4 +1,4 @@
-import { Car } from 'lucide-react';
+import { Zap } from 'lucide-react';
 
 interface HeaderProps {
   onNavigate: (page: string) => void;
@@ -13,9 +13,9 @@ export default function Header({ onNavigate, currentPage }: HeaderProps) {
           className="flex items-center gap-2 cursor-pointer"
           onClick={() => onNavigate('home')}
         >
-          <Car className="w-8 h-8 text-red-600" />
+          <Zap className="w-8 h-8 text-red-600" />
           <span className="text-xl font-bold text-white tracking-wider">
-            ULTIMATECARS<span className="text-red-600">3D</span>
+            ULTIMATECAR<span className="text-red-600">3D</span>
           </span>
         </div>
 
