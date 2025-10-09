@@ -2,14 +2,6 @@ import { Search, ShoppingCart } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
-import EditableImage from '../components/EditableImage';
-
-interface SiteImage {
-  slot_id: string;
-  image_url: string | null;
-  default_url: string;
-  description: string;
-}
 
 interface Product {
   id: string;
@@ -24,7 +16,6 @@ interface Product {
 export default function ProductsPage() {
   const { profile } = useAuth();
   const [products, setProducts] = useState<Product[]>([]);
-  const [galleryImages, setGalleryImages] = useState<SiteImage[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>('solid_cars');
   const [selectedBrand, setSelectedBrand] = useState<string>('all');
@@ -145,7 +136,6 @@ export default function ProductsPage() {
 
   useEffect(() => {
     loadProducts();
-    loadGalleryImages();
   }, []);
 
   useEffect(() => {
@@ -160,18 +150,6 @@ export default function ProductsPage() {
 
     if (data) {
       setProducts(data);
-    }
-  }
-
-  async function loadGalleryImages() {
-    const { data } = await supabase
-      .from('site_images')
-      .select('*')
-      .in('slot_id', ['product_gallery_1', 'product_gallery_2', 'product_gallery_3'])
-      .order('slot_id', { ascending: true });
-
-    if (data) {
-      setGalleryImages(data);
     }
   }
 
@@ -205,28 +183,6 @@ export default function ProductsPage() {
           </p>
         </div>
 
-        {isAdmin && galleryImages.length > 0 && (
-          <div className="mb-8 sm:mb-12">
-            <h2 className="text-2xl sm:text-3xl font-bold text-white mb-6 text-center">Galeria de Produtos (Admin)</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {galleryImages.map((img) => (
-                <div key={img.slot_id} className="backdrop-blur border border-gray-800 rounded-lg overflow-hidden hover:border-red-600 transition-all">
-                  <EditableImage
-                    slotId={img.slot_id}
-                    currentUrl={img.image_url || img.default_url}
-                    isAdmin={isAdmin}
-                    onUpdate={loadGalleryImages}
-                    className="aspect-video bg-gray-800"
-                    alt={img.description}
-                  />
-                  <div className="p-4">
-                    <p className="text-gray-400 text-sm text-center">{img.description}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
 
         <div className="backdrop-blur border border-gray-800 rounded-lg p-4 sm:p-6 mb-8 sm:mb-12">
           <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
