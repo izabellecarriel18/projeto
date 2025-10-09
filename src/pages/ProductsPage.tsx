@@ -1,16 +1,14 @@
-import { Search, ShoppingCart, Plus, Trash2 } from 'lucide-react';
+import { Search, ShoppingCart } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
-import ImageUploadModal from '../components/ImageUploadModal';
+import EditableImage from '../components/EditableImage';
 
-interface ProductImage {
-  id: string;
-  title: string;
+interface SiteImage {
+  slot_id: string;
+  image_url: string | null;
+  default_url: string;
   description: string;
-  image_url: string;
-  order_index: number;
-  created_at: string;
 }
 
 interface Product {
@@ -26,12 +24,11 @@ interface Product {
 export default function ProductsPage() {
   const { profile } = useAuth();
   const [products, setProducts] = useState<Product[]>([]);
-  const [productImages, setProductImages] = useState<ProductImage[]>([]);
+  const [galleryImages, setGalleryImages] = useState<SiteImage[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>('solid_cars');
   const [selectedBrand, setSelectedBrand] = useState<string>('all');
   const [searchTerm, setSearchTerm] = useState<string>('');
-  const [showUploadModal, setShowUploadModal] = useState(false);
   const isAdmin = profile?.role === 'admin';
 
   const categories = [
@@ -148,7 +145,7 @@ export default function ProductsPage() {
 
   useEffect(() => {
     loadProducts();
-    loadProductImages();
+    loadGalleryImages();
   }, []);
 
   useEffect(() => {
@@ -166,36 +163,15 @@ export default function ProductsPage() {
     }
   }
 
-  async function loadProductImages() {
+  async function loadGalleryImages() {
     const { data } = await supabase
-      .from('product_images')
+      .from('site_images')
       .select('*')
-      .order('order_index', { ascending: true });
+      .in('slot_id', ['product_gallery_1', 'product_gallery_2', 'product_gallery_3'])
+      .order('slot_id', { ascending: true });
 
     if (data) {
-      setProductImages(data);
-    }
-  }
-
-  async function deleteProductImage(id: string, imageUrl: string) {
-    if (!confirm('Tem certeza que deseja deletar esta imagem?')) return;
-
-    try {
-      const filePath = imageUrl.split('/').slice(-2).join('/');
-
-      await supabase.storage.from('images').remove([filePath]);
-
-      const { error } = await supabase
-        .from('product_images')
-        .delete()
-        .eq('id', id);
-
-      if (error) throw error;
-
-      loadProductImages();
-    } catch (error) {
-      console.error('Error deleting image:', error);
-      alert('Erro ao deletar imagem');
+      setGalleryImages(data);
     }
   }
 
@@ -229,61 +205,26 @@ export default function ProductsPage() {
           </p>
         </div>
 
-        {productImages.length > 0 && (
-          <div className="mb-8 sm:mb-12">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl sm:text-3xl font-bold text-white">Galeria de Produtos</h2>
-              {isAdmin && (
-                <button
-                  onClick={() => setShowUploadModal(true)}
-                  className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-semibold flex items-center gap-2 transition-all"
-                >
-                  <Plus className="w-5 h-5" />
-                  Adicionar Imagem
-                </button>
-              )}
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {productImages.map((img) => (
-                <div key={img.id} className="relative backdrop-blur border border-gray-800 rounded-lg overflow-hidden hover:border-red-600 transition-all group">
-                  <div className="aspect-video bg-gray-800 overflow-hidden">
-                    <img
-                      src={img.image_url}
-                      alt={img.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform"
-                    />
-                  </div>
-                  <div className="p-4">
-                    <h3 className="text-white font-semibold text-lg mb-1">{img.title}</h3>
-                    {img.description && (
-                      <p className="text-gray-400 text-sm">{img.description}</p>
-                    )}
-                  </div>
-                  {isAdmin && (
-                    <button
-                      onClick={() => deleteProductImage(img.id, img.image_url)}
-                      className="absolute top-3 right-3 bg-red-600 hover:bg-red-700 text-white p-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                  )}
+        <div className="mb-8 sm:mb-12">
+          <h2 className="text-2xl sm:text-3xl font-bold text-white mb-6 text-center">Galeria de Produtos</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {galleryImages.map((img) => (
+              <div key={img.slot_id} className="backdrop-blur border border-gray-800 rounded-lg overflow-hidden hover:border-red-600 transition-all">
+                <EditableImage
+                  slotId={img.slot_id}
+                  currentUrl={img.image_url || img.default_url}
+                  isAdmin={isAdmin}
+                  onUpdate={loadGalleryImages}
+                  className="aspect-video bg-gray-800"
+                  alt={img.description}
+                />
+                <div className="p-4">
+                  <p className="text-gray-400 text-sm text-center">{img.description}</p>
                 </div>
-              ))}
-            </div>
+              </div>
+            ))}
           </div>
-        )}
-
-        {isAdmin && productImages.length === 0 && (
-          <div className="mb-8 sm:mb-12 text-center">
-            <button
-              onClick={() => setShowUploadModal(true)}
-              className="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-semibold flex items-center gap-2 mx-auto transition-all"
-            >
-              <Plus className="w-5 h-5" />
-              Adicionar Primeira Imagem
-            </button>
-          </div>
-        )}
+        </div>
 
         <div className="backdrop-blur border border-gray-800 rounded-lg p-4 sm:p-6 mb-8 sm:mb-12">
           <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
@@ -456,13 +397,6 @@ export default function ProductsPage() {
           </div>
         )}
       </div>
-
-      <ImageUploadModal
-        isOpen={showUploadModal}
-        onClose={() => setShowUploadModal(false)}
-        type="product"
-        onSuccess={loadProductImages}
-      />
     </div>
   );
 }

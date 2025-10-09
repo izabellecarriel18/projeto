@@ -1,23 +1,43 @@
 import { ArrowRight } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { supabase } from '../lib/supabase';
+import { useAuth } from '../contexts/AuthContext';
+import EditableBackgroundImage from './EditableBackgroundImage';
 
 interface HeroProps {
   onNavigate: (page: string) => void;
 }
 
 export default function Hero({ onNavigate }: HeroProps) {
+  const { profile } = useAuth();
+  const [heroImage, setHeroImage] = useState<string>('https://i.imgur.com/HtRfEMb.jpeg');
+  const isAdmin = profile?.role === 'admin';
+
+  useEffect(() => {
+    loadHeroImage();
+  }, []);
+
+  async function loadHeroImage() {
+    const { data } = await supabase
+      .from('site_images')
+      .select('image_url, default_url')
+      .eq('slot_id', 'hero_bg')
+      .maybeSingle();
+
+    if (data) {
+      setHeroImage(data.image_url || data.default_url);
+    }
+  }
+
   return (
-    <section className="relative flex items-center justify-center overflow-hidden px-4" style={{ minHeight: '75vh' }}>
-      <div
-        className="absolute inset-0 z-0"
-        style={{
-          backgroundImage: 'url(https://i.imgur.com/HtRfEMb.jpeg)',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat',
-        }}
-      >
-        <div className="absolute inset-0 bg-black/60" />
-      </div>
+    <EditableBackgroundImage
+      slotId="hero_bg"
+      currentUrl={heroImage}
+      isAdmin={isAdmin}
+      onUpdate={loadHeroImage}
+      className="flex items-center justify-center overflow-hidden px-4"
+      style={{ minHeight: '75vh' }}
+    >
 
       <div className="relative z-10 container mx-auto px-4 sm:px-6 text-center">
         <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-bold text-white mb-4 sm:mb-6 leading-tight">
@@ -46,6 +66,6 @@ export default function Hero({ onNavigate }: HeroProps) {
           </button>
         </div>
       </div>
-    </section>
+    </EditableBackgroundImage>
   );
 }

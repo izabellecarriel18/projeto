@@ -1,6 +1,30 @@
 import { Shield, Zap, Headphones } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { supabase } from '../lib/supabase';
+import { useAuth } from '../contexts/AuthContext';
+import EditableBackgroundImage from './EditableBackgroundImage';
 
 export default function Differentials() {
+  const { profile } = useAuth();
+  const [differentialsImage, setDifferentialsImage] = useState<string>('https://i.imgur.com/nHXjTtQ.jpg');
+  const isAdmin = profile?.role === 'admin';
+
+  useEffect(() => {
+    loadDifferentialsImage();
+  }, []);
+
+  async function loadDifferentialsImage() {
+    const { data } = await supabase
+      .from('site_images')
+      .select('image_url, default_url')
+      .eq('slot_id', 'differentials_bg')
+      .maybeSingle();
+
+    if (data) {
+      setDifferentialsImage(data.image_url || data.default_url);
+    }
+  }
+
   const differentials = [
     {
       icon: Shield,
@@ -23,11 +47,14 @@ export default function Differentials() {
   ];
 
   return (
-    <section
-      className="py-12 sm:py-20 relative bg-cover bg-center bg-no-repeat flex items-center"
-      style={{ backgroundImage: 'url(https://i.imgur.com/nHXjTtQ.jpg)', minHeight: '67.5vh' }}
+    <EditableBackgroundImage
+      slotId="differentials_bg"
+      currentUrl={differentialsImage}
+      isAdmin={isAdmin}
+      onUpdate={loadDifferentialsImage}
+      className="py-12 sm:py-20 flex items-center"
+      style={{ minHeight: '67.5vh' }}
     >
-      <div className="absolute inset-0 bg-black/70"></div>
       <div className="relative z-10 max-w-4xl mx-auto w-full">
         <h2 className="text-3xl sm:text-4xl font-bold text-white text-center mb-8 sm:mb-12 px-4">
           Diferenciais
@@ -71,6 +98,6 @@ export default function Differentials() {
           </div>
         </div>
       </div>
-    </section>
+    </EditableBackgroundImage>
   );
 }
