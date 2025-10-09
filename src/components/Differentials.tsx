@@ -23,8 +23,12 @@ export default function Differentials() {
   ];
 
   return (
-    <section className="py-12 sm:py-20">
-      <div className="container mx-auto px-4 sm:px-6">
+    <section
+      className="py-12 sm:py-20 relative bg-cover bg-center bg-no-repeat"
+      style={{ backgroundImage: 'url(https://i.imgur.com/nHXjTtQ.jpg)' }}
+    >
+      <div className="absolute inset-0 bg-black/70"></div>
+      <div className="container mx-auto px-4 sm:px-6 relative z-10">
         <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white text-center mb-8 sm:mb-16">
           Diferenciais
         </h2>
