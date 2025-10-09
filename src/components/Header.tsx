@@ -28,7 +28,7 @@ export default function Header({ onNavigate, currentPage }: HeaderProps) {
                 : 'text-gray-300 hover:text-white'
             }`}
           >
-            Marca
+            MARCA
           </button>
           <button
             onClick={() => onNavigate('solid-cars')}
@@ -38,7 +38,7 @@ export default function Header({ onNavigate, currentPage }: HeaderProps) {
                 : 'text-gray-300 hover:text-white'
             }`}
           >
-            Carros Sólidos
+            CARROS SÓLIDOS
           </button>
           <button
             onClick={() => onNavigate('complete-cars')}
@@ -48,7 +48,7 @@ export default function Header({ onNavigate, currentPage }: HeaderProps) {
                 : 'text-gray-300 hover:text-white'
             }`}
           >
-            Carros Completos
+            CARROS COMPLETOS
           </button>
           <button
             onClick={() => onNavigate('wheels')}
@@ -58,7 +58,7 @@ export default function Header({ onNavigate, currentPage }: HeaderProps) {
                 : 'text-gray-300 hover:text-white'
             }`}
           >
-            Rodas
+            RODAS
           </button>
           <button
             onClick={() => onNavigate('bus-truck')}
@@ -68,7 +68,7 @@ export default function Header({ onNavigate, currentPage }: HeaderProps) {
                 : 'text-gray-300 hover:text-white'
             }`}
           >
-            Ônibus e Caminhão
+            ÔNIBUS E CAMINHÃO
           </button>
           <button
             onClick={() => onNavigate('request-file')}
@@ -78,7 +78,7 @@ export default function Header({ onNavigate, currentPage }: HeaderProps) {
                 : 'text-gray-300 hover:text-white'
             }`}
           >
-            Solicitar Criação de Arquivo
+            SOLICITAR CRIAÇÃO DE ARQUIVO
           </button>
           <button
             onClick={() => onNavigate('courses')}
@@ -88,7 +88,7 @@ export default function Header({ onNavigate, currentPage }: HeaderProps) {
                 : 'text-gray-300 hover:text-white'
             }`}
           >
-            Cursos
+            CURSOS
           </button>
         </nav>
       </div>
