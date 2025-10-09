@@ -28,12 +28,12 @@ export default function Differentials() {
       style={{ backgroundImage: 'url(https://i.imgur.com/nHXjTtQ.jpg)' }}
     >
       <div className="absolute inset-0 bg-black/70"></div>
-      <div className="container mx-auto px-4 sm:px-6 relative z-10">
-        <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white text-center mb-8 sm:mb-16">
+      <div className="container mx-auto px-4 sm:px-6 relative z-10 max-w-4xl">
+        <h2 className="text-3xl sm:text-4xl font-bold text-white text-center mb-8 sm:mb-12">
           Diferenciais
         </h2>
 
-        <div className="space-y-4 sm:space-y-8">
+        <div className="space-y-4 sm:space-y-6">
           {differentials.map((item, index) => (
             <div
               key={index}

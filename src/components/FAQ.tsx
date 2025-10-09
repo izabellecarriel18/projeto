@@ -43,12 +43,12 @@ export default function FAQ({ category = 'general' }: FAQProps) {
       style={{ backgroundImage: 'url(https://i.imgur.com/6FLvE4U.jpg)' }}
     >
       <div className="absolute inset-0 bg-black/70"></div>
-      <div className="container mx-auto px-4 sm:px-6 relative z-10">
-        <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white text-center mb-8 sm:mb-16">
-          Perguntas Frequentes
+      <div className="container mx-auto px-4 sm:px-6 relative z-10 max-w-4xl">
+        <h2 className="text-3xl sm:text-4xl font-bold text-white text-center mb-8 sm:mb-12">
+          FAQ
         </h2>
 
-        <div className="max-w-3xl mx-auto space-y-4">
+        <div className="max-w-2xl mx-auto space-y-3">
           {faqs.map((faq, index) => (
             <div
               key={faq.id}
