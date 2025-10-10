@@ -85,7 +85,7 @@ export default function EditableBackgroundImage({
       </div>
 
       {isAdmin && (
-        <div className="absolute top-4 right-4 z-20">
+        <div className="absolute top-28 right-4 z-20">
           {uploading ? (
             <div className="bg-black/80 text-white px-4 py-2 rounded-lg flex items-center gap-2">
               <Loader2 className="w-4 h-4 animate-spin" />
