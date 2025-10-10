@@ -168,7 +168,8 @@ export default function ProductsPage() {
     if (selectedBrand !== 'all') {
       filtered = filtered.filter((p) => {
         const productBrand = (p.brand || '').toUpperCase();
-        return productBrand === selectedBrand;
+        const filterBrand = selectedBrand.toUpperCase();
+        return productBrand === filterBrand;
       });
     }
 
