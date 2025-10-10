@@ -143,12 +143,22 @@ export default function ProductsPage() {
   }, [products, selectedCategory, selectedBrand, searchTerm]);
 
   async function loadProducts() {
-    const { data } = await supabase
+    console.log('=== LOADING PRODUCTS ===');
+    const { data, error } = await supabase
       .from('products')
       .select('*')
       .order('created_at', { ascending: false });
 
+    console.log('Supabase response - data:', data);
+    console.log('Supabase response - error:', error);
+
+    if (error) {
+      console.error('Error loading products:', error);
+      return;
+    }
+
     if (data) {
+      console.log('Setting products, count:', data.length);
       setProducts(data);
     }
   }
