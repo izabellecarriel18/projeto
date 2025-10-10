@@ -375,8 +375,11 @@ export default function ProductsPage() {
                     <div className="text-white font-bold text-2xl mb-3">
                       R$ {product.price.toFixed(2).replace('.', ',')}
                     </div>
-                    <button className="w-full bg-red-600 hover:bg-red-700 text-white py-3 rounded-lg font-bold text-sm transition-all">
-                      Adicionar
+                    <button
+                      onClick={() => window.open(product.purchase_url || '#', '_blank')}
+                      className="w-full bg-red-600 hover:bg-red-700 text-white py-3 rounded-lg font-bold text-sm transition-all cursor-pointer"
+                    >
+                      Comprar
                     </button>
                   </div>
                 </div>
