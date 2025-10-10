@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { GlareCard } from './GlareCard';
 import { supabase } from '../lib/supabase';
 
@@ -18,9 +18,12 @@ interface ProductCardProps {
   product: Product;
 }
 
+const generatingCache = new Set<string>();
+
 export function ProductCard({ product }: ProductCardProps) {
   const [description, setDescription] = useState(product.description || '');
   const [isGenerating, setIsGenerating] = useState(false);
+  const hasChecked = useRef(false);
 
   const isValidDescription = (desc: string | null | undefined): boolean => {
     if (!desc || desc.trim() === '') return false;
@@ -29,6 +32,9 @@ export function ProductCard({ product }: ProductCardProps) {
   };
 
   useEffect(() => {
+    if (hasChecked.current) return;
+    hasChecked.current = true;
+
     const checkAndGenerate = async () => {
       if (isValidDescription(product.description)) {
         setDescription(product.description!);
@@ -49,11 +55,12 @@ export function ProductCard({ product }: ProductCardProps) {
     };
 
     checkAndGenerate();
-  }, [product.id]);
+  }, []);
 
   async function generateDescription() {
-    if (isGenerating) return;
+    if (isGenerating || generatingCache.has(product.id)) return;
 
+    generatingCache.add(product.id);
     setIsGenerating(true);
 
     try {
@@ -98,6 +105,7 @@ export function ProductCard({ product }: ProductCardProps) {
       console.error('Error generating description:', error);
       const fallbackDesc = `Modelo 3D do ${product.name} para impressão. Detalhes precisos e alta qualidade.`;
       setDescription(fallbackDesc);
+      generatingCache.delete(product.id);
     } finally {
       setIsGenerating(false);
     }
