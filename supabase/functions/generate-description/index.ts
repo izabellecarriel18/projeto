@@ -27,29 +27,23 @@ Deno.serve(async (req: Request) => {
       throw new Error("OpenAI API key not configured");
     }
 
-    const categoryContext = {
-      solid_cars: "carro esportivo de luxo",
-      complete_cars: "veículo premium com acabamento sofisticado",
-      wheels: "roda de alta performance",
-      bus_truck: "veículo comercial robusto",
-    };
-
-    const prompt = `Crie uma descrição atrativa e convincente em DUAS LINHAS CURTAS (máximo 120 caracteres) sobre o veículo:
+    const prompt = `Crie uma descrição histórica e interessante sobre o veículo em até 3 linhas:
 
 Veículo: ${productName}
-Categoria: ${categoryContext[category as keyof typeof categoryContext] || "veículo"}
 
 Requisitos OBRIGATÓRIOS:
-- Máximo 2 linhas curtas (120 caracteres total)
-- Fale APENAS sobre as características do CARRO/VEÍCULO
-- Destaque design, performance, elegância, estilo, tecnologia
+- Conte a história do veículo de forma natural e fluida
+- Mencione ano de criação, propósito/contexto histórico, características marcantes
+- Escreva como se estivesse contando uma história sobre o carro
+- Use tom informativo e envolvente, não promocional
 - NÃO mencione "impressão 3D", "STL", "formato", "modelo 3D"
-- NÃO use "modelo 3D detalhado do"
-- NÃO fale sobre "linhas" do carro (linhas esportivas, linhas aerodinâmicas, etc)
-- Seja específico sobre estética e atributos do veículo
-- Use linguagem persuasiva focada no automóvel
+- NÃO fale sobre "linhas" do carro
+- NÃO use frases genéricas de marketing
+- Seja natural e autêntico
 
-Exemplo: "Design aerodinâmico com acabamento sofisticado. Veículo premium que une elegância e potência."`;
+Exemplos do estilo desejado:
+"Lançado em 1996, o Audi A3 foi criado para competir no segmento premium compacto. Combina tecnologia Quattro com design sofisticado e motor turbo eficiente."
+"O S3 surgiu em 1999 como versão esportiva do A3, desenvolvido para entusiastas que buscavam performance sem abrir mão do conforto diário."`;
 
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
@@ -62,7 +56,7 @@ Exemplo: "Design aerodinâmico com acabamento sofisticado. Veículo premium que 
         messages: [
           {
             role: "system",
-            content: "Você é um especialista automotivo que cria descrições sobre veículos focando em suas características, design e performance. Nunca mencione impressão 3D ou formatos de arquivo."
+            content: "Você é um historiador automotivo que conta histórias fascinantes sobre veículos. Foque em contexto histórico, ano de criação, propósito original e características marcantes. Seja natural e informativo, não promocional."
           },
           {
             role: "user",
