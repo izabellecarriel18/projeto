@@ -31,15 +31,17 @@ Deno.serve(async (req: Request) => {
 
 Veículo: ${productName}
 
-ESTRUTURA OBRIGATÓRIA (máximo 240 caracteres total):
+ESTRUTURA OBRIGATÓRIA:
+- LIMITE CRÍTICO: MÁXIMO 330 caracteres (incluindo espaços e pontuação)
+- NÃO PODE PASSAR de 330 caracteres de forma alguma
 
-PARTE 1 (primeiras 3 linhas - ±120 caracteres):
+PARTE 1 (primeiras 4 linhas - ±165 caracteres):
 - História do veículo com dados técnicos específicos
 - Ano, motores, potência, torque, aceleração
 - Tecnologias exclusivas e curiosidades técnicas
 - Tom informativo e apaixonado
 
-PARTE 2 (últimas 3 linhas - ±120 caracteres):
+PARTE 2 (últimas 3 linhas - ±165 caracteres):
 - Call-to-action direto para compra
 - Frases como: "Modelo rico em detalhes pronto para sua coleção", "Adicione este ícone à sua coleção hoje", "Perfeito para entusiastas e colecionadores"
 - Crie urgência e desejo de posse
@@ -47,8 +49,8 @@ PARTE 2 (últimas 3 linhas - ±120 caracteres):
 
 NÃO mencione: "impressão 3D", "STL", "formato", "arquivo"
 
-Exemplo da estrutura ideal:
-"O Audi A3 (8Y, 2020-presente) vem com motor 2.0 TFSI, 190 cv a 4200 rpm e 320 Nm, acelerando 0-100 km/h em 6.8s. Possui MMI Touch e tração Quattro Ultra. Modelo rico em detalhes, perfeito para sua coleção de miniaturas premium!`;
+Exemplo da estrutura ideal (330 chars):
+"O Audi A3 (8Y, 2020-presente) vem com motor 2.0 TFSI, 190 cv a 4200 rpm e 320 Nm, acelerando 0-100 km/h em 6.8s. Equipado com MMI Touch e tração Quattro Ultra, é exemplo de tecnologia e sofisticação. Um verdadeiro ícone da engenharia alemã! Modelo rico em detalhes pronto para sua coleção de miniaturas premium!`;
 
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
@@ -61,7 +63,7 @@ Exemplo da estrutura ideal:
         messages: [
           {
             role: "system",
-            content: "Você é um vendedor especialista em carros de luxo. Escreva em DUAS PARTES: 1) História técnica com dados reais (ano, motor, potência, aceleração) - 120 chars. 2) Call-to-action persuasivo para compra com frases como 'perfeito para sua coleção', 'adicione este ícone hoje' - 120 chars. Total: 240 caracteres. Cada descrição deve ser única e fazer o leitor querer comprar AGORA!"
+            content: "Você é um vendedor especialista em carros de luxo. CRÍTICO: MÁXIMO 330 caracteres TOTAL (não passe disso de forma alguma!). Escreva em DUAS PARTES: 1) História técnica com dados reais (ano, motor, potência, aceleração) - 165 chars. 2) Call-to-action persuasivo para compra com frases como 'perfeito para sua coleção', 'modelo rico em detalhes' - 165 chars. Cada descrição deve ser única e fazer o leitor querer comprar AGORA!"
           },
           {
             role: "user",
@@ -69,7 +71,7 @@ Exemplo da estrutura ideal:
           }
         ],
         temperature: 0.9,
-        max_tokens: 100,
+        max_tokens: 120,
       }),
     });
 
