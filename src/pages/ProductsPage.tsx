@@ -2,7 +2,7 @@ import { Search, ShoppingCart } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
-import { GlareCard } from '../components/GlareCard';
+import { ProductCard } from '../components/ProductCard';
 
 interface Product {
   id: string;
@@ -355,35 +355,7 @@ export default function ProductsPage() {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 sm:gap-10">
             {filteredProducts.map((product) => (
-              <GlareCard key={product.id}>
-                <div className="flex flex-col bg-slate-950">
-                  <div className="aspect-[16/11] bg-gray-900 overflow-hidden">
-                    <img
-                      src={product.image_url}
-                      alt={product.name}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <div className="flex flex-col p-5">
-                    <h3 className="text-white font-bold text-lg mb-1">{product.name}</h3>
-                    <p className="text-gray-400 text-xs mb-2 uppercase tracking-wide">
-                      {product.formats.join(' , ')}
-                    </p>
-                    <p className="text-gray-300 text-sm leading-snug mb-3 line-clamp-2">
-                      {product.description || `Modelo 3D detalhado do ${product.name}`}
-                    </p>
-                    <div className="text-white font-bold text-2xl mb-3">
-                      R$ {product.price.toFixed(2).replace('.', ',')}
-                    </div>
-                    <button
-                      onClick={() => window.open(product.purchase_url || '#', '_blank')}
-                      className="w-full bg-red-600 hover:bg-red-700 text-white py-3 rounded-lg font-bold text-sm transition-all cursor-pointer"
-                    >
-                      Comprar
-                    </button>
-                  </div>
-                </div>
-              </GlareCard>
+              <ProductCard key={product.id} product={product} />
             ))}
           </div>
         )}
