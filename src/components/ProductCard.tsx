@@ -24,16 +24,31 @@ export function ProductCard({ product }: ProductCardProps) {
 
   const isValidDescription = (desc: string | null | undefined): boolean => {
     if (!desc || desc.trim() === '') return false;
-    if (desc.includes('Modelo 3D detalhado do')) return false;
+    if (desc.startsWith('Modelo 3D detalhado do')) return false;
     return true;
   };
 
   useEffect(() => {
-    if (isValidDescription(product.description)) {
-      setDescription(product.description!);
-    } else {
-      generateDescription();
-    }
+    const checkAndGenerate = async () => {
+      if (isValidDescription(product.description)) {
+        setDescription(product.description!);
+        return;
+      }
+
+      const { data: freshProduct } = await supabase
+        .from('products')
+        .select('description')
+        .eq('id', product.id)
+        .maybeSingle();
+
+      if (isValidDescription(freshProduct?.description)) {
+        setDescription(freshProduct.description);
+      } else {
+        generateDescription();
+      }
+    };
+
+    checkAndGenerate();
   }, [product.id]);
 
   async function generateDescription() {
@@ -42,21 +57,7 @@ export function ProductCard({ product }: ProductCardProps) {
     setIsGenerating(true);
 
     try {
-      const { data: freshProduct, error: fetchError } = await supabase
-        .from('products')
-        .select('description')
-        .eq('id', product.id)
-        .maybeSingle();
-
-      if (fetchError) {
-        throw fetchError;
-      }
-
-      if (isValidDescription(freshProduct?.description)) {
-        setDescription(freshProduct.description);
-        setIsGenerating(false);
-        return;
-      }
+      console.log(`[${product.name}] Iniciando geração de descrição...`);
 
       const apiUrl = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/generate-description`;
 
@@ -79,6 +80,8 @@ export function ProductCard({ product }: ProductCardProps) {
       const data = await response.json();
       const newDescription = data.description;
 
+      console.log(`[${product.name}] Descrição gerada:`, newDescription);
+
       setDescription(newDescription);
 
       const { error } = await supabase
@@ -88,6 +91,8 @@ export function ProductCard({ product }: ProductCardProps) {
 
       if (error) {
         console.error('Error updating product description:', error);
+      } else {
+        console.log(`[${product.name}] Descrição salva no banco de dados`);
       }
     } catch (error) {
       console.error('Error generating description:', error);
