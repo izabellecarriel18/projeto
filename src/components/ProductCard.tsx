@@ -136,7 +136,7 @@ export function ProductCard({ product }: ProductCardProps) {
           <p className="text-gray-400 text-xs mb-2 uppercase tracking-wide">
             {product.formats.join(' , ')}
           </p>
-          <p className="text-gray-300 text-sm leading-snug mb-3 line-clamp-3">
+          <p className="text-gray-300 text-sm leading-snug mb-3 line-clamp-4">
             {isGenerating ? 'Gerando descrição...' : description}
           </p>
           <div className="text-white font-bold text-2xl mb-3">
