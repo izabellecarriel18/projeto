@@ -27,11 +27,12 @@ Deno.serve(async (req: Request) => {
       throw new Error("OpenAI API key not configured");
     }
 
-    const prompt = `Crie uma descrição histórica e interessante sobre o veículo em até 3 linhas:
+    const prompt = `Crie uma descrição histórica e interessante sobre o veículo:
 
 Veículo: ${productName}
 
 Requisitos OBRIGATÓRIOS:
+- LIMITE MÁXIMO: 280 caracteres (incluindo espaços e pontuação)
 - Conte a história do veículo de forma natural e fluida
 - Mencione ano de criação, propósito/contexto histórico, características marcantes
 - Escreva como se estivesse contando uma história sobre o carro
@@ -40,8 +41,9 @@ Requisitos OBRIGATÓRIOS:
 - NÃO fale sobre "linhas" do carro
 - NÃO use frases genéricas de marketing
 - Seja natural e autêntico
+- A descrição deve caber em exatamente 6 linhas quando exibida, então use NO MÁXIMO 280 caracteres
 
-Exemplos do estilo desejado:
+Exemplos do estilo desejado (com limite de caracteres):
 "Lançado em 1996, o Audi A3 foi criado para competir no segmento premium compacto. Combina tecnologia Quattro com design sofisticado e motor turbo eficiente."
 "O S3 surgiu em 1999 como versão esportiva do A3, desenvolvido para entusiastas que buscavam performance sem abrir mão do conforto diário."`;
 
@@ -56,7 +58,7 @@ Exemplos do estilo desejado:
         messages: [
           {
             role: "system",
-            content: "Você é um historiador automotivo que conta histórias fascinantes sobre veículos. Foque em contexto histórico, ano de criação, propósito original e características marcantes. Seja natural e informativo, não promocional."
+            content: "Você é um historiador automotivo que conta histórias fascinantes sobre veículos. Foque em contexto histórico, ano de criação, propósito original e características marcantes. Seja natural e informativo, não promocional. IMPORTANTE: Suas descrições devem ter NO MÁXIXMO 280 caracteres para caber perfeitamente em 6 linhas de texto."
           },
           {
             role: "user",
