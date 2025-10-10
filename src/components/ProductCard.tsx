@@ -30,6 +30,15 @@ export function ProductCard({ product, onImageUpload }: ProductCardProps) {
   const hasChecked = useRef(false);
   const isAdmin = profile?.role === 'admin';
 
+  console.log('[ProductCard Debug]', {
+    productId: product.id,
+    productName: product.name,
+    profile,
+    isAdmin,
+    onImageUpload: !!onImageUpload,
+    shouldShowButton: isAdmin && onImageUpload
+  });
+
   const isValidDescription = (desc: string | null | undefined): boolean => {
     if (!desc || desc.trim() === '') return false;
     if (desc.startsWith('Modelo 3D detalhado do')) return false;
