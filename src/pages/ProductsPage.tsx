@@ -12,6 +12,7 @@ interface Product {
   image_url: string;
   price: number;
   formats: string[];
+  description?: string;
 }
 
 export default function ProductsPage() {
@@ -355,31 +356,27 @@ export default function ProductsPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 sm:gap-10">
             {filteredProducts.map((product) => (
               <GlareCard key={product.id}>
-                <div className="h-full flex flex-col">
-                  <div className="flex-1 bg-gray-900 overflow-hidden">
+                <div className="h-full flex flex-col bg-slate-950">
+                  <div className="aspect-[4/3] bg-gray-900 overflow-hidden">
                     <img
                       src={product.image_url}
                       alt={product.name}
                       className="w-full h-full object-cover"
                     />
                   </div>
-                  <div className="p-4 sm:p-6 bg-slate-950">
-                    <h3 className="text-white font-semibold text-base sm:text-lg mb-3">{product.name}</h3>
-                    <div className="flex flex-wrap gap-2 mb-4">
-                      {product.formats.map((format) => (
-                        <span
-                          key={format}
-                          className="bg-gray-800/80 text-white text-xs px-2 py-1 rounded backdrop-blur"
-                        >
-                          {format}
-                        </span>
-                      ))}
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-red-500 font-bold text-lg sm:text-xl">
-                        R$ {product.price.toFixed(2)}
-                      </span>
-                      <button className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-semibold text-sm transition-all">
+                  <div className="flex-1 flex flex-col p-6">
+                    <h3 className="text-white font-bold text-xl mb-2">{product.name}</h3>
+                    <p className="text-gray-400 text-sm mb-3 uppercase tracking-wide">
+                      {product.formats.join(' , ')}
+                    </p>
+                    <p className="text-gray-300 text-sm leading-relaxed mb-4 flex-1">
+                      {product.description || `Modelo sólido do ${product.name} para impressão 3D. Compatível com Blender, Maya, 3ds Max. Licença Pessoal/Comercial.`}
+                    </p>
+                    <div className="space-y-3">
+                      <div className="text-white font-bold text-3xl">
+                        R$ {product.price.toFixed(2).replace('.', ',')}
+                      </div>
+                      <button className="w-full bg-red-600 hover:bg-red-700 text-white py-3 rounded-lg font-bold text-base transition-all">
                         Adicionar
                       </button>
                     </div>
