@@ -2,6 +2,7 @@ import { Search, ShoppingCart } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
+import { GlareCard } from '../components/GlareCard';
 
 interface Product {
   id: string;
@@ -351,41 +352,40 @@ export default function ProductsPage() {
             <p className="text-white text-lg sm:text-xl">Nenhum produto encontrado</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 sm:gap-10">
             {filteredProducts.map((product) => (
-              <div
-                key={product.id}
-                className="backdrop-blur border border-gray-800 rounded-lg overflow-hidden hover:border-red-600 transition-all group"
-              >
-                <div className="aspect-video bg-gray-800 overflow-hidden">
-                  <img
-                    src={product.image_url}
-                    alt={product.name}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform"
-                  />
-                </div>
-                <div className="p-3 sm:p-4">
-                  <h3 className="text-white font-semibold text-base sm:text-lg mb-2">{product.name}</h3>
-                  <div className="flex flex-wrap gap-1.5 sm:gap-2 mb-3">
-                    {product.formats.map((format) => (
-                      <span
-                        key={format}
-                        className="bg-gray-800 text-white text-xs px-2 py-1 rounded"
-                      >
-                        {format}
+              <GlareCard key={product.id}>
+                <div className="h-full flex flex-col">
+                  <div className="flex-1 bg-gray-900 overflow-hidden">
+                    <img
+                      src={product.image_url}
+                      alt={product.name}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div className="p-4 sm:p-6 bg-slate-950">
+                    <h3 className="text-white font-semibold text-base sm:text-lg mb-3">{product.name}</h3>
+                    <div className="flex flex-wrap gap-2 mb-4">
+                      {product.formats.map((format) => (
+                        <span
+                          key={format}
+                          className="bg-gray-800/80 text-white text-xs px-2 py-1 rounded backdrop-blur"
+                        >
+                          {format}
+                        </span>
+                      ))}
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-red-500 font-bold text-lg sm:text-xl">
+                        R$ {product.price.toFixed(2)}
                       </span>
-                    ))}
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-red-600 font-bold text-lg sm:text-xl">
-                      R$ {product.price.toFixed(2)}
-                    </span>
-                    <button className="bg-red-600 hover:bg-red-700 text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg font-semibold text-sm sm:text-base transition-all">
-                      Adicionar
-                    </button>
+                      <button className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-semibold text-sm transition-all">
+                        Adicionar
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
+              </GlareCard>
             ))}
           </div>
         )}
