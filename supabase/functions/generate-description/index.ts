@@ -28,28 +28,27 @@ Deno.serve(async (req: Request) => {
     }
 
     const categoryContext = {
-      solid_cars: "modelo sólido para impressão 3D",
-      complete_cars: "modelo completo com interior detalhado para impressão 3D",
-      wheels: "roda detalhada para impressão 3D",
-      bus_truck: "modelo de veículo pesado para impressão 3D",
+      solid_cars: "carro esportivo de luxo",
+      complete_cars: "veículo premium com acabamento sofisticado",
+      wheels: "roda de alta performance",
+      bus_truck: "veículo comercial robusto",
     };
 
-    const prompt = `Crie uma descrição atrativa e convincente em DUAS LINHAS CURTAS (máximo 120 caracteres) para o seguinte produto:
+    const prompt = `Crie uma descrição atrativa e convincente em DUAS LINHAS CURTAS (máximo 120 caracteres) sobre o veículo:
 
-Produto: ${productName}
-Tipo: ${categoryContext[category as keyof typeof categoryContext] || "modelo 3D para impressão"}
+Veículo: ${productName}
+Categoria: ${categoryContext[category as keyof typeof categoryContext] || "veículo"}
 
-Requisitos:
-- Máximo 2 linhas curtas
-- Destaque características únicas do modelo
-- Use linguagem persuasiva e profissional
-- Mencione "impressão 3D" ou "modelo STL"
-- Foque em design, detalhes e qualidade
-- Seja específico sobre o veículo
-- NÃO repita frases genéricas
+Requisitos OBRIGATÓRIOS:
+- Máximo 2 linhas curtas (120 caracteres total)
+- Fale APENAS sobre as características do CARRO/VEÍCULO
+- Destaque design, performance, elegância, estilo
+- NÃO mencione "impressão 3D", "STL", "formato", "modelo 3D"
 - NÃO use "modelo 3D detalhado do"
+- Seja específico sobre estética e atributos do veículo
+- Use linguagem persuasiva focada no automóvel
 
-Exemplo: "Modelo sólido do Audi A3 para impressão 3D. Design esportivo com detalhes precisos."`;
+Exemplo: "Design aerodinâmico com linhas esportivas. Acabamento premium que une elegância e potência."`;
 
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
@@ -62,7 +61,7 @@ Exemplo: "Modelo sólido do Audi A3 para impressão 3D. Design esportivo com det
         messages: [
           {
             role: "system",
-            content: "Você é um especialista em criar descrições de produtos para e-commerce de modelos 3D automotivos. Suas descrições são concisas, atrativas e específicas."
+            content: "Você é um especialista automotivo que cria descrições sobre veículos focando em suas características, design e performance. Nunca mencione impressão 3D ou formatos de arquivo."
           },
           {
             role: "user",
