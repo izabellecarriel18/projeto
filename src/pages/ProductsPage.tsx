@@ -364,22 +364,20 @@ export default function ProductsPage() {
                       className="w-full h-full object-cover"
                     />
                   </div>
-                  <div className="flex-1 flex flex-col p-6">
-                    <h3 className="text-white font-bold text-xl mb-2">{product.name}</h3>
-                    <p className="text-gray-400 text-sm mb-3 uppercase tracking-wide">
+                  <div className="flex flex-col p-5">
+                    <h3 className="text-white font-bold text-lg mb-1.5">{product.name}</h3>
+                    <p className="text-gray-400 text-xs mb-2.5 uppercase tracking-wider">
                       {product.formats.join(' , ')}
                     </p>
-                    <p className="text-gray-300 text-sm leading-relaxed mb-4 flex-1">
-                      {product.description || `Modelo sólido do ${product.name} para impressão 3D. Compatível com Blender, Maya, 3ds Max. Licença Pessoal/Comercial.`}
+                    <p className="text-gray-300 text-sm leading-relaxed mb-3">
+                      {product.description || `Modelo 3D detalhado do ${product.name}`}
                     </p>
-                    <div className="space-y-3">
-                      <div className="text-white font-bold text-3xl">
-                        R$ {product.price.toFixed(2).replace('.', ',')}
-                      </div>
-                      <button className="w-full bg-red-600 hover:bg-red-700 text-white py-3 rounded-lg font-bold text-base transition-all">
-                        Adicionar
-                      </button>
+                    <div className="text-white font-bold text-2xl mb-3">
+                      R$ {product.price.toFixed(2).replace('.', ',')}
                     </div>
+                    <button className="w-full bg-red-600 hover:bg-red-700 text-white py-2.5 rounded-lg font-bold text-sm transition-all">
+                      Adicionar
+                    </button>
                   </div>
                 </div>
               </GlareCard>
