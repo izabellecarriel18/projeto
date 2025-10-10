@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef } from 'react';
-import { GlareCard } from './GlareCard';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
 import { Upload } from 'lucide-react';
@@ -136,45 +135,43 @@ export function ProductCard({ product, onImageUpload }: ProductCardProps) {
   }
 
   return (
-    <GlareCard>
-      <div className="flex flex-col bg-slate-950">
-        <div className="aspect-[16/11] bg-gray-900 overflow-hidden relative group">
-          <img
-            src={product.image_url}
-            alt={product.name}
-            className="w-full h-full object-cover"
-          />
-          {isAdmin && onImageUpload && (
-            <button
-              onClick={() => onImageUpload(product.id)}
-              className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center"
-            >
-              <div className="text-center">
-                <Upload className="w-10 h-10 text-white mx-auto mb-2" />
-                <span className="text-white text-sm font-semibold">Alterar Imagem</span>
-              </div>
-            </button>
-          )}
-        </div>
-        <div className="flex flex-col p-5">
-          <h3 className="text-white font-bold text-lg mb-1">{product.name}</h3>
-          <p className="text-gray-400 text-xs mb-2 uppercase tracking-wide">
-            {product.formats.join(' , ')}
-          </p>
-          <p className="text-gray-300 text-sm leading-relaxed mb-3 min-h-[9rem]">
-            {isGenerating ? 'Gerando descrição...' : description}
-          </p>
-          <div className="text-white font-bold text-2xl mb-3">
-            R$ {product.price.toFixed(2).replace('.', ',')}
-          </div>
+    <div className="flex flex-col bg-gray-900 border border-gray-800 rounded-lg overflow-hidden hover:border-gray-700 transition-colors">
+      <div className="aspect-[16/11] bg-gray-950 overflow-hidden relative group">
+        <img
+          src={product.image_url}
+          alt={product.name}
+          className="w-full h-full object-cover"
+        />
+        {isAdmin && onImageUpload && (
           <button
-            onClick={() => window.open(product.purchase_url || '#', '_blank')}
-            className="w-full bg-red-600 hover:bg-red-700 text-white py-3 rounded-lg font-bold text-sm transition-all cursor-pointer"
+            onClick={() => onImageUpload(product.id)}
+            className="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center z-10"
           >
-            Comprar
+            <div className="text-center pointer-events-none">
+              <Upload className="w-10 h-10 text-white mx-auto mb-2" />
+              <span className="text-white text-sm font-semibold">Alterar Imagem</span>
+            </div>
           </button>
-        </div>
+        )}
       </div>
-    </GlareCard>
+      <div className="flex flex-col p-5">
+        <h3 className="text-white font-bold text-lg mb-1">{product.name}</h3>
+        <p className="text-gray-400 text-xs mb-2 uppercase tracking-wide">
+          {product.formats.join(' , ')}
+        </p>
+        <p className="text-gray-300 text-sm leading-relaxed mb-3 min-h-[9rem]">
+          {isGenerating ? 'Gerando descrição...' : description}
+        </p>
+        <div className="text-white font-bold text-2xl mb-3">
+          R$ {product.price.toFixed(2).replace('.', ',')}
+        </div>
+        <button
+          onClick={() => window.open(product.purchase_url || '#', '_blank')}
+          className="w-full bg-red-600 hover:bg-red-700 text-white py-3 rounded-lg font-bold text-sm transition-colors z-20 relative"
+        >
+          Comprar
+        </button>
+      </div>
+    </div>
   );
 }
