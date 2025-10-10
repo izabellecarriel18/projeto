@@ -21,19 +21,45 @@ interface ProductCardProps {
 export function ProductCard({ product }: ProductCardProps) {
   const [description, setDescription] = useState(product.description || '');
   const [isGenerating, setIsGenerating] = useState(false);
+  const [hasGenerated, setHasGenerated] = useState(false);
 
   useEffect(() => {
-    if (!product.description || product.description.includes('Modelo 3D detalhado do')) {
+    const needsGeneration = !product.description ||
+                           product.description.includes('Modelo 3D detalhado do') ||
+                           product.description.trim() === '';
+
+    if (needsGeneration && !hasGenerated) {
       generateDescription();
+    } else if (product.description && !needsGeneration) {
+      setDescription(product.description);
     }
-  }, [product.id]);
+  }, [product.id, product.description]);
 
   async function generateDescription() {
-    if (isGenerating) return;
+    if (isGenerating || hasGenerated) return;
 
     setIsGenerating(true);
 
     try {
+      const { data: existingProduct, error: fetchError } = await supabase
+        .from('products')
+        .select('description')
+        .eq('id', product.id)
+        .maybeSingle();
+
+      if (fetchError) {
+        throw fetchError;
+      }
+
+      if (existingProduct?.description &&
+          !existingProduct.description.includes('Modelo 3D detalhado do') &&
+          existingProduct.description.trim() !== '') {
+        setDescription(existingProduct.description);
+        setHasGenerated(true);
+        setIsGenerating(false);
+        return;
+      }
+
       const apiUrl = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/generate-description`;
 
       const response = await fetch(apiUrl, {
@@ -56,6 +82,7 @@ export function ProductCard({ product }: ProductCardProps) {
       const newDescription = data.description;
 
       setDescription(newDescription);
+      setHasGenerated(true);
 
       const { error } = await supabase
         .from('products')
@@ -68,6 +95,7 @@ export function ProductCard({ product }: ProductCardProps) {
     } catch (error) {
       console.error('Error generating description:', error);
       setDescription(`Modelo 3D do ${product.name} para impressão. Detalhes precisos e alta qualidade.`);
+      setHasGenerated(true);
     } finally {
       setIsGenerating(false);
     }
