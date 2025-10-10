@@ -85,7 +85,7 @@ MANTER ABAIXO DE 340 CARACTERES É OBRIGATÓRIO!`;
 
     if (description.length > 340) {
       console.warn(`[${productName}] Descrição muito longa (${description.length} chars), truncando para 340`);
-      description = description.substring(0, 337) + '...';
+      description = description.substring(0, 340);
     }
 
     return new Response(
