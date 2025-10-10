@@ -154,6 +154,12 @@ export default function ProductsPage() {
   }
 
   function filterProducts() {
+    console.log('=== FILTER DEBUG ===');
+    console.log('Total products:', products.length);
+    console.log('Selected category:', selectedCategory);
+    console.log('Selected brand:', selectedBrand);
+    console.log('Search term:', searchTerm);
+
     let filtered = [...products];
 
     const categoryMap: { [key: string]: string } = {
@@ -163,15 +169,22 @@ export default function ProductsPage() {
       'bus_truck': 'Ônibus e Caminhão'
     };
 
-    filtered = filtered.filter((p) => p.category === categoryMap[selectedCategory]);
+    console.log('Looking for category:', categoryMap[selectedCategory]);
+    filtered = filtered.filter((p) => {
+      console.log('Product category:', p.category, '===', categoryMap[selectedCategory], '?', p.category === categoryMap[selectedCategory]);
+      return p.category === categoryMap[selectedCategory];
+    });
+    console.log('After category filter:', filtered.length);
 
     if (selectedBrand !== 'all') {
       filtered = filtered.filter((p) => {
         const productBrand = (p.brand || '').toUpperCase();
         const filterBrand = selectedBrand.toUpperCase();
+        console.log('Brand check:', productBrand, '===', filterBrand, '?', productBrand === filterBrand);
         return productBrand === filterBrand;
       });
     }
+    console.log('After brand filter:', filtered.length);
 
     if (searchTerm) {
       filtered = filtered.filter(
@@ -180,6 +193,7 @@ export default function ProductsPage() {
           (p.brand || '').toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
+    console.log('Final filtered:', filtered.length);
 
     setFilteredProducts(filtered);
   }
