@@ -27,25 +27,23 @@ Deno.serve(async (req: Request) => {
       throw new Error("OpenAI API key not configured");
     }
 
-    const prompt = `Crie uma descrição histórica e interessante sobre o veículo:
+    const prompt = `Crie uma descrição ÚNICA e ESPECÍFICA sobre este veículo:
 
 Veículo: ${productName}
 
 Requisitos OBRIGATÓRIOS:
-- LIMITE MÁXIMO CRÍTICO: 240 caracteres (incluindo espaços e pontuação)
-- Conte a história do veículo de forma concisa e fluida
-- Mencione ano de criação, propósito/contexto histórico, características marcantes
-- Escreva como se estivesse contando uma história sobre o carro
-- Use tom informativo e envolvente, não promocional
+- LIMITE MÁXIMO: 240 caracteres (incluindo espaços e pontuação)
+- Foque em DETALHES ESPECÍFICOS deste modelo: motores, potência, tecnologias exclusivas, gerações, versões
+- Mencione dados técnicos concretos: cilindradas, cavalos de potência, torque, aceleração
+- Conte curiosidades e fatos únicos que diferenciam ESTE modelo dos outros
+- Evite descrições genéricas que serviriam para qualquer carro
+- NÃO use frases como "performance e conforto", "design sofisticado", "tecnologia Quattro" sem especificar
 - NÃO mencione "impressão 3D", "STL", "formato", "modelo 3D"
-- NÃO fale sobre "linhas" do carro
-- NÃO use frases genéricas de marketing
-- Seja natural e autêntico
-- ATENÇÃO: A descrição NÃO PODE ultrapassar 240 caracteres ou será cortada visualmente
+- Seja ESPECÍFICO e TÉCNICO, mas acessível
 
-Exemplos do estilo desejado (respeitando limite):
-"Lançado em 1996, o Audi A3 marcou a entrada da marca no segmento compacto premium. Combina tecnologia Quattro, design sofisticado e eficiência."
-"O S3 surgiu em 1999 como versão esportiva do A3, para quem busca performance sem abrir mão do conforto diário."`;
+Exemplos de descrições ESPECÍFICAS:
+"Produzido desde 1994, o A4 chegou com motores 1.6 a 2.8 V6. A geração B5 trouxe design revolucionário e tração Quattro permanente com diferencial Torsen."
+"O S3 8L (1999-2003) equipava turbo K04, 210cv a 5900rpm e 270Nm. Acelerava 0-100 em 6.6s, rivalizando com Golf R32 e Focus RS da época."`;
 
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
@@ -58,14 +56,14 @@ Exemplos do estilo desejado (respeitando limite):
         messages: [
           {
             role: "system",
-            content: "Você é um historiador automotivo que conta histórias fascinantes sobre veículos de forma CONCISA. Foque em contexto histórico, ano de criação, propósito original e características marcantes. Seja natural e informativo, não promocional. CRÍTICO: Suas descrições devem ter NO MÁXIMO 240 caracteres (incluindo espaços) ou serão cortadas visualmente. Priorize informações essenciais."
+            content: "Você é um especialista técnico automotivo com conhecimento profundo de cada veículo. Forneça descrições ESPECÍFICAS e ÚNICAS com dados técnicos concretos: motores, potência, torque, aceleração, tecnologias exclusivas, gerações, curiosidades. EVITE descrições genéricas. CRÍTICO: máximo 240 caracteres. Cada carro deve ter uma descrição diferenciada baseada em suas características reais."
           },
           {
             role: "user",
             content: prompt
           }
         ],
-        temperature: 0.8,
+        temperature: 0.9,
         max_tokens: 100,
       }),
     });
