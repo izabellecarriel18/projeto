@@ -21,27 +21,28 @@ interface ProductCardProps {
 export function ProductCard({ product }: ProductCardProps) {
   const [description, setDescription] = useState(product.description || '');
   const [isGenerating, setIsGenerating] = useState(false);
-  const [hasGenerated, setHasGenerated] = useState(false);
+
+  const isValidDescription = (desc: string | null | undefined): boolean => {
+    if (!desc || desc.trim() === '') return false;
+    if (desc.includes('Modelo 3D detalhado do')) return false;
+    return true;
+  };
 
   useEffect(() => {
-    const needsGeneration = !product.description ||
-                           product.description.includes('Modelo 3D detalhado do') ||
-                           product.description.trim() === '';
-
-    if (needsGeneration && !hasGenerated) {
+    if (isValidDescription(product.description)) {
+      setDescription(product.description!);
+    } else {
       generateDescription();
-    } else if (product.description && !needsGeneration) {
-      setDescription(product.description);
     }
-  }, [product.id, product.description]);
+  }, [product.id]);
 
   async function generateDescription() {
-    if (isGenerating || hasGenerated) return;
+    if (isGenerating) return;
 
     setIsGenerating(true);
 
     try {
-      const { data: existingProduct, error: fetchError } = await supabase
+      const { data: freshProduct, error: fetchError } = await supabase
         .from('products')
         .select('description')
         .eq('id', product.id)
@@ -51,11 +52,8 @@ export function ProductCard({ product }: ProductCardProps) {
         throw fetchError;
       }
 
-      if (existingProduct?.description &&
-          !existingProduct.description.includes('Modelo 3D detalhado do') &&
-          existingProduct.description.trim() !== '') {
-        setDescription(existingProduct.description);
-        setHasGenerated(true);
+      if (isValidDescription(freshProduct?.description)) {
+        setDescription(freshProduct.description);
         setIsGenerating(false);
         return;
       }
@@ -82,7 +80,6 @@ export function ProductCard({ product }: ProductCardProps) {
       const newDescription = data.description;
 
       setDescription(newDescription);
-      setHasGenerated(true);
 
       const { error } = await supabase
         .from('products')
@@ -94,8 +91,8 @@ export function ProductCard({ product }: ProductCardProps) {
       }
     } catch (error) {
       console.error('Error generating description:', error);
-      setDescription(`Modelo 3D do ${product.name} para impressão. Detalhes precisos e alta qualidade.`);
-      setHasGenerated(true);
+      const fallbackDesc = `Modelo 3D do ${product.name} para impressão. Detalhes precisos e alta qualidade.`;
+      setDescription(fallbackDesc);
     } finally {
       setIsGenerating(false);
     }
