@@ -32,8 +32,8 @@ Deno.serve(async (req: Request) => {
 Veículo: ${productName}
 
 Requisitos OBRIGATÓRIOS:
-- LIMITE MÁXIMO: 280 caracteres (incluindo espaços e pontuação)
-- Conte a história do veículo de forma natural e fluida
+- LIMITE MÁXIMO CRÍTICO: 240 caracteres (incluindo espaços e pontuação)
+- Conte a história do veículo de forma concisa e fluida
 - Mencione ano de criação, propósito/contexto histórico, características marcantes
 - Escreva como se estivesse contando uma história sobre o carro
 - Use tom informativo e envolvente, não promocional
@@ -41,11 +41,11 @@ Requisitos OBRIGATÓRIOS:
 - NÃO fale sobre "linhas" do carro
 - NÃO use frases genéricas de marketing
 - Seja natural e autêntico
-- A descrição deve caber em exatamente 6 linhas quando exibida, então use NO MÁXIMO 280 caracteres
+- ATENÇÃO: A descrição NÃO PODE ultrapassar 240 caracteres ou será cortada visualmente
 
-Exemplos do estilo desejado (com limite de caracteres):
-"Lançado em 1996, o Audi A3 foi criado para competir no segmento premium compacto. Combina tecnologia Quattro com design sofisticado e motor turbo eficiente."
-"O S3 surgiu em 1999 como versão esportiva do A3, desenvolvido para entusiastas que buscavam performance sem abrir mão do conforto diário."`;
+Exemplos do estilo desejado (respeitando limite):
+"Lançado em 1996, o Audi A3 marcou a entrada da marca no segmento compacto premium. Combina tecnologia Quattro, design sofisticado e eficiência."
+"O S3 surgiu em 1999 como versão esportiva do A3, para quem busca performance sem abrir mão do conforto diário."`;
 
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
@@ -58,7 +58,7 @@ Exemplos do estilo desejado (com limite de caracteres):
         messages: [
           {
             role: "system",
-            content: "Você é um historiador automotivo que conta histórias fascinantes sobre veículos. Foque em contexto histórico, ano de criação, propósito original e características marcantes. Seja natural e informativo, não promocional. IMPORTANTE: Suas descrições devem ter NO MÁXIXMO 280 caracteres para caber perfeitamente em 6 linhas de texto."
+            content: "Você é um historiador automotivo que conta histórias fascinantes sobre veículos de forma CONCISA. Foque em contexto histórico, ano de criação, propósito original e características marcantes. Seja natural e informativo, não promocional. CRÍTICO: Suas descrições devem ter NO MÁXIMO 240 caracteres (incluindo espaços) ou serão cortadas visualmente. Priorize informações essenciais."
           },
           {
             role: "user",
