@@ -27,7 +27,10 @@ export default function ProductsPage() {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const isAdmin = profile?.role === 'admin';
 
+  console.log('[ProductsPage] Auth state:', { profile, isAdmin });
+
   const handleImageUpload = (productId: string) => {
+    console.log('[ProductsPage] handleImageUpload called:', productId);
     const product = products.find(p => p.id === productId);
     if (product) {
       setSelectedProduct(product);
