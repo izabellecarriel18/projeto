@@ -43,7 +43,7 @@ Veículo: ${productName}
 DESCRIÇÃO VENDA MODELO 3D (340 chars máx):
 
 PARTE 1 (150-170 chars):
-- Características do veículo (design, motor, tecnologias) SEM ANO
+- Características do veículo (design exterior, motor, tecnologias) SEM ANO
 - Deixar claro que é MODELO 3D DIGITAL
 - Tom informativo
 
@@ -55,6 +55,7 @@ PROIBIDO:
 - Anos/gerações
 - Falar como carro real
 - Termos técnicos: "STL", "impressão 3D"
+- Mencionar interior do veículo
 
 EXEMPLO (320 chars):
 "Modelo 3D do Audi A3 replica motor 2.0 TFSI, 150cv, design esportivo e tecnologia MMI. Geometria precisa e detalhes fiéis ao original. Perfeito para colecionadores e entusiastas! Adicione esta réplica digital premium à sua coleção. Alta qualidade e precisão dimensional garantidas."
@@ -80,7 +81,7 @@ NÃO ULTRAPASSE 340 CARACTERES!`;
         messages: [
           {
             role: "system",
-            content: `Você é copywriter especializado em MODELOS 3D DIGITAIS de veículos. REGRA CRÍTICA: descrição com MÁXIMO 340 caracteres (não ultrapasse!). Estrutura: Parte 1 (150-170 chars): características do modelo 3D e veículo SEM ANO. Parte 2 (150-170 chars): call-to-action para colecionadores. Use: 'modelo 3D', 'réplica digital'. NUNCA fale como se fosse carro real.`
+            content: `Você é copywriter especializado em MODELOS 3D DIGITAIS de veículos. REGRA CRÍTICA: descrição com MÁXIMO 340 caracteres (não ultrapasse!). Estrutura: Parte 1 (150-170 chars): características do modelo 3D e veículo SEM ANO. Parte 2 (150-170 chars): call-to-action para colecionadores. Use: 'modelo 3D', 'réplica digital'. NUNCA fale como se fosse carro real. PROIBIDO mencionar interior do veículo.`
           },
           {
             role: "user",
