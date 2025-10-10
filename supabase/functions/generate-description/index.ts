@@ -27,23 +27,28 @@ Deno.serve(async (req: Request) => {
       throw new Error("OpenAI API key not configured");
     }
 
-    const prompt = `Crie uma descrição ÚNICA e ESPECÍFICA sobre este veículo:
+    const prompt = `Crie uma descrição em DUAS PARTES sobre este veículo:
 
 Veículo: ${productName}
 
-Requisitos OBRIGATÓRIOS:
-- LIMITE MÁXIMO: 240 caracteres (incluindo espaços e pontuação)
-- Foque em DETALHES ESPECÍFICOS deste modelo: motores, potência, tecnologias exclusivas, gerações, versões
-- Mencione dados técnicos concretos: cilindradas, cavalos de potência, torque, aceleração
-- Conte curiosidades e fatos únicos que diferenciam ESTE modelo dos outros
-- Evite descrições genéricas que serviriam para qualquer carro
-- NÃO use frases como "performance e conforto", "design sofisticado", "tecnologia Quattro" sem especificar
-- NÃO mencione "impressão 3D", "STL", "formato", "modelo 3D"
-- Seja ESPECÍFICO e TÉCNICO, mas acessível
+ESTRUTURA OBRIGATÓRIA (máximo 240 caracteres total):
 
-Exemplos de descrições ESPECÍFICAS:
-"Produzido desde 1994, o A4 chegou com motores 1.6 a 2.8 V6. A geração B5 trouxe design revolucionário e tração Quattro permanente com diferencial Torsen."
-"O S3 8L (1999-2003) equipava turbo K04, 210cv a 5900rpm e 270Nm. Acelerava 0-100 em 6.6s, rivalizando com Golf R32 e Focus RS da época."`;
+PARTE 1 (primeiras 3 linhas - ±120 caracteres):
+- História do veículo com dados técnicos específicos
+- Ano, motores, potência, torque, aceleração
+- Tecnologias exclusivas e curiosidades técnicas
+- Tom informativo e apaixonado
+
+PARTE 2 (últimas 3 linhas - ±120 caracteres):
+- Call-to-action direto para compra
+- Frases como: "Modelo rico em detalhes pronto para sua coleção", "Adicione este ícone à sua coleção hoje", "Perfeito para entusiastas e colecionadores"
+- Crie urgência e desejo de posse
+- Tom persuasivo e vendedor
+
+NÃO mencione: "impressão 3D", "STL", "formato", "arquivo"
+
+Exemplo da estrutura ideal:
+"O Audi A3 (8Y, 2020-presente) vem com motor 2.0 TFSI, 190 cv a 4200 rpm e 320 Nm, acelerando 0-100 km/h em 6.8s. Possui MMI Touch e tração Quattro Ultra. Modelo rico em detalhes, perfeito para sua coleção de miniaturas premium!`;
 
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
@@ -56,7 +61,7 @@ Exemplos de descrições ESPECÍFICAS:
         messages: [
           {
             role: "system",
-            content: "Você é um especialista técnico automotivo com conhecimento profundo de cada veículo. Forneça descrições ESPECÍFICAS e ÚNICAS com dados técnicos concretos: motores, potência, torque, aceleração, tecnologias exclusivas, gerações, curiosidades. EVITE descrições genéricas. CRÍTICO: máximo 240 caracteres. Cada carro deve ter uma descrição diferenciada baseada em suas características reais."
+            content: "Você é um vendedor especialista em carros de luxo. Escreva em DUAS PARTES: 1) História técnica com dados reais (ano, motor, potência, aceleração) - 120 chars. 2) Call-to-action persuasivo para compra com frases como 'perfeito para sua coleção', 'adicione este ícone hoje' - 120 chars. Total: 240 caracteres. Cada descrição deve ser única e fazer o leitor querer comprar AGORA!"
           },
           {
             role: "user",
