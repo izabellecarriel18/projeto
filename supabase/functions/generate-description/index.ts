@@ -42,13 +42,14 @@ Categoria: ${categoryContext[category as keyof typeof categoryContext] || "veíc
 Requisitos OBRIGATÓRIOS:
 - Máximo 2 linhas curtas (120 caracteres total)
 - Fale APENAS sobre as características do CARRO/VEÍCULO
-- Destaque design, performance, elegância, estilo
+- Destaque design, performance, elegância, estilo, tecnologia
 - NÃO mencione "impressão 3D", "STL", "formato", "modelo 3D"
 - NÃO use "modelo 3D detalhado do"
+- NÃO fale sobre "linhas" do carro (linhas esportivas, linhas aerodinâmicas, etc)
 - Seja específico sobre estética e atributos do veículo
 - Use linguagem persuasiva focada no automóvel
 
-Exemplo: "Design aerodinâmico com linhas esportivas. Acabamento premium que une elegância e potência."`;
+Exemplo: "Design aerodinâmico com acabamento sofisticado. Veículo premium que une elegância e potência."`;
 
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
