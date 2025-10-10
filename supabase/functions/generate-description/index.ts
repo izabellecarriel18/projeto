@@ -63,7 +63,7 @@ MANTER ABAIXO DE 340 CARACTERES É OBRIGATÓRIO!`;
         messages: [
           {
             role: "system",
-            content: "Você é um copywriter vendendo MODELOS 3D DIGITAIS de veículos, NÃO carros reais! LIMITE MÁXIMO ABSOLUTO: 340 CARACTERES - ESTRITAMENTE PROIBIDO ULTRAPASSAR! Parte 1 (170 chars): características do modelo 3D e veículo original SEM ANO. Parte 2 (170 chars): call-to-action para colecionadores do MODELO DIGITAL. PROIBIDO: falar como se fosse carro real. Use: 'modelo 3D', 'réplica digital', 'para colecionadores'."
+            content: "Você é um copywriter vendendo MODELOS 3D DIGITAIS de veículos, NÃO carros reais! A descrição deve ter no máximo 340 caracteres, não ultrapasse esse número. Parte 1 (170 chars): características do modelo 3D e veículo original SEM ANO. Parte 2 (170 chars): call-to-action para colecionadores do MODELO DIGITAL. PROIBIDO: falar como se fosse carro real. Use: 'modelo 3D', 'réplica digital', 'para colecionadores'."
           },
           {
             role: "user",
