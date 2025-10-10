@@ -32,25 +32,24 @@ Deno.serve(async (req: Request) => {
 Veículo: ${productName}
 
 ESTRUTURA OBRIGATÓRIA:
-- LIMITE CRÍTICO: MÁXIMO 330 caracteres (incluindo espaços e pontuação)
-- NÃO PODE PASSAR de 330 caracteres de forma alguma
+- LIMITE ABSOLUTO: MÁXIMO 280 caracteres (incluindo espaços e pontuação)
+- CRÍTICO: Se passar de 280 caracteres, a descrição será REJEITADA
 
-PARTE 1 (primeiras 4 linhas - ±165 caracteres):
+PARTE 1 (primeiras 3-4 linhas - ±140 caracteres):
 - História do veículo com dados técnicos específicos
-- Ano, motores, potência, torque, aceleração
-- Tecnologias exclusivas e curiosidades técnicas
-- Tom informativo e apaixonado
+- Ano, motores, potência, aceleração
+- Tecnologias principais
+- Tom informativo e direto
 
-PARTE 2 (últimas 3 linhas - ±165 caracteres):
+PARTE 2 (últimas 2-3 linhas - ±140 caracteres):
 - Call-to-action direto para compra
-- Frases como: "Modelo rico em detalhes pronto para sua coleção", "Adicione este ícone à sua coleção hoje", "Perfeito para entusiastas e colecionadores"
-- Crie urgência e desejo de posse
-- Tom persuasivo e vendedor
+- Frases curtas como: "Modelo detalhado para sua coleção", "Adicione à sua coleção", "Perfeito para colecionadores"
+- Tom persuasivo e conciso
 
 NÃO mencione: "impressão 3D", "STL", "formato", "arquivo"
 
-Exemplo da estrutura ideal (330 chars):
-"O Audi A3 (8Y, 2020-presente) vem com motor 2.0 TFSI, 190 cv a 4200 rpm e 320 Nm, acelerando 0-100 km/h em 6.8s. Equipado com MMI Touch e tração Quattro Ultra, é exemplo de tecnologia e sofisticação. Um verdadeiro ícone da engenharia alemã! Modelo rico em detalhes pronto para sua coleção de miniaturas premium!`;
+Exemplo (280 chars):
+"O Audi A3 (2021) traz motor 2.0 TFSI, 150 cv e 250 Nm, aceleração de 0-100 km/h em 8.4s. Com sistema MMI e assistência de estacionamento, é exemplo de inovação. Design esportivo irresistível! Modelo detalhado para sua coleção. Não perca esta chance!`;
 
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
@@ -63,7 +62,7 @@ Exemplo da estrutura ideal (330 chars):
         messages: [
           {
             role: "system",
-            content: "Você é um vendedor especialista em carros de luxo. CRÍTICO: MÁXIMO 330 caracteres TOTAL (não passe disso de forma alguma!). Escreva em DUAS PARTES: 1) História técnica com dados reais (ano, motor, potência, aceleração) - 165 chars. 2) Call-to-action persuasivo para compra com frases como 'perfeito para sua coleção', 'modelo rico em detalhes' - 165 chars. Cada descrição deve ser única e fazer o leitor querer comprar AGORA!"
+            content: "Você é um vendedor especialista. LIMITE ABSOLUTO: 280 caracteres TOTAL. Escreva em DUAS PARTES: 1) História técnica concisa (ano, motor, potência, aceleração) - 140 chars. 2) Call-to-action curto para compra como 'perfeito para sua coleção', 'adicione à sua coleção' - 140 chars. Seja direto, elimine palavras desnecessárias. NUNCA passe de 280 caracteres!"
           },
           {
             role: "user",
@@ -81,7 +80,12 @@ Exemplo da estrutura ideal (330 chars):
     }
 
     const data = await response.json();
-    const description = data.choices[0]?.message?.content?.trim() || "";
+    let description = data.choices[0]?.message?.content?.trim() || "";
+
+    if (description.length > 280) {
+      console.warn(`[${productName}] Descrição muito longa (${description.length} chars), truncando para 280`);
+      description = description.substring(0, 277) + '...';
+    }
 
     return new Response(
       JSON.stringify({ description }),
