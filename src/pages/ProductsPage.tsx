@@ -166,14 +166,17 @@ export default function ProductsPage() {
     filtered = filtered.filter((p) => p.category === categoryMap[selectedCategory]);
 
     if (selectedBrand !== 'all') {
-      filtered = filtered.filter((p) => p.brand.toUpperCase() === selectedBrand);
+      filtered = filtered.filter((p) => {
+        const productBrand = (p.brand || '').toUpperCase();
+        return productBrand === selectedBrand;
+      });
     }
 
     if (searchTerm) {
       filtered = filtered.filter(
         (p) =>
           p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          p.brand.toLowerCase().includes(searchTerm.toLowerCase())
+          (p.brand || '').toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
 
