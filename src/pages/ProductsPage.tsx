@@ -156,10 +156,17 @@ export default function ProductsPage() {
   function filterProducts() {
     let filtered = [...products];
 
-    filtered = filtered.filter((p) => p.category === selectedCategory);
+    const categoryMap: { [key: string]: string } = {
+      'solid_cars': 'Carros Sólidos',
+      'complete_cars': 'Carros Completos',
+      'wheels': 'Rodas',
+      'bus_truck': 'Ônibus e Caminhão'
+    };
+
+    filtered = filtered.filter((p) => p.category === categoryMap[selectedCategory]);
 
     if (selectedBrand !== 'all') {
-      filtered = filtered.filter((p) => p.brand === selectedBrand);
+      filtered = filtered.filter((p) => p.brand.toUpperCase() === selectedBrand);
     }
 
     if (searchTerm) {
