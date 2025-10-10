@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
 import { ProductCard } from '../components/ProductCard';
+import ProductImageUploadModal from '../components/ProductImageUploadModal';
 
 interface Product {
   id: string;
@@ -22,7 +23,21 @@ export default function ProductsPage() {
   const [selectedCategory, setSelectedCategory] = useState<string>('solid_cars');
   const [selectedBrand, setSelectedBrand] = useState<string>('all');
   const [searchTerm, setSearchTerm] = useState<string>('');
+  const [uploadModalOpen, setUploadModalOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const isAdmin = profile?.role === 'admin';
+
+  const handleImageUpload = (productId: string) => {
+    const product = products.find(p => p.id === productId);
+    if (product) {
+      setSelectedProduct(product);
+      setUploadModalOpen(true);
+    }
+  };
+
+  const handleUploadSuccess = () => {
+    loadProducts();
+  };
 
   const categories = [
     { id: 'solid_cars', label: 'Carros Sólidos' },
@@ -355,11 +370,25 @@ export default function ProductsPage() {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 sm:gap-10">
             {filteredProducts.map((product) => (
-              <ProductCard key={product.id} product={product} />
+              <ProductCard
+                key={product.id}
+                product={product}
+                onImageUpload={isAdmin ? handleImageUpload : undefined}
+              />
             ))}
           </div>
         )}
       </div>
+
+      {selectedProduct && (
+        <ProductImageUploadModal
+          isOpen={uploadModalOpen}
+          onClose={() => setUploadModalOpen(false)}
+          productId={selectedProduct.id}
+          productName={selectedProduct.name}
+          onSuccess={handleUploadSuccess}
+        />
+      )}
     </div>
   );
 }
