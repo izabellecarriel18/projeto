@@ -5,6 +5,7 @@ import { Upload, RefreshCw } from 'lucide-react';
 import { EditPurchaseLinkModal } from './EditPurchaseLinkModal';
 import { EditPriceModal } from './EditPriceModal';
 import { EditDescriptionModal } from './EditDescriptionModal';
+import { EditProductNameModal } from './EditProductNameModal';
 
 interface Product {
   id: string;
@@ -27,6 +28,7 @@ const generatingCache = new Set<string>();
 
 export function ProductCard({ product, onImageUpload }: ProductCardProps) {
   const { profile } = useAuth();
+  const [name, setName] = useState(product.name);
   const [description, setDescription] = useState(product.description || '');
   const [price, setPrice] = useState(product.price);
   const [purchaseUrl, setPurchaseUrl] = useState(product.purchase_url || '');
@@ -34,6 +36,7 @@ export function ProductCard({ product, onImageUpload }: ProductCardProps) {
   const [isLinkModalOpen, setIsLinkModalOpen] = useState(false);
   const [isPriceModalOpen, setIsPriceModalOpen] = useState(false);
   const [isDescriptionModalOpen, setIsDescriptionModalOpen] = useState(false);
+  const [isNameModalOpen, setIsNameModalOpen] = useState(false);
   const hasChecked = useRef(false);
   const isAdmin = profile?.role === 'admin';
 
@@ -198,6 +201,25 @@ export function ProductCard({ product, onImageUpload }: ProductCardProps) {
     generateDescription(true);
   };
 
+  const handleSaveName = async (newName: string) => {
+    const { error } = await supabase
+      .from('products')
+      .update({ name: newName })
+      .eq('id', product.id);
+
+    if (error) {
+      console.error('Error updating name:', error);
+      throw error;
+    }
+
+    setName(newName);
+  };
+
+  const handleNameClick = () => {
+    if (!isAdmin) return;
+    setIsNameModalOpen(true);
+  };
+
   const handleBuyClick = () => {
     if (isAdmin) {
       setIsLinkModalOpen(true);
@@ -234,7 +256,13 @@ export function ProductCard({ product, onImageUpload }: ProductCardProps) {
           )}
         </div>
         <div className="flex flex-col flex-1 p-5">
-          <h3 className="text-white font-bold text-lg mb-1">{product.name}</h3>
+          <h3
+            onClick={handleNameClick}
+            className={`text-white font-bold text-lg mb-1 ${isAdmin ? 'cursor-pointer hover:text-red-500 transition-colors' : ''}`}
+            title={isAdmin ? 'Clique para editar nome' : ''}
+          >
+            {name}
+          </h3>
           <p className="text-gray-400 text-xs mb-2 uppercase tracking-wide">
             {product.formats.join(' , ')}
           </p>
@@ -293,6 +321,13 @@ export function ProductCard({ product, onImageUpload }: ProductCardProps) {
         onClose={() => setIsDescriptionModalOpen(false)}
         currentDescription={description}
         onSave={handleSaveDescription}
+      />
+
+      <EditProductNameModal
+        isOpen={isNameModalOpen}
+        onClose={() => setIsNameModalOpen(false)}
+        currentName={name}
+        onSave={handleSaveName}
       />
     </>
   );
