@@ -65,9 +65,13 @@ export default function Header({ onNavigate, currentPage }: HeaderProps) {
           <>
             {user && profile ? (
               <div className="hidden lg:flex items-center gap-4">
-                <span className="text-sm font-medium text-white">
-                  Olá, <span className="text-red-600">{profile.name}</span>
-                </span>
+                <button
+                  onClick={() => onNavigate('profile')}
+                  className="flex items-center gap-2 text-white hover:text-red-600 transition-colors"
+                >
+                  <User className="w-5 h-5" />
+                  <span className="text-sm font-medium">{profile.name}</span>
+                </button>
                 <button
                   onClick={signOut}
                   className="flex items-center gap-2 text-white hover:text-red-600 transition-colors"
@@ -106,11 +110,15 @@ export default function Header({ onNavigate, currentPage }: HeaderProps) {
               ))}
               {user && profile ? (
                 <>
-                  <div className="flex items-center justify-center gap-2 text-white py-6 w-full border-b border-gray-700">
-                    <span className="text-lg font-medium">
-                      Olá, <span className="text-red-600">{profile.name}</span>
-                    </span>
-                  </div>
+                  <button
+                    onClick={() => {
+                      handleNavigation('profile');
+                    }}
+                    className="flex items-center justify-center gap-2 text-white hover:text-red-600 transition-colors py-6 w-full border-b border-gray-700"
+                  >
+                    <User className="w-5 h-5" />
+                    <span className="text-lg font-medium">MEU PERFIL</span>
+                  </button>
                   <button
                     onClick={() => {
                       signOut();

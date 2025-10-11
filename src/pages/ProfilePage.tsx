@@ -1,0 +1,177 @@
+import { useEffect, useState } from 'react';
+import { ShoppingBag, Download, Calendar } from 'lucide-react';
+import { supabase } from '../lib/supabase';
+import { useAuth } from '../contexts/AuthContext';
+
+interface Purchase {
+  id: string;
+  product_id: string;
+  amount_paid: number;
+  currency: string;
+  status: string;
+  purchased_at: string;
+  products: {
+    id: string;
+    name: string;
+    image_url: string;
+    category: string;
+    brand: string;
+    formats: string[];
+    purchase_url?: string;
+  };
+}
+
+export default function ProfilePage() {
+  const { user, profile } = useAuth();
+  const [purchases, setPurchases] = useState<Purchase[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (user) {
+      loadPurchases();
+    }
+  }, [user]);
+
+  async function loadPurchases() {
+    try {
+      const { data, error } = await supabase
+        .from('user_purchases')
+        .select(`
+          id,
+          product_id,
+          amount_paid,
+          currency,
+          status,
+          purchased_at,
+          products (
+            id,
+            name,
+            image_url,
+            category,
+            brand,
+            formats,
+            purchase_url
+          )
+        `)
+        .eq('user_id', user?.id)
+        .eq('status', 'completed')
+        .order('purchased_at', { ascending: false });
+
+      if (error) {
+        console.error('Error loading purchases:', error);
+        return;
+      }
+
+      if (data) {
+        setPurchases(data as Purchase[]);
+      }
+    } catch (error) {
+      console.error('Error loading purchases:', error);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  const formatDate = (date: string) => {
+    return new Date(date).toLocaleDateString('pt-BR', {
+      day: '2-digit',
+      month: 'long',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  };
+
+  const formatPrice = (amount: number) => {
+    return `R$ ${amount.toFixed(2).replace('.', ',')}`;
+  };
+
+  if (!user) {
+    return (
+      <div className="min-h-screen pt-20 sm:pt-24 pb-12 sm:pb-20">
+        <div className="container mx-auto px-4 sm:px-6">
+          <div className="text-center py-12 sm:py-20">
+            <ShoppingBag className="w-12 h-12 sm:w-16 sm:h-16 text-white mx-auto mb-4" />
+            <p className="text-white text-lg sm:text-xl">Faça login para ver suas compras</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen pt-20 sm:pt-24 pb-12 sm:pb-20">
+      <div className="container mx-auto px-4 sm:px-6">
+        <div className="mb-8 sm:mb-12">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-3 sm:mb-4">
+            Meu Perfil
+          </h1>
+          <p className="text-base sm:text-lg md:text-xl text-white">
+            Olá, <span className="text-red-600">{profile?.name}</span>
+          </p>
+        </div>
+
+        <div className="backdrop-blur border border-gray-800 rounded-lg p-4 sm:p-6 mb-8 sm:mb-12">
+          <h2 className="text-xl sm:text-2xl font-bold text-white mb-4 sm:mb-6 flex items-center gap-2">
+            <ShoppingBag className="w-6 h-6 text-red-600" />
+            Minhas Compras
+          </h2>
+
+          {loading ? (
+            <div className="text-center py-12">
+              <p className="text-white text-lg">Carregando...</p>
+            </div>
+          ) : purchases.length === 0 ? (
+            <div className="text-center py-12">
+              <ShoppingBag className="w-12 h-12 sm:w-16 sm:h-16 text-white mx-auto mb-4 opacity-50" />
+              <p className="text-white text-lg">Você ainda não fez nenhuma compra</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {purchases.map((purchase) => (
+                <div
+                  key={purchase.id}
+                  className="bg-gray-900 border border-gray-800 rounded-lg overflow-hidden hover:border-gray-700 transition-colors"
+                >
+                  <div className="aspect-[16/11] bg-gray-950 overflow-hidden">
+                    <img
+                      src={purchase.products.image_url}
+                      alt={purchase.products.name}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div className="p-4">
+                    <h3 className="text-white font-bold text-lg mb-2">
+                      {purchase.products.name}
+                    </h3>
+                    <p className="text-gray-400 text-xs mb-3 uppercase tracking-wide">
+                      {purchase.products.formats.join(' , ')}
+                    </p>
+                    <div className="flex items-center gap-2 text-gray-400 text-sm mb-3">
+                      <Calendar className="w-4 h-4" />
+                      <span>{formatDate(purchase.purchased_at)}</span>
+                    </div>
+                    <div className="text-white font-bold text-xl mb-4">
+                      {formatPrice(purchase.amount_paid)}
+                    </div>
+                    {purchase.products.purchase_url && (
+                      <a
+                        href={purchase.products.purchase_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="w-full bg-red-600 hover:bg-red-700 text-white py-3 rounded-lg font-bold text-sm transition-colors flex items-center justify-center gap-2"
+                      >
+                        <Download className="w-4 h-4" />
+                        Baixar Arquivos
+                      </a>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}

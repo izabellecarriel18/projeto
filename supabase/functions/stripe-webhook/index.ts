@@ -17,16 +17,14 @@ Deno.serve(async (req: Request) => {
   }
 
   try {
-    const stripeSecretKey = Deno.env.get("CHAVE_SECRETA_DA_FAIXA");
-    const webhookSecret = Deno.env.get("SEGREDO_DO_WEBHOOK_DAS_TRIGAS");
-    
+    const stripeSecretKey = Deno.env.get("STRIPE_SECRET_KEY");
+    const webhookSecret = Deno.env.get("STRIPE_WEBHOOK_SECRET");
+
     if (!stripeSecretKey) {
       throw new Error("Stripe secret key not configured");
     }
 
-    const stripe = new Stripe(stripeSecretKey, {
-      apiVersion: "2024-12-18.acacia",
-    });
+    const stripe = new Stripe(stripeSecretKey);
 
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
@@ -54,42 +52,45 @@ Deno.serve(async (req: Request) => {
     switch (event.type) {
       case "checkout.session.completed": {
         const session = event.data.object as Stripe.Checkout.Session;
-        
+
         const { error } = await supabase
-          .from("orders")
+          .from("user_purchases")
           .insert({
             user_id: session.metadata?.userId,
             product_id: session.metadata?.productId,
             stripe_session_id: session.id,
-            stripe_payment_intent_id: session.payment_intent as string,
-            amount: (session.amount_total || 0) / 100,
+            stripe_payment_intent: session.payment_intent as string,
+            amount_paid: (session.amount_total || 0) / 100,
             currency: session.currency || "brl",
             status: "completed",
+            purchased_at: new Date().toISOString(),
           });
 
         if (error) {
-          console.error("Error creating order:", error);
+          console.error("Error creating purchase:", error);
+        } else {
+          console.log("Purchase created successfully for user:", session.metadata?.userId);
         }
         break;
       }
 
       case "payment_intent.payment_failed": {
         const paymentIntent = event.data.object as Stripe.PaymentIntent;
-        
+
         await supabase
-          .from("orders")
+          .from("user_purchases")
           .update({ status: "failed" })
-          .eq("stripe_payment_intent_id", paymentIntent.id);
+          .eq("stripe_payment_intent", paymentIntent.id);
         break;
       }
 
       case "charge.refunded": {
         const charge = event.data.object as Stripe.Charge;
-        
+
         await supabase
-          .from("orders")
+          .from("user_purchases")
           .update({ status: "refunded" })
-          .eq("stripe_payment_intent_id", charge.payment_intent as string);
+          .eq("stripe_payment_intent", charge.payment_intent as string);
         break;
       }
     }

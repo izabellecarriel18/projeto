@@ -6,6 +6,7 @@ import BackgroundPaths from './components/BackgroundPaths';
 import HomePage from './pages/HomePage';
 import ProductsPage from './pages/ProductsPage';
 import CoursesPage from './pages/CoursesPage';
+import ProfilePage from './pages/ProfilePage';
 
 function App() {
   const [currentPage, setCurrentPage] = useState('home');
@@ -24,6 +25,7 @@ function App() {
       {currentPage === 'home' && <HomePage onNavigate={handleNavigate} />}
       {currentPage === 'products' && <ProductsPage />}
       {currentPage === 'courses' && <CoursesPage />}
+      {currentPage === 'profile' && <ProfilePage />}
 
       <Footer />
       </div>

@@ -22,9 +22,7 @@ Deno.serve(async (req: Request) => {
       throw new Error("Stripe secret key not configured");
     }
 
-    const stripe = new Stripe(stripeSecretKey, {
-      apiVersion: "2024-11-20.acacia",
-    });
+    const stripe = new Stripe(stripeSecretKey);
 
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
