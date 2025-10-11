@@ -28,6 +28,113 @@ export function AddProductModal({ isOpen, onClose, category, onSuccess }: AddPro
     return categoryMap[categoryId] || categoryId;
   };
 
+  const solidCarsBrands = [
+    'Audi',
+    'BMW',
+    'CADILLAC',
+    'CHEVROLET / GM',
+    'CITROËN',
+    'DAEWOO',
+    'DODGE',
+    'FERRARI',
+    'FIAT',
+    'FORD',
+    'HONDA',
+    'HYUNDAI',
+    'IVECO',
+    'KOENIGSEGG',
+    'MAZDA',
+    'MCLAREN',
+    'MERCEDES-BENZ',
+    'MITSUBISHI',
+    'NISSAN',
+    'NOBLE',
+    'PEUGEOT',
+    'PORSCHE',
+    'PUMA',
+    'RENAULT',
+    'SCANIA',
+    'SUBARU',
+    'TOYOTA',
+    'TROLLER (FORD)',
+    'VOLKSWAGEN (VW)',
+    'VOLVO',
+  ];
+
+  const completeCarsBrands = [
+    'ACURA',
+    'BMW',
+    'CAIO',
+    'CHEVROLET / GM',
+    'COMIL',
+    'DKW',
+    'FIAT',
+    'FORD',
+    'HONDA',
+    'HYUNDAI',
+    'IVECO',
+    'LUCRA',
+    'MARCOPOLO',
+    'MAREA',
+    'MAZDA',
+    'MCLAREN',
+    'MERCEDES',
+    'MITSUBISHI',
+    'NIELSON',
+    'NISSAN',
+    'NOBLE',
+    'OUTROS',
+    'PEUGEOT',
+    'PORSCHE',
+    'RENAULT',
+    'SANTA MATILDE',
+    'SCANIA',
+    'SUBARU',
+    'SUZUKI',
+    'TOYOTA',
+    'TROLLER',
+    'URBANO MASCARELLO',
+    'VOLKSWAGEN',
+    'VOLVO',
+  ];
+
+  const wheelsBrands = [
+    'AUDI',
+    'BMW',
+    'CHEVROLET / GM',
+    'FIAT',
+    'FORD',
+    'HONDA',
+    'HYUNDAI',
+    'JEEP',
+    'LAMBORGHINI',
+    'LAND ROVER',
+    'LEXUS',
+    'MERCEDES',
+    'MITSUBISHI',
+    'NISSAN',
+    'PORSCHE',
+    'TOYOTA',
+    'VITTORIA',
+    'VOLCANO',
+    'VOLKSWAGEN',
+  ];
+
+  const getBrandsForCategory = (categoryId: string): string[] => {
+    switch (categoryId) {
+      case 'solid_cars':
+        return solidCarsBrands;
+      case 'complete_cars':
+        return completeCarsBrands;
+      case 'wheels':
+        return wheelsBrands;
+      default:
+        return [];
+    }
+  };
+
+  const availableBrands = getBrandsForCategory(category);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -122,15 +229,20 @@ export function AddProductModal({ isOpen, onClose, category, onSuccess }: AddPro
             <label htmlFor="brand" className="block text-sm font-medium text-gray-300 mb-2">
               Marca *
             </label>
-            <input
+            <select
               id="brand"
-              type="text"
               value={brand}
               onChange={(e) => setBrand(e.target.value)}
-              placeholder="Ex: VOLKSWAGEN"
-              className="w-full px-4 py-2 bg-gray-950 border border-gray-800 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-red-600"
+              className="w-full px-4 py-2 bg-gray-950 border border-gray-800 rounded-lg text-white focus:outline-none focus:border-red-600"
               required
-            />
+            >
+              <option value="" disabled>Selecione uma marca</option>
+              {availableBrands.map((brandOption) => (
+                <option key={brandOption} value={brandOption}>
+                  {brandOption}
+                </option>
+              ))}
+            </select>
           </div>
 
           <div className="mb-4">
