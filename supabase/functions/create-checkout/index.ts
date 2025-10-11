@@ -23,7 +23,7 @@ Deno.serve(async (req: Request) => {
     }
 
     const stripe = new Stripe(stripeSecretKey, {
-      apiVersion: "2024-12-18.acacia",
+      apiVersion: "2024-11-20.acacia",
     });
 
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
