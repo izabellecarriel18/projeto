@@ -20,6 +20,8 @@ interface Product {
   purchase_url?: string;
   file_url?: string;
   file_name?: string;
+  wheel_file_url?: string;
+  wheel_file_name?: string;
 }
 
 interface ProductCardProps {
@@ -38,13 +40,17 @@ export function ProductCard({ product, onImageUpload, onDelete }: ProductCardPro
   const [price, setPrice] = useState(product.price);
   const [fileUrl, setFileUrl] = useState(product.file_url || '');
   const [fileName, setFileName] = useState(product.file_name || '');
+  const [wheelFileUrl, setWheelFileUrl] = useState(product.wheel_file_url || '');
+  const [wheelFileName, setWheelFileName] = useState(product.wheel_file_name || '');
   const [isGenerating, setIsGenerating] = useState(false);
   const [isUploadingFile, setIsUploadingFile] = useState(false);
+  const [isUploadingWheelFile, setIsUploadingWheelFile] = useState(false);
   const [isPriceModalOpen, setIsPriceModalOpen] = useState(false);
   const [isDescriptionModalOpen, setIsDescriptionModalOpen] = useState(false);
   const [isNameModalOpen, setIsNameModalOpen] = useState(false);
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const wheelFileInputRef = useRef<HTMLInputElement>(null);
   const hasChecked = useRef(false);
   const isAdmin = profile?.role === 'admin';
   const isInCart = cart.some(item => item.id === product.id);
@@ -372,6 +378,121 @@ export function ProductCard({ product, onImageUpload, onDelete }: ProductCardPro
     }
   };
 
+  const handleWheelFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file || !isAdmin) return;
+
+    setIsUploadingWheelFile(true);
+
+    try {
+      const maxSize = 50 * 1024 * 1024;
+      let fileToUpload: File | Blob = file;
+      let uploadFileName = file.name;
+      let originalFileName = file.name;
+
+      let wasCompressed = false;
+
+      const isAlreadyCompressed = /\.(zip|rar|7z)$/i.test(file.name);
+
+      if (file.size > maxSize) {
+        if (isAlreadyCompressed) {
+          alert(
+            `Arquivo muito grande (${(file.size / 1024 / 1024).toFixed(2)}MB).\n\n` +
+            `O arquivo já está comprimido e excede o limite de 50MB.\n` +
+            `Por favor, reduza o tamanho do arquivo ou divida em partes menores.`
+          );
+          setIsUploadingWheelFile(false);
+          if (wheelFileInputRef.current) {
+            wheelFileInputRef.current.value = '';
+          }
+          return;
+        }
+
+        try {
+          const zip = new JSZip();
+          zip.file(file.name, file);
+
+          const zipBlob = await zip.generateAsync({
+            type: 'blob',
+            compression: 'DEFLATE',
+            compressionOptions: {
+              level: 9
+            },
+            streamFiles: true
+          });
+
+          if (zipBlob.size > maxSize) {
+            alert(
+              `Mesmo após compressão, o arquivo ainda é muito grande (${(zipBlob.size / 1024 / 1024).toFixed(2)}MB).\n\n` +
+              `O limite é 50MB. Por favor, reduza o tamanho do arquivo original.`
+            );
+            setIsUploadingWheelFile(false);
+            if (wheelFileInputRef.current) {
+              wheelFileInputRef.current.value = '';
+            }
+            return;
+          }
+
+          fileToUpload = zipBlob;
+          uploadFileName = file.name.replace(/\.[^/.]+$/, '') + '.zip';
+          wasCompressed = true;
+        } catch (zipError) {
+          console.error('Error compressing file:', zipError);
+          alert('Erro ao comprimir arquivo. Tente novamente.');
+          setIsUploadingWheelFile(false);
+          if (wheelFileInputRef.current) {
+            wheelFileInputRef.current.value = '';
+          }
+          return;
+        }
+      }
+
+      const fileExt = uploadFileName.split('.').pop();
+      const filePath = `${product.id}_wheel.${fileExt}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('product-files')
+        .upload(filePath, fileToUpload, {
+          upsert: true,
+          contentType: uploadFileName.endsWith('.zip') ? 'application/zip' : (file.type || 'application/octet-stream'),
+        });
+
+      if (uploadError) throw uploadError;
+
+      const { error: updateError } = await supabase
+        .from('products')
+        .update({
+          wheel_file_url: filePath,
+          wheel_file_name: originalFileName
+        })
+        .eq('id', product.id);
+
+      if (updateError) throw updateError;
+
+      setWheelFileUrl(filePath);
+      setWheelFileName(originalFileName);
+
+      if (wasCompressed) {
+        alert('Arquivo da roda comprimido e adicionado ao card');
+      } else {
+        alert('Arquivo da roda enviado com sucesso!');
+      }
+    } catch (error: any) {
+      console.error('Error uploading wheel file:', error);
+
+      if (error.message?.includes('exceeded the maximum allowed size') || error.message?.includes('Payload too large')) {
+        alert(`Arquivo muito grande!\n\nTamanho: ${(file.size / 1024 / 1024).toFixed(2)} MB\nLimite: 50 MB`);
+      } else {
+        alert(`Erro ao enviar arquivo da roda: ${error.message || 'Tente novamente.'}`);
+      }
+    } finally {
+      setIsUploadingWheelFile(false);
+      if (wheelFileInputRef.current) {
+        wheelFileInputRef.current.value = '';
+      }
+    }
+  };
+
   const handleBuyClick = async () => {
     if (isProcessingPayment) return;
 
@@ -436,7 +557,7 @@ export function ProductCard({ product, onImageUpload, onDelete }: ProductCardPro
   };
 
   const handleAddToCart = () => {
-    if (!fileUrl) {
+    if (!fileUrl && !wheelFileUrl) {
       alert('Produto sem arquivo disponível');
       return;
     }
@@ -448,6 +569,8 @@ export function ProductCard({ product, onImageUpload, onDelete }: ProductCardPro
       image_url: product.image_url,
     });
   };
+
+  const hasAnyFile = fileUrl || wheelFileUrl;
 
   return (
     <>
@@ -553,7 +676,44 @@ export function ProductCard({ product, onImageUpload, onDelete }: ProductCardPro
               </button>
               {fileName && (
                 <p className="text-xs text-gray-400 mb-2 truncate" title={fileName}>
-                  📎 {fileName}
+                  📎 Carro: {fileName}
+                </p>
+              )}
+              <input
+                ref={wheelFileInputRef}
+                type="file"
+                onChange={handleWheelFileUpload}
+                className="hidden"
+                accept=".zip,.rar,.7z,.blend,.fbx,.obj,.stl,.max,.c4d"
+              />
+              <button
+                onClick={() => wheelFileInputRef.current?.click()}
+                disabled={isUploadingWheelFile}
+                className={`w-full ${wheelFileUrl ? 'bg-green-600 hover:bg-green-700' : 'bg-purple-600 hover:bg-purple-700'} disabled:bg-purple-800 disabled:cursor-not-allowed text-white py-3 rounded-lg font-bold text-sm transition-colors flex items-center justify-center gap-2 mb-2`}
+              >
+                {isUploadingWheelFile ? (
+                  <>
+                    <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    <span>Enviando Roda...</span>
+                  </>
+                ) : wheelFileUrl ? (
+                  <>
+                    <FileCheck className="w-5 h-5" />
+                    <span>Arquivo Roda incluído</span>
+                  </>
+                ) : (
+                  <>
+                    <FileUp className="w-5 h-5" />
+                    <span>Upload Arquivo Roda</span>
+                  </>
+                )}
+              </button>
+              {wheelFileName && (
+                <p className="text-xs text-gray-400 mb-2 truncate" title={wheelFileName}>
+                  📎 Roda: {wheelFileName}
                 </p>
               )}
             </>
@@ -561,9 +721,9 @@ export function ProductCard({ product, onImageUpload, onDelete }: ProductCardPro
           {!isAdmin && (
             <button
               onClick={handleAddToCart}
-              disabled={!fileUrl || isInCart}
+              disabled={!hasAnyFile || isInCart}
               className="w-full bg-gray-700 hover:bg-gray-600 disabled:bg-gray-800 disabled:cursor-not-allowed text-white py-3 rounded-lg font-bold text-sm transition-colors z-20 relative mt-auto flex items-center justify-center gap-2 mb-2"
-              title={!fileUrl ? 'Produto sem arquivo disponível' : isInCart ? 'Já está no carrinho' : ''}
+              title={!hasAnyFile ? 'Produto sem arquivo disponível' : isInCart ? 'Já está no carrinho' : ''}
             >
               <ShoppingCart className="w-5 h-5" />
               <span>{isInCart ? 'No Carrinho' : 'Adicionar ao Carrinho'}</span>
@@ -571,9 +731,9 @@ export function ProductCard({ product, onImageUpload, onDelete }: ProductCardPro
           )}
           <button
             onClick={handleBuyClick}
-            disabled={isProcessingPayment || !fileUrl}
+            disabled={isProcessingPayment || !hasAnyFile}
             className="w-full bg-red-600 hover:bg-red-700 disabled:bg-red-800 disabled:cursor-not-allowed text-white py-3 rounded-lg font-bold text-sm transition-colors z-20 relative mt-auto flex items-center justify-center gap-2"
-            title={!fileUrl ? 'Produto sem arquivo disponível' : ''}
+            title={!hasAnyFile ? 'Produto sem arquivo disponível' : ''}
           >
             {isProcessingPayment ? (
               <>

@@ -19,6 +19,8 @@ interface Purchase {
     formats: string[];
     file_url?: string;
     file_name?: string;
+    wheel_file_url?: string;
+    wheel_file_name?: string;
   };
 }
 
@@ -52,7 +54,9 @@ export default function PurchasesPage() {
             brand,
             formats,
             file_url,
-            file_name
+            file_name,
+            wheel_file_url,
+            wheel_file_name
           )
         `)
         .eq('user_id', user?.id)
@@ -88,7 +92,7 @@ export default function PurchasesPage() {
     return `R$ ${amount.toFixed(2).replace('.', ',')}`;
   };
 
-  const handleDownload = async (filePath: string) => {
+  const handleDownload = async (filePath: string, fileName?: string) => {
     try {
       const { data, error } = await supabase.storage
         .from('product-files')
@@ -103,7 +107,7 @@ export default function PurchasesPage() {
       if (data?.signedUrl) {
         const link = document.createElement('a');
         link.href = data.signedUrl;
-        link.download = filePath.split('/').pop() || 'download';
+        link.download = fileName || filePath.split('/').pop() || 'download';
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -111,6 +115,26 @@ export default function PurchasesPage() {
     } catch (error) {
       console.error('Error downloading file:', error);
       alert('Erro ao baixar arquivo. Tente novamente.');
+    }
+  };
+
+  const handleDownloadAll = async (product: Purchase['products']) => {
+    const files = [];
+    if (product.file_url) {
+      files.push({ url: product.file_url, name: product.file_name });
+    }
+    if (product.wheel_file_url) {
+      files.push({ url: product.wheel_file_url, name: product.wheel_file_name });
+    }
+
+    if (files.length === 0) {
+      alert('Nenhum arquivo disponível para download.');
+      return;
+    }
+
+    for (const file of files) {
+      await handleDownload(file.url, file.name);
+      await new Promise(resolve => setTimeout(resolve, 500));
     }
   };
 
@@ -174,13 +198,13 @@ export default function PurchasesPage() {
                     <div className="text-white font-bold text-xl mb-4">
                       {formatPrice(purchase.amount_paid)}
                     </div>
-                    {purchase.products.file_url ? (
+                    {purchase.products.file_url || purchase.products.wheel_file_url ? (
                       <button
-                        onClick={() => handleDownload(purchase.products.file_url!)}
+                        onClick={() => handleDownloadAll(purchase.products)}
                         className="w-full bg-red-600 hover:bg-red-700 text-white py-3 rounded-lg font-bold text-sm transition-colors flex items-center justify-center gap-2"
                       >
                         <Download className="w-4 h-4" />
-                        Baixar Arquivos
+                        Baixar Arquivos ({[purchase.products.file_url, purchase.products.wheel_file_url].filter(Boolean).length})
                       </button>
                     ) : (
                       <div className="w-full bg-gray-700 text-gray-400 py-3 rounded-lg font-bold text-sm text-center">
