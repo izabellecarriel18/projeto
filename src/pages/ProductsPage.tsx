@@ -151,6 +151,7 @@ export default function ProductsPage() {
     'RODA (GENERICAS)',
     'SUBARU',
     'TOYOTA',
+    'VITTORIA',
     'VOLCANO',
     'VOLVO',
     'VOSSEN',
