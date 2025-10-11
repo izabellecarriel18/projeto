@@ -246,18 +246,35 @@ export function ProductCard({ product, onImageUpload, onDelete }: ProductCardPro
     setIsUploadingFile(true);
 
     try {
-      const maxSize = 50 * 1024 * 1024;
+      const maxSize = 500 * 1024 * 1024;
       let fileToUpload: File | Blob = file;
       let uploadFileName = file.name;
       let originalFileName = file.name;
 
       let wasCompressed = false;
 
+      console.log(`[Upload Debug] File name: ${file.name}`);
       console.log(`[Upload Debug] File size: ${file.size} bytes (${(file.size / 1024).toFixed(2)} KB, ${(file.size / 1024 / 1024).toFixed(2)} MB)`);
       console.log(`[Upload Debug] Max size: ${maxSize} bytes (${(maxSize / 1024 / 1024).toFixed(2)} MB)`);
       console.log(`[Upload Debug] File exceeds limit: ${file.size > maxSize}`);
 
+      const isAlreadyCompressed = /\.(zip|rar|7z)$/i.test(file.name);
+      console.log(`[Upload Debug] File is already compressed: ${isAlreadyCompressed}`);
+
       if (file.size > maxSize) {
+        if (isAlreadyCompressed) {
+          alert(
+            `Arquivo muito grande (${(file.size / 1024 / 1024).toFixed(2)}MB).\n\n` +
+            `O arquivo já está comprimido e excede o limite de 500MB.\n` +
+            `Por favor, reduza o tamanho do arquivo ou divida em partes menores.`
+          );
+          setIsUploadingFile(false);
+          if (fileInputRef.current) {
+            fileInputRef.current.value = '';
+          }
+          return;
+        }
+
         try {
           const zip = new JSZip();
           zip.file(file.name, file);
@@ -273,7 +290,7 @@ export function ProductCard({ product, onImageUpload, onDelete }: ProductCardPro
           if (zipBlob.size > maxSize) {
             alert(
               `Mesmo após compressão, o arquivo ainda é muito grande (${(zipBlob.size / 1024 / 1024).toFixed(2)}MB).\n\n` +
-              `O limite é 50MB. Por favor, reduza o tamanho do arquivo original.`
+              `O limite é 500MB. Por favor, reduza o tamanho do arquivo original.`
             );
             setIsUploadingFile(false);
             if (fileInputRef.current) {
@@ -335,7 +352,7 @@ export function ProductCard({ product, onImageUpload, onDelete }: ProductCardPro
       });
 
       if (error.message?.includes('exceeded the maximum allowed size') || error.message?.includes('Payload too large')) {
-        alert(`Arquivo muito grande!\n\nTamanho: ${(file.size / 1024).toFixed(2)} KB\nLimite: 50 MB`);
+        alert(`Arquivo muito grande!\n\nTamanho: ${(file.size / 1024 / 1024).toFixed(2)} MB\nLimite: 500 MB`);
       } else {
         alert(`Erro ao enviar arquivo: ${error.message || 'Tente novamente.'}`);
       }
