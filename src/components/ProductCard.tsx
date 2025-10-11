@@ -276,6 +276,7 @@ export function ProductCard({ product, onImageUpload, onDelete }: ProductCardPro
         }
 
         try {
+          console.log('[Compression] Starting compression with maximum settings...');
           const zip = new JSZip();
           zip.file(file.name, file);
 
@@ -284,8 +285,12 @@ export function ProductCard({ product, onImageUpload, onDelete }: ProductCardPro
             compression: 'DEFLATE',
             compressionOptions: {
               level: 9
-            }
+            },
+            streamFiles: true
           });
+
+          console.log(`[Compression] Original: ${(file.size / 1024 / 1024).toFixed(2)}MB -> Compressed: ${(zipBlob.size / 1024 / 1024).toFixed(2)}MB`);
+          console.log(`[Compression] Compression ratio: ${((1 - zipBlob.size / file.size) * 100).toFixed(1)}%`);
 
           if (zipBlob.size > maxSize) {
             alert(
