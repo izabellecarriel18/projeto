@@ -69,7 +69,7 @@ export default function CoursesPage() {
             Aprenda técnicas profissionais de modelagem automotiva 3D
           </p>
         </div>
-        <div className="max-w-2xl mx-auto space-y-6 mb-12">
+        <div className="max-w-4xl mx-auto space-y-6 mb-12">
           {courses.map((course, index) => {
             const courseImage = courseImages[index];
             return (
@@ -103,7 +103,7 @@ export default function CoursesPage() {
           )})}
         </div>
 
-        <div className="border border-gray-800 rounded-lg p-8 mb-8 bg-black/40 backdrop-blur-sm">
+        <div className="max-w-4xl mx-auto border border-gray-800 rounded-lg p-8 mb-8 bg-black/40 backdrop-blur-sm">
           <h2 className="text-2xl font-bold text-white mb-6">Garantias e Suporte</h2>
           <div className="space-y-3">
             {benefits.map((benefit, index) => (
@@ -115,7 +115,7 @@ export default function CoursesPage() {
           </div>
         </div>
 
-        <div className="border border-gray-800 rounded-lg p-8 mb-8 bg-black">
+        <div className="max-w-4xl mx-auto border border-gray-800 rounded-lg p-8 mb-8 bg-black">
           <h2 className="text-2xl font-bold text-white mb-6">{checkout.title}</h2>
           <div className="space-y-3">
             {checkout.items.map((item, index) => (
