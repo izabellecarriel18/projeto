@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
-import { Upload, RefreshCw } from 'lucide-react';
+import { Upload, RefreshCw, Trash2 } from 'lucide-react';
 import { EditPurchaseLinkModal } from './EditPurchaseLinkModal';
 import { EditPriceModal } from './EditPriceModal';
 import { EditDescriptionModal } from './EditDescriptionModal';
@@ -22,11 +22,12 @@ interface Product {
 interface ProductCardProps {
   product: Product;
   onImageUpload?: (productId: string) => void;
+  onDelete?: () => void;
 }
 
 const generatingCache = new Set<string>();
 
-export function ProductCard({ product, onImageUpload }: ProductCardProps) {
+export function ProductCard({ product, onImageUpload, onDelete }: ProductCardProps) {
   const { profile } = useAuth();
   const [name, setName] = useState(product.name);
   const [description, setDescription] = useState(product.description || '');
@@ -220,6 +221,33 @@ export function ProductCard({ product, onImageUpload }: ProductCardProps) {
     setIsNameModalOpen(true);
   };
 
+  const handleDelete = async () => {
+    if (!isAdmin) return;
+
+    const confirmDelete = confirm(`Tem certeza que deseja excluir "${name}"?`);
+    if (!confirmDelete) return;
+
+    try {
+      const { error } = await supabase
+        .from('products')
+        .delete()
+        .eq('id', product.id);
+
+      if (error) {
+        console.error('Error deleting product:', error);
+        alert('Erro ao excluir produto');
+        return;
+      }
+
+      if (onDelete) {
+        onDelete();
+      }
+    } catch (error) {
+      console.error('Error deleting product:', error);
+      alert('Erro ao excluir produto');
+    }
+  };
+
   const handleBuyClick = () => {
     if (isAdmin) {
       setIsLinkModalOpen(true);
@@ -252,6 +280,15 @@ export function ProductCard({ product, onImageUpload }: ProductCardProps) {
                 <Upload className="w-10 h-10 text-white mx-auto mb-2" />
                 <span className="text-white text-sm font-semibold">Alterar Imagem</span>
               </div>
+            </button>
+          )}
+          {isAdmin && (
+            <button
+              onClick={handleDelete}
+              className="absolute top-3 right-3 bg-red-600 hover:bg-red-700 text-white p-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity z-20"
+              title="Excluir produto"
+            >
+              <Trash2 className="w-5 h-5" />
             </button>
           )}
         </div>

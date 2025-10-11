@@ -349,6 +349,7 @@ export default function ProductsPage() {
                 key={product.id}
                 product={product}
                 onImageUpload={isAdmin ? handleImageUpload : undefined}
+                onDelete={isAdmin ? loadProducts : undefined}
               />
             ))}
           </div>
