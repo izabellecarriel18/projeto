@@ -267,16 +267,6 @@ export default function ProductsPage() {
 
           {selectedCategory === 'solid_cars' && (
             <div className="flex flex-wrap gap-1.5 sm:gap-2 mb-4 sm:mb-6">
-              <button
-                onClick={() => setSelectedBrand('all')}
-                className={`px-2.5 sm:px-4 py-1.5 rounded text-xs sm:text-sm font-medium transition-all ${
-                  selectedBrand === 'all'
-                    ? 'bg-red-600 text-white'
-                    : 'bg-gray-800 text-white hover:bg-gray-700'
-                }`}
-              >
-                TODOS
-              </button>
               {solidCarsBrands.map((brand) => (
                 <button
                   key={brand}
@@ -295,16 +285,6 @@ export default function ProductsPage() {
 
           {selectedCategory === 'complete_cars' && (
             <div className="flex flex-wrap gap-1.5 sm:gap-2 mb-4 sm:mb-6">
-              <button
-                onClick={() => setSelectedBrand('all')}
-                className={`px-2.5 sm:px-4 py-1.5 rounded text-xs sm:text-sm font-medium transition-all ${
-                  selectedBrand === 'all'
-                    ? 'bg-red-600 text-white'
-                    : 'bg-gray-800 text-white hover:bg-gray-700'
-                }`}
-              >
-                TODOS
-              </button>
               {completeCarsBrands.map((brand) => (
                 <button
                   key={brand}
@@ -323,16 +303,6 @@ export default function ProductsPage() {
 
           {selectedCategory === 'wheels' && (
             <div className="flex flex-wrap gap-1.5 sm:gap-2 mb-4 sm:mb-6">
-              <button
-                onClick={() => setSelectedBrand('all')}
-                className={`px-2.5 sm:px-4 py-1.5 rounded text-xs sm:text-sm font-medium transition-all ${
-                  selectedBrand === 'all'
-                    ? 'bg-red-600 text-white'
-                    : 'bg-gray-800 text-white hover:bg-gray-700'
-                }`}
-              >
-                TODOS
-              </button>
               {wheelsBrands.map((brand) => (
                 <button
                   key={brand}
