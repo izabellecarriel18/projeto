@@ -69,43 +69,7 @@ export default function CoursesPage() {
             Aprenda técnicas profissionais de modelagem automotiva 3D
           </p>
         </div>
-        <div className="lg:hidden overflow-x-auto scrollbar-hide mb-12">
-          <div className="flex gap-6 pb-4" style={{ width: 'max-content' }}>
-            {courses.map((course, index) => {
-              const courseImage = courseImages[index];
-              return (
-              <div
-                key={index}
-                className="border border-gray-800 rounded-lg overflow-hidden hover:border-gray-700 transition-all flex-shrink-0"
-                style={{ width: '340px' }}
-              >
-                {courseImage && (
-                  <EditableImage
-                    slotId={courseImage.slot_id}
-                    currentUrl={courseImage.image_url || courseImage.default_url}
-                    isAdmin={isAdmin}
-                    onUpdate={loadCourseImages}
-                    className="aspect-video bg-gray-900"
-                    alt={course.title}
-                  />
-                )}
-                <div className="p-6 bg-black/40 backdrop-blur-sm">
-                  <h3 className="text-white font-bold text-xl mb-3">{course.title}</h3>
-                  <p className="text-white text-sm mb-4 leading-relaxed">{course.description}</p>
-
-                  <div className="bg-red-600 text-white text-center py-2 px-4 rounded mb-4 text-sm">
-                    {course.price}
-                  </div>
-
-                  <button className="w-full bg-red-600 hover:bg-red-700 hover:scale-105 text-white py-3 rounded font-semibold transition-all">
-                    Ver Conteúdo
-                  </button>
-                </div>
-              </div>
-            )})}
-          </div>
-        </div>
-        <div className="hidden lg:grid lg:grid-cols-2 gap-6 mb-12">
+        <div className="max-w-2xl mx-auto space-y-6 mb-12">
           {courses.map((course, index) => {
             const courseImage = courseImages[index];
             return (
@@ -131,7 +95,7 @@ export default function CoursesPage() {
                   {course.price}
                 </div>
 
-                <button className="w-full bg-transparent border border-gray-700 hover:border-red-600 text-white py-3 rounded font-semibold transition-all">
+                <button className="w-full bg-red-600 hover:bg-red-700 hover:scale-105 text-white py-3 rounded font-semibold transition-all">
                   Ver Conteúdo
                 </button>
               </div>
