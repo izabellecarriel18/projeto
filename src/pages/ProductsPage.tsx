@@ -232,14 +232,14 @@ export default function ProductsPage() {
     <div className="min-h-screen pt-20 sm:pt-24 pb-12 sm:pb-20">
       <div className="container mx-auto px-4 sm:px-6">
         <div className="text-center mb-8 sm:mb-12">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-3 sm:mb-4">Modelos 3D</h1>
-          <p className="text-base sm:text-lg md:text-xl text-gray-700">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-3 sm:mb-4">Modelos 3D</h1>
+          <p className="text-base sm:text-lg md:text-xl text-white">
             Biblioteca completa de modelos automotivos profissionais
           </p>
         </div>
 
 
-        <div className="bg-white/80 backdrop-blur border border-gray-200 rounded-lg p-4 sm:p-6 mb-8 sm:mb-12 shadow-sm">
+        <div className="backdrop-blur border border-gray-800 rounded-lg p-4 sm:p-6 mb-8 sm:mb-12">
           <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
             {categories.map((cat) => (
               <button
@@ -248,7 +248,7 @@ export default function ProductsPage() {
                 className={`px-3 sm:px-4 md:px-6 py-2 rounded-lg font-medium text-sm sm:text-base transition-all ${
                   selectedCategory === cat.id
                     ? 'bg-red-600 text-white'
-                    : 'bg-gray-100 text-gray-900 hover:bg-gray-200'
+                    : 'bg-gray-800 text-white hover:bg-gray-700'
                 }`}
               >
                 {cat.label}
@@ -266,7 +266,7 @@ export default function ProductsPage() {
                 className={`px-2.5 sm:px-4 py-1.5 rounded text-xs sm:text-sm font-medium transition-all ${
                   selectedBrand === 'all'
                     ? 'bg-red-600 text-white'
-                    : 'bg-gray-100 text-gray-900 hover:bg-gray-200'
+                    : 'bg-gray-800 text-white hover:bg-gray-700'
                 }`}
               >
                 TODOS
@@ -278,7 +278,7 @@ export default function ProductsPage() {
                   className={`px-2.5 sm:px-4 py-1.5 rounded text-xs sm:text-sm font-medium transition-all ${
                     selectedBrand === brand
                       ? 'bg-red-600 text-white'
-                      : 'bg-gray-100 text-gray-900 hover:bg-gray-200'
+                      : 'bg-gray-800 text-white hover:bg-gray-700'
                   }`}
                 >
                   {brand}
@@ -294,7 +294,7 @@ export default function ProductsPage() {
                 className={`px-2.5 sm:px-4 py-1.5 rounded text-xs sm:text-sm font-medium transition-all ${
                   selectedBrand === 'all'
                     ? 'bg-red-600 text-white'
-                    : 'bg-gray-100 text-gray-900 hover:bg-gray-200'
+                    : 'bg-gray-800 text-white hover:bg-gray-700'
                 }`}
               >
                 TODOS
@@ -306,7 +306,7 @@ export default function ProductsPage() {
                   className={`px-2.5 sm:px-4 py-1.5 rounded text-xs sm:text-sm font-medium transition-all ${
                     selectedBrand === brand
                       ? 'bg-red-600 text-white'
-                      : 'bg-gray-100 text-gray-900 hover:bg-gray-200'
+                      : 'bg-gray-800 text-white hover:bg-gray-700'
                   }`}
                 >
                   {brand}
@@ -322,7 +322,7 @@ export default function ProductsPage() {
                 className={`px-2.5 sm:px-4 py-1.5 rounded text-xs sm:text-sm font-medium transition-all ${
                   selectedBrand === 'all'
                     ? 'bg-red-600 text-white'
-                    : 'bg-gray-100 text-gray-900 hover:bg-gray-200'
+                    : 'bg-gray-800 text-white hover:bg-gray-700'
                 }`}
               >
                 TODOS
@@ -334,7 +334,7 @@ export default function ProductsPage() {
                   className={`px-2.5 sm:px-4 py-1.5 rounded text-xs sm:text-sm font-medium transition-all ${
                     selectedBrand === brand
                       ? 'bg-red-600 text-white'
-                      : 'bg-gray-100 text-gray-900 hover:bg-gray-200'
+                      : 'bg-gray-800 text-white hover:bg-gray-700'
                   }`}
                 >
                   {brand}
@@ -344,8 +344,8 @@ export default function ProductsPage() {
           )}
 
           {selectedCategory === 'bus_truck' && (
-            <div className="bg-red-50 border border-red-200 rounded-lg p-4 sm:p-6 mb-4 sm:mb-6 text-center">
-              <p className="text-red-600 text-sm sm:text-base font-semibold uppercase">
+            <div className="bg-gray-900/50 border border-red-600/50 rounded-lg p-4 sm:p-6 mb-4 sm:mb-6 text-center">
+              <p className="text-red-500 text-sm sm:text-base font-semibold uppercase">
                 DEVEM SER SOLICITADAS AS CRIAÇÕES PELO PERFIL.
               </p>
             </div>
@@ -353,13 +353,13 @@ export default function ProductsPage() {
 
           {selectedCategory !== 'bus_truck' && (
             <div className="flex flex-1 relative">
-              <Search className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-gray-400" />
+              <Search className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-white" />
               <input
                 type="text"
                 placeholder="Buscar modelos..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full bg-white text-gray-900 text-sm sm:text-base pl-10 sm:pl-12 pr-3 sm:pr-4 py-2.5 sm:py-3 rounded-lg border border-gray-200 focus:border-red-600 focus:outline-none"
+                className="w-full bg-gray-800 text-white text-sm sm:text-base pl-10 sm:pl-12 pr-3 sm:pr-4 py-2.5 sm:py-3 rounded-lg border border-gray-700 focus:border-red-600 focus:outline-none"
               />
             </div>
           )}
@@ -367,8 +367,8 @@ export default function ProductsPage() {
 
         {selectedCategory === 'bus_truck' ? null : filteredProducts.length === 0 ? (
           <div className="text-center py-12 sm:py-20">
-            <ShoppingCart className="w-12 h-12 sm:w-16 sm:h-16 text-gray-400 mx-auto mb-4" />
-            <p className="text-gray-700 text-lg sm:text-xl">Nenhum produto encontrado</p>
+            <ShoppingCart className="w-12 h-12 sm:w-16 sm:h-16 text-white mx-auto mb-4" />
+            <p className="text-white text-lg sm:text-xl">Nenhum produto encontrado</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 sm:gap-10">
