@@ -61,33 +61,50 @@ Deno.serve(async (req: Request) => {
     const body = await req.json();
     console.log("Request body:", body);
 
-    const { productId, productName, price } = body;
+    const { productId, productName, price, items } = body;
 
-    if (!productId || !productName || price === undefined || price === null) {
-      console.error("Missing required fields:", { productId, productName, price });
-      throw new Error("Missing required fields: productId, productName, or price");
-    }
+    let lineItems;
+    let metadata: any = { userId: user.id };
 
-    const priceInCents = Math.round(Number(price) * 100);
+    if (items && Array.isArray(items) && items.length > 0) {
+      lineItems = items.map((item: any) => {
+        const priceInCents = Math.round(Number(item.price) * 100);
+        if (isNaN(priceInCents) || priceInCents <= 0) {
+          throw new Error(`Invalid price for item: ${item.name}`);
+        }
+        return {
+          price_data: {
+            currency: "brl",
+            product_data: {
+              name: item.name,
+            },
+            unit_amount: priceInCents,
+          },
+          quantity: 1,
+        };
+      });
 
-    if (isNaN(priceInCents) || priceInCents <= 0) {
-      console.error("Invalid price:", price, "converted to:", priceInCents);
-      throw new Error("Invalid price value");
-    }
+      metadata.productIds = items.map((item: any) => item.productId).join(',');
 
-    console.log("Creating checkout session with:", {
-      productId,
-      productName,
-      price,
-      priceInCents,
-      userEmail: user.email,
-    });
+      console.log("Creating checkout session for multiple items:", {
+        itemCount: items.length,
+        items: items.map((i: any) => ({ id: i.productId, name: i.name, price: i.price })),
+        userEmail: user.email,
+      });
+    } else {
+      if (!productId || !productName || price === undefined || price === null) {
+        console.error("Missing required fields:", { productId, productName, price });
+        throw new Error("Missing required fields: productId, productName, or price");
+      }
 
-    const isTestMode = stripeSecretKey.startsWith('sk_test_');
+      const priceInCents = Math.round(Number(price) * 100);
 
-    const sessionConfig: any = {
-      customer_email: user.email || undefined,
-      line_items: [
+      if (isNaN(priceInCents) || priceInCents <= 0) {
+        console.error("Invalid price:", price, "converted to:", priceInCents);
+        throw new Error("Invalid price value");
+      }
+
+      lineItems = [
         {
           price_data: {
             currency: "brl",
@@ -98,15 +115,29 @@ Deno.serve(async (req: Request) => {
           },
           quantity: 1,
         },
-      ],
+      ];
+
+      metadata.productId = productId;
+
+      console.log("Creating checkout session for single item:", {
+        productId,
+        productName,
+        price,
+        priceInCents,
+        userEmail: user.email,
+      });
+    }
+
+    const isTestMode = stripeSecretKey.startsWith('sk_test_');
+
+    const sessionConfig: any = {
+      customer_email: user.email || undefined,
+      line_items: lineItems,
       mode: "payment",
       payment_method_types: ["card"],
       success_url: `${req.headers.get("origin")}/produtos?success=true&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${req.headers.get("origin")}/produtos?canceled=true`,
-      metadata: {
-        productId,
-        userId: user.id,
-      },
+      metadata: metadata,
     };
 
     const session = await stripe.checkout.sessions.create(sessionConfig);

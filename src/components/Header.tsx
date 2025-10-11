@@ -1,7 +1,9 @@
-import { Zap, Menu, X, User, LogOut, ShoppingBag } from 'lucide-react';
+import { Zap, Menu, X, User, LogOut, ShoppingBag, ShoppingCart } from 'lucide-react';
 import { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
+import { useCart } from '../contexts/CartContext';
 import AuthModal from './AuthModal';
+import CartModal from './CartModal';
 
 interface HeaderProps {
   onNavigate: (page: string) => void;
@@ -11,7 +13,9 @@ interface HeaderProps {
 export default function Header({ onNavigate, currentPage }: HeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [cartModalOpen, setCartModalOpen] = useState(false);
   const { user, profile, loading, signOut } = useAuth();
+  const { totalItems } = useCart();
 
   const menuItems = [
     { id: 'home', label: 'MARCA' },
@@ -66,15 +70,29 @@ export default function Header({ onNavigate, currentPage }: HeaderProps) {
             {user && profile ? (
               <div className="hidden lg:flex items-center gap-4">
                 {profile.role !== 'admin' && (
-                  <button
-                    onClick={() => handleNavigation('purchases')}
-                    className={`flex items-center gap-2 transition-colors ${
-                      currentPage === 'purchases' ? 'text-red-600' : 'text-white hover:text-red-600'
-                    }`}
-                  >
-                    <ShoppingBag className="w-5 h-5" />
-                    <span className="text-sm font-medium">COMPRAS</span>
-                  </button>
+                  <>
+                    <button
+                      onClick={() => setCartModalOpen(true)}
+                      className="flex items-center gap-2 text-white hover:text-red-600 transition-colors relative"
+                    >
+                      <ShoppingCart className="w-5 h-5" />
+                      {totalItems > 0 && (
+                        <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
+                          {totalItems}
+                        </span>
+                      )}
+                      <span className="text-sm font-medium">CARRINHO</span>
+                    </button>
+                    <button
+                      onClick={() => handleNavigation('purchases')}
+                      className={`flex items-center gap-2 transition-colors ${
+                        currentPage === 'purchases' ? 'text-red-600' : 'text-white hover:text-red-600'
+                      }`}
+                    >
+                      <ShoppingBag className="w-5 h-5" />
+                      <span className="text-sm font-medium">COMPRAS</span>
+                    </button>
+                  </>
                 )}
                 <button
                   onClick={() => handleNavigation('profile')}
@@ -122,13 +140,30 @@ export default function Header({ onNavigate, currentPage }: HeaderProps) {
               {user && profile ? (
                 <>
                   {profile.role !== 'admin' && (
-                    <button
-                      onClick={() => handleNavigation('purchases')}
-                      className="flex items-center justify-center gap-2 text-white hover:text-red-600 transition-colors py-6 w-full border-b border-gray-700"
-                    >
-                      <ShoppingBag className="w-5 h-5" />
-                      <span className="text-lg font-medium">COMPRAS</span>
-                    </button>
+                    <>
+                      <button
+                        onClick={() => {
+                          setCartModalOpen(true);
+                          setMobileMenuOpen(false);
+                        }}
+                        className="flex items-center justify-center gap-2 text-white hover:text-red-600 transition-colors py-6 w-full border-b border-gray-700 relative"
+                      >
+                        <ShoppingCart className="w-5 h-5" />
+                        {totalItems > 0 && (
+                          <span className="absolute top-4 left-1/2 -ml-8 bg-red-600 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
+                            {totalItems}
+                          </span>
+                        )}
+                        <span className="text-lg font-medium">CARRINHO</span>
+                      </button>
+                      <button
+                        onClick={() => handleNavigation('purchases')}
+                        className="flex items-center justify-center gap-2 text-white hover:text-red-600 transition-colors py-6 w-full border-b border-gray-700"
+                      >
+                        <ShoppingBag className="w-5 h-5" />
+                        <span className="text-lg font-medium">COMPRAS</span>
+                      </button>
+                    </>
                   )}
                   <button
                     onClick={() => handleNavigation('profile')}
@@ -165,6 +200,7 @@ export default function Header({ onNavigate, currentPage }: HeaderProps) {
         )}
 
         <AuthModal isOpen={authModalOpen} onClose={() => setAuthModalOpen(false)} />
+        <CartModal isOpen={cartModalOpen} onClose={() => setCartModalOpen(false)} />
       </div>
     </header>
   );

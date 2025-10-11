@@ -53,23 +53,47 @@ Deno.serve(async (req: Request) => {
       case "checkout.session.completed": {
         const session = event.data.object as Stripe.Checkout.Session;
 
-        const { error } = await supabase
-          .from("user_purchases")
-          .insert({
+        if (session.metadata?.productIds) {
+          const productIds = session.metadata.productIds.split(',');
+          const purchases = productIds.map((productId: string) => ({
             user_id: session.metadata?.userId,
-            product_id: session.metadata?.productId,
+            product_id: productId,
             stripe_session_id: session.id,
             stripe_payment_intent: session.payment_intent as string,
-            amount_paid: (session.amount_total || 0) / 100,
+            amount_paid: (session.amount_total || 0) / 100 / productIds.length,
             currency: session.currency || "brl",
             status: "completed",
             purchased_at: new Date().toISOString(),
-          });
+          }));
 
-        if (error) {
-          console.error("Error creating purchase:", error);
-        } else {
-          console.log("Purchase created successfully for user:", session.metadata?.userId);
+          const { error } = await supabase
+            .from("user_purchases")
+            .insert(purchases);
+
+          if (error) {
+            console.error("Error creating purchases:", error);
+          } else {
+            console.log(`${purchases.length} purchases created successfully for user:`, session.metadata?.userId);
+          }
+        } else if (session.metadata?.productId) {
+          const { error } = await supabase
+            .from("user_purchases")
+            .insert({
+              user_id: session.metadata?.userId,
+              product_id: session.metadata?.productId,
+              stripe_session_id: session.id,
+              stripe_payment_intent: session.payment_intent as string,
+              amount_paid: (session.amount_total || 0) / 100,
+              currency: session.currency || "brl",
+              status: "completed",
+              purchased_at: new Date().toISOString(),
+            });
+
+          if (error) {
+            console.error("Error creating purchase:", error);
+          } else {
+            console.log("Purchase created successfully for user:", session.metadata?.userId);
+          }
         }
         break;
       }

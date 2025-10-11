@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
-import { Upload, RefreshCw, Trash2, FileUp, FileCheck } from 'lucide-react';
+import { useCart } from '../contexts/CartContext';
+import { Upload, RefreshCw, Trash2, FileUp, FileCheck, ShoppingCart } from 'lucide-react';
 import { EditPriceModal } from './EditPriceModal';
 import { EditDescriptionModal } from './EditDescriptionModal';
 import { EditProductNameModal } from './EditProductNameModal';
@@ -31,6 +32,7 @@ const generatingCache = new Set<string>();
 
 export function ProductCard({ product, onImageUpload, onDelete }: ProductCardProps) {
   const { profile } = useAuth();
+  const { addToCart, cart } = useCart();
   const [name, setName] = useState(product.name);
   const [description, setDescription] = useState(product.description || '');
   const [price, setPrice] = useState(product.price);
@@ -45,6 +47,7 @@ export function ProductCard({ product, onImageUpload, onDelete }: ProductCardPro
   const fileInputRef = useRef<HTMLInputElement>(null);
   const hasChecked = useRef(false);
   const isAdmin = profile?.role === 'admin';
+  const isInCart = cart.some(item => item.id === product.id);
 
   console.log('[ProductCard Debug]', {
     productId: product.id,
@@ -432,6 +435,20 @@ export function ProductCard({ product, onImageUpload, onDelete }: ProductCardPro
     }
   };
 
+  const handleAddToCart = () => {
+    if (!fileUrl) {
+      alert('Produto sem arquivo disponível');
+      return;
+    }
+
+    addToCart({
+      id: product.id,
+      name: name,
+      price: price,
+      image_url: product.image_url,
+    });
+  };
+
   return (
     <>
       <div className="flex flex-col h-full bg-gray-900 border border-gray-800 rounded-lg overflow-hidden hover:border-gray-700 transition-colors">
@@ -540,6 +557,17 @@ export function ProductCard({ product, onImageUpload, onDelete }: ProductCardPro
                 </p>
               )}
             </>
+          )}
+          {!isAdmin && (
+            <button
+              onClick={handleAddToCart}
+              disabled={!fileUrl || isInCart}
+              className="w-full bg-gray-700 hover:bg-gray-600 disabled:bg-gray-800 disabled:cursor-not-allowed text-white py-3 rounded-lg font-bold text-sm transition-colors z-20 relative mt-auto flex items-center justify-center gap-2 mb-2"
+              title={!fileUrl ? 'Produto sem arquivo disponível' : isInCart ? 'Já está no carrinho' : ''}
+            >
+              <ShoppingCart className="w-5 h-5" />
+              <span>{isInCart ? 'No Carrinho' : 'Adicionar ao Carrinho'}</span>
+            </button>
           )}
           <button
             onClick={handleBuyClick}

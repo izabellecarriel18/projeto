@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { AuthProvider } from './contexts/AuthContext';
+import { CartProvider } from './contexts/CartContext';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import BackgroundPaths from './components/BackgroundPaths';
@@ -19,9 +20,10 @@ function App() {
 
   return (
     <AuthProvider>
-      <div className="min-h-screen">
-        <BackgroundPaths />
-        <Header onNavigate={handleNavigate} currentPage={currentPage} />
+      <CartProvider>
+        <div className="min-h-screen">
+          <BackgroundPaths />
+          <Header onNavigate={handleNavigate} currentPage={currentPage} />
 
       {currentPage === 'home' && <HomePage onNavigate={handleNavigate} />}
       {currentPage === 'products' && <ProductsPage />}
@@ -29,8 +31,9 @@ function App() {
       {currentPage === 'profile' && <ProfilePage />}
       {currentPage === 'purchases' && <PurchasesPage />}
 
-      <Footer />
-      </div>
+        <Footer />
+        </div>
+      </CartProvider>
     </AuthProvider>
   );
 }
