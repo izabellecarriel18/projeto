@@ -61,12 +61,15 @@ export default function CoursesPage() {
     }
   }
   return (
-    <div className="min-h-screen pt-20 pb-20">
-      <div className="container mx-auto">
-        <h1 className="text-3xl sm:text-4xl font-bold text-white text-center mb-8 sm:mb-12 px-4">
-          Cursos Disponíveis
-        </h1>
-        <div className="lg:hidden overflow-x-auto scrollbar-hide px-4 mb-12">
+    <div className="min-h-screen pt-20 sm:pt-24 pb-12 sm:pb-20">
+      <div className="container mx-auto px-4 sm:px-6">
+        <div className="text-center mb-8 sm:mb-12">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-3 sm:mb-4">Cursos Disponíveis</h1>
+          <p className="text-base sm:text-lg md:text-xl text-white">
+            Aprenda técnicas profissionais de modelagem automotiva 3D
+          </p>
+        </div>
+        <div className="lg:hidden overflow-x-auto scrollbar-hide mb-12">
           <div className="flex gap-6 pb-4" style={{ width: 'max-content' }}>
             {courses.map((course, index) => {
               const courseImage = courseImages[index];
@@ -102,7 +105,7 @@ export default function CoursesPage() {
             )})}
           </div>
         </div>
-        <div className="hidden lg:grid lg:grid-cols-2 gap-6 mb-12 px-4 sm:px-6">
+        <div className="hidden lg:grid lg:grid-cols-2 gap-6 mb-12">
           {courses.map((course, index) => {
             const courseImage = courseImages[index];
             return (
@@ -136,7 +139,7 @@ export default function CoursesPage() {
           )})}
         </div>
 
-        <div className="border border-gray-800 rounded-lg p-8 mb-8 bg-black/40 backdrop-blur-sm mx-4">
+        <div className="border border-gray-800 rounded-lg p-8 mb-8 bg-black/40 backdrop-blur-sm">
           <h2 className="text-2xl font-bold text-white mb-6">Garantias e Suporte</h2>
           <div className="space-y-3">
             {benefits.map((benefit, index) => (
@@ -148,7 +151,7 @@ export default function CoursesPage() {
           </div>
         </div>
 
-        <div className="border border-gray-800 rounded-lg p-8 mb-8 bg-black mx-4">
+        <div className="border border-gray-800 rounded-lg p-8 mb-8 bg-black">
           <h2 className="text-2xl font-bold text-white mb-6">{checkout.title}</h2>
           <div className="space-y-3">
             {checkout.items.map((item, index) => (
