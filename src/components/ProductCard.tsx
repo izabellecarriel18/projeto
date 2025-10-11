@@ -370,10 +370,20 @@ export function ProductCard({ product, onImageUpload, onDelete }: ProductCardPro
 
       if (!response.ok) {
         console.error('Checkout error:', data);
-        throw new Error(data.error || 'Failed to create checkout session');
+        if (data.code === 'STRIPE_NOT_CONFIGURED') {
+          alert(data.error);
+        } else {
+          alert(data.error || 'Erro ao processar pagamento. Tente novamente.');
+        }
+        setIsProcessingPayment(false);
+        return;
       }
 
-      window.location.href = data.url;
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        throw new Error('URL de checkout não recebida');
+      }
     } catch (error) {
       console.error('Error creating checkout:', error);
       alert('Erro ao processar pagamento. Tente novamente.');

@@ -19,7 +19,20 @@ Deno.serve(async (req: Request) => {
   try {
     const stripeSecretKey = Deno.env.get("STRIPE_SECRET_KEY");
     if (!stripeSecretKey) {
-      throw new Error("Stripe secret key not configured");
+      console.error("STRIPE_SECRET_KEY not configured in environment variables");
+      return new Response(
+        JSON.stringify({
+          error: "Pagamentos não configurados. Entre em contato com o administrador.",
+          code: "STRIPE_NOT_CONFIGURED"
+        }),
+        {
+          status: 503,
+          headers: {
+            ...corsHeaders,
+            "Content-Type": "application/json",
+          },
+        }
+      );
     }
 
     const stripe = new Stripe(stripeSecretKey);
