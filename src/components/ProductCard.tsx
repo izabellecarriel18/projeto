@@ -498,9 +498,9 @@ export function ProductCard({ product, onImageUpload, onDelete }: ProductCardPro
           )}
           <button
             onClick={handleBuyClick}
-            disabled={isProcessingPayment || (isAdmin && !fileUrl)}
+            disabled={isProcessingPayment || !fileUrl}
             className="w-full bg-red-600 hover:bg-red-700 disabled:bg-red-800 disabled:cursor-not-allowed text-white py-3 rounded-lg font-bold text-sm transition-colors z-20 relative mt-auto flex items-center justify-center gap-2"
-            title={isAdmin && !fileUrl ? 'Faça upload do arquivo primeiro' : ''}
+            title={!fileUrl ? 'Produto sem arquivo disponível' : ''}
           >
             {isProcessingPayment ? (
               <>
