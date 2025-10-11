@@ -65,15 +65,17 @@ export default function Header({ onNavigate, currentPage }: HeaderProps) {
           <>
             {user && profile ? (
               <div className="hidden lg:flex items-center gap-4">
-                <button
-                  onClick={() => handleNavigation('purchases')}
-                  className={`flex items-center gap-2 transition-colors ${
-                    currentPage === 'purchases' ? 'text-red-600' : 'text-white hover:text-red-600'
-                  }`}
-                >
-                  <ShoppingBag className="w-5 h-5" />
-                  <span className="text-sm font-medium">MINHAS COMPRAS</span>
-                </button>
+                {!profile.is_admin && (
+                  <button
+                    onClick={() => handleNavigation('purchases')}
+                    className={`flex items-center gap-2 transition-colors ${
+                      currentPage === 'purchases' ? 'text-red-600' : 'text-white hover:text-red-600'
+                    }`}
+                  >
+                    <ShoppingBag className="w-5 h-5" />
+                    <span className="text-sm font-medium">MINHAS COMPRAS</span>
+                  </button>
+                )}
                 <button
                   onClick={() => handleNavigation('profile')}
                   className="flex items-center gap-2 text-white hover:text-red-600 transition-colors"
@@ -119,13 +121,15 @@ export default function Header({ onNavigate, currentPage }: HeaderProps) {
               ))}
               {user && profile ? (
                 <>
-                  <button
-                    onClick={() => handleNavigation('purchases')}
-                    className="flex items-center justify-center gap-2 text-white hover:text-red-600 transition-colors py-6 w-full border-b border-gray-700"
-                  >
-                    <ShoppingBag className="w-5 h-5" />
-                    <span className="text-lg font-medium">MINHAS COMPRAS</span>
-                  </button>
+                  {!profile.is_admin && (
+                    <button
+                      onClick={() => handleNavigation('purchases')}
+                      className="flex items-center justify-center gap-2 text-white hover:text-red-600 transition-colors py-6 w-full border-b border-gray-700"
+                    >
+                      <ShoppingBag className="w-5 h-5" />
+                      <span className="text-lg font-medium">MINHAS COMPRAS</span>
+                    </button>
+                  )}
                   <button
                     onClick={() => handleNavigation('profile')}
                     className="flex items-center justify-center gap-2 text-white hover:text-red-600 transition-colors py-6 w-full border-b border-gray-700"
