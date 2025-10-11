@@ -65,7 +65,7 @@ export default function Header({ onNavigate, currentPage }: HeaderProps) {
           <>
             {user && profile ? (
               <div className="hidden lg:flex items-center gap-4">
-                {!profile.is_admin && (
+                {profile.role !== 'admin' && (
                   <button
                     onClick={() => handleNavigation('purchases')}
                     className={`flex items-center gap-2 transition-colors ${
@@ -121,7 +121,7 @@ export default function Header({ onNavigate, currentPage }: HeaderProps) {
               ))}
               {user && profile ? (
                 <>
-                  {!profile.is_admin && (
+                  {profile.role !== 'admin' && (
                     <button
                       onClick={() => handleNavigation('purchases')}
                       className="flex items-center justify-center gap-2 text-white hover:text-red-600 transition-colors py-6 w-full border-b border-gray-700"
