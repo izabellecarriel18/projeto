@@ -1,4 +1,4 @@
-import { CheckCircle, ChevronDown } from 'lucide-react';
+import { CheckCircle } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
@@ -32,20 +32,6 @@ const checkout = {
   ],
 };
 
-const faqs = [
-  {
-    question: 'Qual o nível recomendado para este curso?',
-    answer: 'Este curso é recomendado para iniciantes e intermediários que desejam aprimorar suas habilidades em modelagem automotiva 3D.',
-  },
-  {
-    question: 'O que aprendo no curso?',
-    answer: 'O curso te ensina modelagem 3D, que serve para impressão, jogos ou renderização.',
-  },
-  {
-    question: 'Os cursos oferecem certificado?',
-    answer: 'Sim, todos os cursos oferecem certificado de conclusão após a finalização de todos os módulos.',
-  },
-];
 
 interface SiteImage {
   slot_id: string;
@@ -56,7 +42,6 @@ interface SiteImage {
 
 export default function CoursesPage() {
   const { profile } = useAuth();
-  const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
   const [courseImages, setCourseImages] = useState<SiteImage[]>([]);
   const isAdmin = profile?.role === 'admin';
 
@@ -172,38 +157,6 @@ export default function CoursesPage() {
           </div>
         </div>
 
-        <div className="border border-gray-800 rounded-lg p-8 bg-black/40 backdrop-blur-sm mx-4">
-          <h2 className="text-2xl font-bold text-white mb-6">FAQ de Cursos</h2>
-          <div className="space-y-3">
-            {faqs.map((faq, index) => (
-              <div
-                key={index}
-                className="bg-gray-800/50 backdrop-blur border border-gray-700 rounded-lg overflow-hidden hover:border-red-600 transition-all"
-              >
-                <button
-                  onClick={() => setOpenFaqIndex(openFaqIndex === index ? null : index)}
-                  className="w-full px-4 sm:px-6 py-4 sm:py-5 flex items-center justify-between text-left"
-                >
-                  <span className="text-white font-semibold text-base sm:text-lg">
-                    {faq.question}
-                  </span>
-                  <ChevronDown
-                    className={`w-5 h-5 text-red-600 transition-transform flex-shrink-0 ml-2 ${
-                      openFaqIndex === index ? 'rotate-180' : ''
-                    }`}
-                  />
-                </button>
-                {openFaqIndex === index && (
-                  <div className="px-4 sm:px-6 pb-4 sm:pb-5">
-                    <p className="text-white text-sm sm:text-base leading-relaxed">
-                      {faq.answer}
-                    </p>
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
       </div>
     </div>
   );

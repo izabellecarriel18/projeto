@@ -33,6 +33,18 @@ const DEFAULT_FAQS: FAQItem[] = [
     question: 'Quais softwares são usados no curso?',
     answer: 'Nossos cursos utilizam 3ds Max, ensinando a instalação e seu uso.',
     category: 'general'
+  },
+  {
+    id: '4',
+    question: 'Qual o nível recomendado para este curso?',
+    answer: 'Este curso é recomendado para iniciantes e intermediários que desejam aprimorar suas habilidades em modelagem automotiva 3D.',
+    category: 'general'
+  },
+  {
+    id: '5',
+    question: 'O que aprendo no curso?',
+    answer: 'O curso te ensina modelagem 3D, que serve para impressão, jogos ou renderização.',
+    category: 'general'
   }
 ];
 
