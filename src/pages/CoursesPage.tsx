@@ -6,13 +6,13 @@ import EditableImage from '../components/EditableImage';
 
 const courses = [
   {
-    title: 'Modelagem Automotiva 3D Avançada',
+    title: 'Modelagem 3D Intermediária',
     description: 'Módulos: Modelagem de Superfícies, Topologia para Animação, Instalações de Interiores, Preparação para Impressão 3D, Shading, Rigging, Iluminação de Cenas, Workflow do Projeto.',
     price: 'preço: R$1.497,00 ou 12x de R$ 149,60 ou R$ 1.347,30',
     image: '/src/assets/image.png',
   },
   {
-    title: 'Modelagem Automotiva 3D Profissional',
+    title: 'Modelagem Automotiva 3D Avançada',
     description: 'Módulos: Modelos Avançados, Renderização Hiperrealista, Animação Automotiva, Workflow Profissional, Shading, Materiais PPR, Iluminação de Apresentação.',
     price: 'Compre R$4.990,00 ou 12x de R$ 499,00 ou R$ 4.491,00',
     image: '/src/assets/image.png',
