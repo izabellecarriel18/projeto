@@ -104,6 +104,7 @@ export default function ProductsPage() {
     'NIELSON',
     'NISSAN',
     'NOBLE',
+    'OUTROS',
     'PEUGEOT',
     'PORSCHE',
     'RENAULT',
@@ -114,6 +115,7 @@ export default function ProductsPage() {
     'TOYOTA',
     'TROLLER',
     'URBANO MASCARELLO',
+    'VOLKSWAGEN',
     'VOLVO',
   ];
 
