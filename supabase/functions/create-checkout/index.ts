@@ -35,7 +35,9 @@ Deno.serve(async (req: Request) => {
       );
     }
 
-    const stripe = new Stripe(stripeSecretKey);
+    const stripe = new Stripe(stripeSecretKey, {
+      apiVersion: '2024-11-20.acacia',
+    });
 
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
@@ -81,8 +83,9 @@ Deno.serve(async (req: Request) => {
       userEmail: user.email,
     });
 
-    const session = await stripe.checkout.sessions.create({
-      payment_method_types: ["card"],
+    const isTestMode = stripeSecretKey.startsWith('sk_test_');
+
+    const sessionConfig: any = {
       customer_email: user.email || undefined,
       line_items: [
         {
@@ -103,7 +106,13 @@ Deno.serve(async (req: Request) => {
         productId,
         userId: user.id,
       },
-    });
+    };
+
+    if (isTestMode) {
+      sessionConfig.payment_method_types = ["card"];
+    }
+
+    const session = await stripe.checkout.sessions.create(sessionConfig);
 
     console.log("Checkout session created successfully:", session.id);
 
