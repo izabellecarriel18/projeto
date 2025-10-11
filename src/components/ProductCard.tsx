@@ -557,8 +557,8 @@ export function ProductCard({ product, onImageUpload, onDelete }: ProductCardPro
   };
 
   const handleAddToCart = () => {
-    if (!fileUrl && !wheelFileUrl) {
-      alert('Produto sem arquivo disponível');
+    if (!fileUrl || !wheelFileUrl) {
+      alert('Este produto precisa ter os 2 arquivos (carro e roda) disponíveis');
       return;
     }
 
@@ -570,7 +570,7 @@ export function ProductCard({ product, onImageUpload, onDelete }: ProductCardPro
     });
   };
 
-  const hasAnyFile = fileUrl || wheelFileUrl;
+  const hasBothFiles = fileUrl && wheelFileUrl;
 
   return (
     <>
@@ -721,9 +721,9 @@ export function ProductCard({ product, onImageUpload, onDelete }: ProductCardPro
           {!isAdmin && (
             <button
               onClick={handleAddToCart}
-              disabled={!hasAnyFile || isInCart}
+              disabled={!hasBothFiles || isInCart}
               className="w-full bg-gray-700 hover:bg-gray-600 disabled:bg-gray-800 disabled:cursor-not-allowed text-white py-3 rounded-lg font-bold text-sm transition-colors z-20 relative mt-auto flex items-center justify-center gap-2 mb-2"
-              title={!hasAnyFile ? 'Produto sem arquivo disponível' : isInCart ? 'Já está no carrinho' : ''}
+              title={!hasBothFiles ? 'Produto precisa ter os 2 arquivos (carro e roda)' : isInCart ? 'Já está no carrinho' : ''}
             >
               <ShoppingCart className="w-5 h-5" />
               <span>{isInCart ? 'No Carrinho' : 'Adicionar ao Carrinho'}</span>
@@ -731,9 +731,9 @@ export function ProductCard({ product, onImageUpload, onDelete }: ProductCardPro
           )}
           <button
             onClick={handleBuyClick}
-            disabled={isProcessingPayment || !hasAnyFile}
+            disabled={isProcessingPayment || !hasBothFiles}
             className="w-full bg-red-600 hover:bg-red-700 disabled:bg-red-800 disabled:cursor-not-allowed text-white py-3 rounded-lg font-bold text-sm transition-colors z-20 relative mt-auto flex items-center justify-center gap-2"
-            title={!hasAnyFile ? 'Produto sem arquivo disponível' : ''}
+            title={!hasBothFiles ? 'Produto precisa ter os 2 arquivos (carro e roda)' : ''}
           >
             {isProcessingPayment ? (
               <>
