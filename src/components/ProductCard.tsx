@@ -370,10 +370,13 @@ export function ProductCard({ product, onImageUpload, onDelete }: ProductCardPro
 
       if (!response.ok) {
         console.error('Checkout error:', data);
+        console.error('Checkout error details:', data.details);
         if (data.code === 'STRIPE_NOT_CONFIGURED') {
           alert(data.error);
         } else {
-          alert(data.error || 'Erro ao processar pagamento. Tente novamente.');
+          const errorMsg = data.error || 'Erro ao processar pagamento. Tente novamente.';
+          alert(errorMsg);
+          console.log('Error message shown to user:', errorMsg);
         }
         setIsProcessingPayment(false);
         return;

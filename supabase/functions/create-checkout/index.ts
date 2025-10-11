@@ -56,22 +56,34 @@ Deno.serve(async (req: Request) => {
 
     console.log("User authenticated:", user.id, user.email);
 
-    const { productId, productName, price } = await req.json();
+    const body = await req.json();
+    console.log("Request body:", body);
 
-    if (!productId || !productName || !price) {
-      throw new Error("Missing required fields");
+    const { productId, productName, price } = body;
+
+    if (!productId || !productName || price === undefined || price === null) {
+      console.error("Missing required fields:", { productId, productName, price });
+      throw new Error("Missing required fields: productId, productName, or price");
+    }
+
+    const priceInCents = Math.round(Number(price) * 100);
+
+    if (isNaN(priceInCents) || priceInCents <= 0) {
+      console.error("Invalid price:", price, "converted to:", priceInCents);
+      throw new Error("Invalid price value");
     }
 
     console.log("Creating checkout session with:", {
       productId,
       productName,
       price,
+      priceInCents,
       userEmail: user.email,
     });
 
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
-      customer_email: user.email,
+      customer_email: user.email || undefined,
       line_items: [
         {
           price_data: {
@@ -79,7 +91,7 @@ Deno.serve(async (req: Request) => {
             product_data: {
               name: productName,
             },
-            unit_amount: Math.round(price * 100),
+            unit_amount: priceInCents,
           },
           quantity: 1,
         },
@@ -107,15 +119,31 @@ Deno.serve(async (req: Request) => {
   } catch (error) {
     console.error("Error creating checkout session:", error);
 
-    const errorMessage = error instanceof Error ? error.message : "Unknown error";
-    const errorDetails = error instanceof Error && 'raw' in error ? error : null;
+    let errorMessage = "Erro ao processar pagamento";
+    let errorDetails: any = null;
 
-    console.error("Error details:", errorDetails);
+    if (error instanceof Error) {
+      errorMessage = error.message;
+      errorDetails = {
+        name: error.name,
+        message: error.message,
+        stack: error.stack,
+      };
+
+      if ('type' in error) {
+        errorDetails.type = (error as any).type;
+      }
+      if ('raw' in error) {
+        errorDetails.raw = (error as any).raw;
+      }
+    }
+
+    console.error("Full error details:", JSON.stringify(errorDetails, null, 2));
 
     return new Response(
       JSON.stringify({
         error: errorMessage,
-        details: errorDetails ? JSON.stringify(errorDetails) : undefined
+        details: errorDetails
       }),
       {
         status: 400,
