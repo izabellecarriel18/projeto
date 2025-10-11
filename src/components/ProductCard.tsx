@@ -242,6 +242,15 @@ export function ProductCard({ product, onImageUpload, onDelete }: ProductCardPro
     const file = event.target.files?.[0];
     if (!file || !isAdmin) return;
 
+    const maxSize = 50 * 1024 * 1024;
+    if (file.size > maxSize) {
+      alert(`Arquivo muito grande! O limite é 50MB. Seu arquivo tem ${(file.size / 1024 / 1024).toFixed(2)}MB.\n\nPara arquivos maiores, comprima-os em formato ZIP antes de fazer upload.`);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+      return;
+    }
+
     setIsUploadingFile(true);
 
     try {
@@ -270,9 +279,13 @@ export function ProductCard({ product, onImageUpload, onDelete }: ProductCardPro
       setFileUrl(filePath);
       setFileName(file.name);
       alert('Arquivo enviado com sucesso!');
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error uploading file:', error);
-      alert('Erro ao enviar arquivo. Tente novamente.');
+      if (error.message?.includes('exceeded the maximum allowed size')) {
+        alert('Arquivo muito grande! Comprima o arquivo em formato ZIP e tente novamente.');
+      } else {
+        alert('Erro ao enviar arquivo. Tente novamente.');
+      }
     } finally {
       setIsUploadingFile(false);
       if (fileInputRef.current) {
