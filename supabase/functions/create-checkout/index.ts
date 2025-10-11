@@ -100,6 +100,7 @@ Deno.serve(async (req: Request) => {
         },
       ],
       mode: "payment",
+      payment_method_types: ["card"],
       success_url: `${req.headers.get("origin")}/produtos?success=true&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${req.headers.get("origin")}/produtos?canceled=true`,
       metadata: {
@@ -107,10 +108,6 @@ Deno.serve(async (req: Request) => {
         userId: user.id,
       },
     };
-
-    if (isTestMode) {
-      sessionConfig.payment_method_types = ["card"];
-    }
 
     const session = await stripe.checkout.sessions.create(sessionConfig);
 
