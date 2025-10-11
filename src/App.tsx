@@ -7,6 +7,7 @@ import HomePage from './pages/HomePage';
 import ProductsPage from './pages/ProductsPage';
 import CoursesPage from './pages/CoursesPage';
 import ProfilePage from './pages/ProfilePage';
+import PurchasesPage from './pages/PurchasesPage';
 
 function App() {
   const [currentPage, setCurrentPage] = useState('home');
@@ -26,6 +27,7 @@ function App() {
       {currentPage === 'products' && <ProductsPage />}
       {currentPage === 'courses' && <CoursesPage />}
       {currentPage === 'profile' && <ProfilePage />}
+      {currentPage === 'purchases' && <PurchasesPage />}
 
       <Footer />
       </div>

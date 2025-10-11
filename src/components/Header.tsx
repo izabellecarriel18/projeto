@@ -1,5 +1,5 @@
-import { Zap, Menu, X, User, LogOut } from 'lucide-react';
-import { useState } from 'react';
+import { Zap, Menu, X, User, LogOut, ShoppingBag } from 'lucide-react';
+import { useState, useRef, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import AuthModal from './AuthModal';
 
@@ -11,7 +11,9 @@ interface HeaderProps {
 export default function Header({ onNavigate, currentPage }: HeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
   const { user, profile, loading, signOut } = useAuth();
+  const userMenuRef = useRef<HTMLDivElement>(null);
 
   const menuItems = [
     { id: 'home', label: 'MARCA' },
@@ -19,9 +21,23 @@ export default function Header({ onNavigate, currentPage }: HeaderProps) {
     { id: 'courses', label: 'CURSOS' },
   ];
 
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (userMenuRef.current && !userMenuRef.current.contains(event.target as Node)) {
+        setUserMenuOpen(false);
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
   const handleNavigation = (page: string) => {
     onNavigate(page);
     setMobileMenuOpen(false);
+    setUserMenuOpen(false);
   };
 
   return (
@@ -66,19 +82,44 @@ export default function Header({ onNavigate, currentPage }: HeaderProps) {
             {user && profile ? (
               <div className="hidden lg:flex items-center gap-4">
                 <button
-                  onClick={() => onNavigate('profile')}
-                  className="flex items-center gap-2 text-white hover:text-red-600 transition-colors"
+                  onClick={() => handleNavigation('purchases')}
+                  className={`flex items-center gap-2 transition-colors ${
+                    currentPage === 'purchases' ? 'text-red-600' : 'text-white hover:text-red-600'
+                  }`}
                 >
-                  <User className="w-5 h-5" />
-                  <span className="text-sm font-medium">{profile.name}</span>
+                  <ShoppingBag className="w-5 h-5" />
+                  <span className="text-sm font-medium">MINHAS COMPRAS</span>
                 </button>
-                <button
-                  onClick={signOut}
-                  className="flex items-center gap-2 text-white hover:text-red-600 transition-colors"
-                >
-                  <LogOut className="w-5 h-5" />
-                  <span className="text-sm font-medium">SAIR</span>
-                </button>
+                <div className="relative" ref={userMenuRef}>
+                  <button
+                    onClick={() => setUserMenuOpen(!userMenuOpen)}
+                    className="flex items-center gap-2 text-white hover:text-red-600 transition-colors"
+                  >
+                    <User className="w-5 h-5" />
+                    <span className="text-sm font-medium">{profile.name}</span>
+                  </button>
+                  {userMenuOpen && (
+                    <div className="absolute right-0 mt-2 w-48 bg-gray-900 border border-gray-800 rounded-lg shadow-lg overflow-hidden">
+                      <button
+                        onClick={() => handleNavigation('profile')}
+                        className="w-full px-4 py-3 text-left text-white hover:bg-gray-800 transition-colors flex items-center gap-2"
+                      >
+                        <User className="w-4 h-4" />
+                        <span className="text-sm">Credenciais</span>
+                      </button>
+                      <button
+                        onClick={() => {
+                          signOut();
+                          setUserMenuOpen(false);
+                        }}
+                        className="w-full px-4 py-3 text-left text-white hover:bg-gray-800 transition-colors flex items-center gap-2 border-t border-gray-800"
+                      >
+                        <LogOut className="w-4 h-4" />
+                        <span className="text-sm">Sair</span>
+                      </button>
+                    </div>
+                  )}
+                </div>
               </div>
             ) : (
               <button
@@ -111,13 +152,18 @@ export default function Header({ onNavigate, currentPage }: HeaderProps) {
               {user && profile ? (
                 <>
                   <button
-                    onClick={() => {
-                      handleNavigation('profile');
-                    }}
+                    onClick={() => handleNavigation('purchases')}
+                    className="flex items-center justify-center gap-2 text-white hover:text-red-600 transition-colors py-6 w-full border-b border-gray-700"
+                  >
+                    <ShoppingBag className="w-5 h-5" />
+                    <span className="text-lg font-medium">MINHAS COMPRAS</span>
+                  </button>
+                  <button
+                    onClick={() => handleNavigation('profile')}
                     className="flex items-center justify-center gap-2 text-white hover:text-red-600 transition-colors py-6 w-full border-b border-gray-700"
                   >
                     <User className="w-5 h-5" />
-                    <span className="text-lg font-medium">MEU PERFIL</span>
+                    <span className="text-lg font-medium">CREDENCIAIS</span>
                   </button>
                   <button
                     onClick={() => {
