@@ -5,6 +5,7 @@ import { Upload, RefreshCw, Trash2, FileUp, FileCheck } from 'lucide-react';
 import { EditPriceModal } from './EditPriceModal';
 import { EditDescriptionModal } from './EditDescriptionModal';
 import { EditProductNameModal } from './EditProductNameModal';
+import JSZip from 'jszip';
 
 interface Product {
   id: string;
@@ -242,26 +243,75 @@ export function ProductCard({ product, onImageUpload, onDelete }: ProductCardPro
     const file = event.target.files?.[0];
     if (!file || !isAdmin) return;
 
-    const maxSize = 50 * 1024 * 1024;
-    if (file.size > maxSize) {
-      alert(`Arquivo muito grande! O limite é 50MB. Seu arquivo tem ${(file.size / 1024 / 1024).toFixed(2)}MB.\n\nPara arquivos maiores, comprima-os em formato ZIP antes de fazer upload.`);
-      if (fileInputRef.current) {
-        fileInputRef.current.value = '';
-      }
-      return;
-    }
-
     setIsUploadingFile(true);
 
     try {
-      const fileExt = file.name.split('.').pop();
+      const maxSize = 50 * 1024 * 1024;
+      let fileToUpload: File | Blob = file;
+      let uploadFileName = file.name;
+      let originalFileName = file.name;
+
+      if (file.size > maxSize) {
+        const compressConfirm = confirm(
+          `Arquivo muito grande (${(file.size / 1024 / 1024).toFixed(2)}MB).\n\n` +
+          `Deseja comprimir automaticamente para ZIP?\n\n` +
+          `Isso pode levar alguns segundos...`
+        );
+
+        if (!compressConfirm) {
+          setIsUploadingFile(false);
+          if (fileInputRef.current) {
+            fileInputRef.current.value = '';
+          }
+          return;
+        }
+
+        try {
+          const zip = new JSZip();
+          zip.file(file.name, file);
+
+          const zipBlob = await zip.generateAsync({
+            type: 'blob',
+            compression: 'DEFLATE',
+            compressionOptions: {
+              level: 9
+            }
+          });
+
+          if (zipBlob.size > maxSize) {
+            alert(
+              `Mesmo após compressão, o arquivo ainda é muito grande (${(zipBlob.size / 1024 / 1024).toFixed(2)}MB).\n\n` +
+              `O limite é 50MB. Por favor, reduza o tamanho do arquivo original.`
+            );
+            setIsUploadingFile(false);
+            if (fileInputRef.current) {
+              fileInputRef.current.value = '';
+            }
+            return;
+          }
+
+          fileToUpload = zipBlob;
+          uploadFileName = file.name.replace(/\.[^/.]+$/, '') + '.zip';
+          alert(`Arquivo comprimido com sucesso! Tamanho reduzido para ${(zipBlob.size / 1024 / 1024).toFixed(2)}MB`);
+        } catch (zipError) {
+          console.error('Error compressing file:', zipError);
+          alert('Erro ao comprimir arquivo. Tente novamente.');
+          setIsUploadingFile(false);
+          if (fileInputRef.current) {
+            fileInputRef.current.value = '';
+          }
+          return;
+        }
+      }
+
+      const fileExt = uploadFileName.split('.').pop();
       const filePath = `${product.id}.${fileExt}`;
 
       const { error: uploadError } = await supabase.storage
         .from('product-files')
-        .upload(filePath, file, {
+        .upload(filePath, fileToUpload, {
           upsert: true,
-          contentType: file.type || 'application/octet-stream',
+          contentType: uploadFileName.endsWith('.zip') ? 'application/zip' : (file.type || 'application/octet-stream'),
         });
 
       if (uploadError) throw uploadError;
@@ -270,19 +320,19 @@ export function ProductCard({ product, onImageUpload, onDelete }: ProductCardPro
         .from('products')
         .update({
           file_url: filePath,
-          file_name: file.name
+          file_name: originalFileName
         })
         .eq('id', product.id);
 
       if (updateError) throw updateError;
 
       setFileUrl(filePath);
-      setFileName(file.name);
+      setFileName(originalFileName);
       alert('Arquivo enviado com sucesso!');
     } catch (error: any) {
       console.error('Error uploading file:', error);
       if (error.message?.includes('exceeded the maximum allowed size')) {
-        alert('Arquivo muito grande! Comprima o arquivo em formato ZIP e tente novamente.');
+        alert('Arquivo muito grande! O limite é 50MB.');
       } else {
         alert('Erro ao enviar arquivo. Tente novamente.');
       }
