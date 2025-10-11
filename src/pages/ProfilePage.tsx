@@ -17,7 +17,8 @@ interface Purchase {
     category: string;
     brand: string;
     formats: string[];
-    purchase_url?: string;
+    file_url?: string;
+    file_name?: string;
   };
 }
 
@@ -50,7 +51,8 @@ export default function ProfilePage() {
             category,
             brand,
             formats,
-            purchase_url
+            file_url,
+            file_name
           )
         `)
         .eq('user_id', user?.id)
@@ -84,6 +86,30 @@ export default function ProfilePage() {
 
   const formatPrice = (amount: number) => {
     return `R$ ${amount.toFixed(2).replace('.', ',')}`;
+  };
+
+  const handleDownload = async (productId: string, fileName: string) => {
+    try {
+      const fileExt = fileName.split('.').pop();
+      const filePath = `${productId}.${fileExt}`;
+
+      const { data, error } = await supabase.storage
+        .from('product-files')
+        .createSignedUrl(filePath, 60 * 60);
+
+      if (error) {
+        console.error('Error getting download URL:', error);
+        alert('Erro ao baixar arquivo. Tente novamente.');
+        return;
+      }
+
+      if (data?.signedUrl) {
+        window.open(data.signedUrl, '_blank');
+      }
+    } catch (error) {
+      console.error('Error downloading file:', error);
+      alert('Erro ao baixar arquivo. Tente novamente.');
+    }
   };
 
   if (!user) {
@@ -154,16 +180,18 @@ export default function ProfilePage() {
                     <div className="text-white font-bold text-xl mb-4">
                       {formatPrice(purchase.amount_paid)}
                     </div>
-                    {purchase.products.purchase_url && (
-                      <a
-                        href={purchase.products.purchase_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
+                    {purchase.products.file_url && purchase.products.file_name ? (
+                      <button
+                        onClick={() => handleDownload(purchase.products.id, purchase.products.file_name!)}
                         className="w-full bg-red-600 hover:bg-red-700 text-white py-3 rounded-lg font-bold text-sm transition-colors flex items-center justify-center gap-2"
                       >
                         <Download className="w-4 h-4" />
                         Baixar Arquivos
-                      </a>
+                      </button>
+                    ) : (
+                      <div className="w-full bg-gray-700 text-gray-400 py-3 rounded-lg font-bold text-sm text-center">
+                        Arquivo não disponível
+                      </div>
                     )}
                   </div>
                 </div>

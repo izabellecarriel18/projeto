@@ -1,8 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
-import { Upload, RefreshCw, Trash2 } from 'lucide-react';
-import { EditPurchaseLinkModal } from './EditPurchaseLinkModal';
+import { Upload, RefreshCw, Trash2, FileUp, FileCheck } from 'lucide-react';
 import { EditPriceModal } from './EditPriceModal';
 import { EditDescriptionModal } from './EditDescriptionModal';
 import { EditProductNameModal } from './EditProductNameModal';
@@ -17,6 +16,8 @@ interface Product {
   formats: string[];
   description?: string;
   purchase_url?: string;
+  file_url?: string;
+  file_name?: string;
 }
 
 interface ProductCardProps {
@@ -32,13 +33,15 @@ export function ProductCard({ product, onImageUpload, onDelete }: ProductCardPro
   const [name, setName] = useState(product.name);
   const [description, setDescription] = useState(product.description || '');
   const [price, setPrice] = useState(product.price);
-  const [purchaseUrl, setPurchaseUrl] = useState(product.purchase_url || '');
+  const [fileUrl, setFileUrl] = useState(product.file_url || '');
+  const [fileName, setFileName] = useState(product.file_name || '');
   const [isGenerating, setIsGenerating] = useState(false);
-  const [isLinkModalOpen, setIsLinkModalOpen] = useState(false);
+  const [isUploadingFile, setIsUploadingFile] = useState(false);
   const [isPriceModalOpen, setIsPriceModalOpen] = useState(false);
   const [isDescriptionModalOpen, setIsDescriptionModalOpen] = useState(false);
   const [isNameModalOpen, setIsNameModalOpen] = useState(false);
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const hasChecked = useRef(false);
   const isAdmin = profile?.role === 'admin';
 
@@ -151,20 +154,6 @@ export function ProductCard({ product, onImageUpload, onDelete }: ProductCardPro
     return categoryMap[categoryName] || 'solid_cars';
   }
 
-  const handleSavePurchaseUrl = async (url: string) => {
-    const { error } = await supabase
-      .from('products')
-      .update({ purchase_url: url })
-      .eq('id', product.id);
-
-    if (error) {
-      console.error('Error updating purchase URL:', error);
-      throw error;
-    }
-
-    setPurchaseUrl(url);
-  };
-
   const handleSavePrice = async (newPrice: number) => {
     const { error } = await supabase
       .from('products')
@@ -249,17 +238,54 @@ export function ProductCard({ product, onImageUpload, onDelete }: ProductCardPro
     }
   };
 
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file || !isAdmin) return;
+
+    setIsUploadingFile(true);
+
+    try {
+      const fileExt = file.name.split('.').pop();
+      const filePath = `${product.id}.${fileExt}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('product-files')
+        .upload(filePath, file, {
+          upsert: true,
+          contentType: file.type,
+        });
+
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('product-files')
+        .getPublicUrl(filePath);
+
+      const { error: updateError } = await supabase
+        .from('products')
+        .update({
+          file_url: publicUrl,
+          file_name: file.name
+        })
+        .eq('id', product.id);
+
+      if (updateError) throw updateError;
+
+      setFileUrl(publicUrl);
+      setFileName(file.name);
+      alert('Arquivo enviado com sucesso!');
+    } catch (error) {
+      console.error('Error uploading file:', error);
+      alert('Erro ao enviar arquivo. Tente novamente.');
+    } finally {
+      setIsUploadingFile(false);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    }
+  };
+
   const handleBuyClick = async () => {
-    if (isAdmin) {
-      setIsLinkModalOpen(true);
-      return;
-    }
-
-    if (purchaseUrl && purchaseUrl.trim() !== '') {
-      window.open(purchaseUrl, '_blank');
-      return;
-    }
-
     if (isProcessingPayment) return;
 
     try {
@@ -377,10 +403,52 @@ export function ProductCard({ product, onImageUpload, onDelete }: ProductCardPro
           >
             R$ {price.toFixed(2).replace('.', ',')}
           </div>
+          {isAdmin && (
+            <>
+              <input
+                ref={fileInputRef}
+                type="file"
+                onChange={handleFileUpload}
+                className="hidden"
+                accept=".zip,.rar,.7z,.blend,.fbx,.obj,.stl,.max,.c4d"
+              />
+              <button
+                onClick={() => fileInputRef.current?.click()}
+                disabled={isUploadingFile}
+                className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-800 disabled:cursor-not-allowed text-white py-3 rounded-lg font-bold text-sm transition-colors flex items-center justify-center gap-2 mb-2"
+              >
+                {isUploadingFile ? (
+                  <>
+                    <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    <span>Enviando...</span>
+                  </>
+                ) : fileUrl ? (
+                  <>
+                    <FileCheck className="w-5 h-5" />
+                    <span>Arquivo Enviado</span>
+                  </>
+                ) : (
+                  <>
+                    <FileUp className="w-5 h-5" />
+                    <span>Upload Arquivo</span>
+                  </>
+                )}
+              </button>
+              {fileName && (
+                <p className="text-xs text-gray-400 mb-2 truncate" title={fileName}>
+                  📎 {fileName}
+                </p>
+              )}
+            </>
+          )}
           <button
             onClick={handleBuyClick}
-            disabled={isProcessingPayment}
+            disabled={isProcessingPayment || (isAdmin && !fileUrl)}
             className="w-full bg-red-600 hover:bg-red-700 disabled:bg-red-800 disabled:cursor-not-allowed text-white py-3 rounded-lg font-bold text-sm transition-colors z-20 relative mt-auto flex items-center justify-center gap-2"
+            title={isAdmin && !fileUrl ? 'Faça upload do arquivo primeiro' : ''}
           >
             {isProcessingPayment ? (
               <>
@@ -391,18 +459,11 @@ export function ProductCard({ product, onImageUpload, onDelete }: ProductCardPro
                 <span>Processando...</span>
               </>
             ) : (
-              <span>{isAdmin ? 'Editar Link' : 'Comprar'}</span>
+              <span>Comprar</span>
             )}
           </button>
         </div>
       </div>
-
-      <EditPurchaseLinkModal
-        isOpen={isLinkModalOpen}
-        onClose={() => setIsLinkModalOpen(false)}
-        currentUrl={purchaseUrl}
-        onSave={handleSavePurchaseUrl}
-      />
 
       <EditPriceModal
         isOpen={isPriceModalOpen}
