@@ -467,7 +467,7 @@ export function ProductCard({ product, onImageUpload, onDelete }: ProductCardPro
               <button
                 onClick={() => fileInputRef.current?.click()}
                 disabled={isUploadingFile}
-                className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-800 disabled:cursor-not-allowed text-white py-3 rounded-lg font-bold text-sm transition-colors flex items-center justify-center gap-2 mb-2"
+                className={`w-full ${fileUrl ? 'bg-green-600 hover:bg-green-700' : 'bg-blue-600 hover:bg-blue-700'} disabled:bg-blue-800 disabled:cursor-not-allowed text-white py-3 rounded-lg font-bold text-sm transition-colors flex items-center justify-center gap-2 mb-2`}
               >
                 {isUploadingFile ? (
                   <>
@@ -480,7 +480,7 @@ export function ProductCard({ product, onImageUpload, onDelete }: ProductCardPro
                 ) : fileUrl ? (
                   <>
                     <FileCheck className="w-5 h-5" />
-                    <span>Arquivo Enviado</span>
+                    <span>Arquivo já incluído</span>
                   </>
                 ) : (
                   <>
