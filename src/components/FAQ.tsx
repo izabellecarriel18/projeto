@@ -1,4 +1,4 @@
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, HelpCircle } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
@@ -99,7 +99,7 @@ export default function FAQ({ category = 'general' }: FAQProps) {
           FAQ
         </h2>
 
-        <div className="max-w-2xl mx-auto space-y-3">
+        <div className="space-y-3">
           {faqs.map((faq, index) => (
             <div
               key={faq.id}
@@ -107,20 +107,29 @@ export default function FAQ({ category = 'general' }: FAQProps) {
             >
               <button
                 onClick={() => setOpenIndex(openIndex === index ? null : index)}
-                className="w-full px-4 sm:px-6 py-4 sm:py-5 flex items-center justify-between text-left"
+                className="w-full flex items-center justify-between px-4 sm:px-6 py-4 sm:py-5 text-left"
               >
-                <span className="text-white font-semibold text-base sm:text-lg">{faq.question}</span>
+                <div className="flex items-center gap-4">
+                  <div className="bg-red-600/10 p-3 rounded-full">
+                    <HelpCircle className="w-6 h-6 text-red-600" />
+                  </div>
+                  <h3 className="text-base sm:text-lg font-semibold text-white">{faq.question}</h3>
+                </div>
                 <ChevronDown
                   className={`w-5 h-5 text-red-600 transition-transform ${
                     openIndex === index ? 'rotate-180' : ''
                   }`}
                 />
               </button>
-              {openIndex === index && (
-                <div className="px-4 sm:px-6 pb-4 sm:pb-5">
+              <div
+                className={`overflow-hidden transition-all duration-300 ${
+                  openIndex === index ? 'max-h-96' : 'max-h-0'
+                }`}
+              >
+                <div className="px-4 sm:px-6 pb-4 sm:pb-5 pl-16 sm:pl-20">
                   <p className="text-white text-sm sm:text-base leading-relaxed">{faq.answer}</p>
                 </div>
-              )}
+              </div>
             </div>
           ))}
           </div>
