@@ -64,8 +64,8 @@ export default function CoursesPage() {
     <div className="min-h-screen pt-20 sm:pt-24 pb-12 sm:pb-20">
       <div className="container mx-auto px-4 sm:px-6">
         <div className="text-center mb-8 sm:mb-12">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-3 sm:mb-4">Cursos Disponíveis</h1>
-          <p className="text-base sm:text-lg md:text-xl text-white">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-3 sm:mb-4">Cursos Disponíveis</h1>
+          <p className="text-base sm:text-lg md:text-xl text-gray-700">
             Aprenda técnicas profissionais de modelagem automotiva 3D
           </p>
         </div>
@@ -76,7 +76,7 @@ export default function CoursesPage() {
               return (
               <div
                 key={index}
-                className="border border-gray-800 rounded-lg overflow-hidden hover:border-gray-700 transition-all flex-shrink-0"
+                className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:border-gray-300 hover:shadow-lg transition-all flex-shrink-0"
                 style={{ width: '340px' }}
               >
                 {courseImage && (
@@ -89,9 +89,9 @@ export default function CoursesPage() {
                     alt={course.title}
                   />
                 )}
-                <div className="p-6 bg-black/40 backdrop-blur-sm">
-                  <h3 className="text-white font-bold text-xl mb-3">{course.title}</h3>
-                  <p className="text-white text-sm mb-4 leading-relaxed">{course.description}</p>
+                <div className="p-6">
+                  <h3 className="text-gray-900 font-bold text-xl mb-3">{course.title}</h3>
+                  <p className="text-gray-700 text-sm mb-4 leading-relaxed">{course.description}</p>
 
                   <div className="bg-red-600 text-white text-center py-2 px-4 rounded mb-4 text-sm">
                     {course.price}
@@ -111,7 +111,7 @@ export default function CoursesPage() {
             return (
             <div
               key={index}
-              className="border border-gray-800 rounded-lg overflow-hidden hover:border-gray-700 transition-all"
+              className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:border-gray-300 hover:shadow-lg transition-all"
             >
               {courseImage && (
                 <EditableImage
@@ -123,15 +123,15 @@ export default function CoursesPage() {
                   alt={course.title}
                 />
               )}
-              <div className="p-6 bg-black/40 backdrop-blur-sm">
-                <h3 className="text-white font-bold text-xl mb-3">{course.title}</h3>
-                <p className="text-white text-sm mb-4 leading-relaxed">{course.description}</p>
+              <div className="p-6">
+                <h3 className="text-gray-900 font-bold text-xl mb-3">{course.title}</h3>
+                <p className="text-gray-700 text-sm mb-4 leading-relaxed">{course.description}</p>
 
                 <div className="bg-red-600 text-white text-center py-2 px-4 rounded mb-4 text-sm">
                   {course.price}
                 </div>
 
-                <button className="w-full bg-transparent border border-gray-700 hover:border-red-600 text-white py-3 rounded font-semibold transition-all">
+                <button className="w-full bg-transparent border border-gray-300 hover:border-red-600 hover:bg-red-50 text-gray-900 py-3 rounded font-semibold transition-all">
                   Ver Conteúdo
                 </button>
               </div>
@@ -139,25 +139,25 @@ export default function CoursesPage() {
           )})}
         </div>
 
-        <div className="border border-gray-800 rounded-lg p-8 mb-8 bg-black/40 backdrop-blur-sm">
-          <h2 className="text-2xl font-bold text-white mb-6">Garantias e Suporte</h2>
+        <div className="bg-white border border-gray-200 rounded-lg p-8 mb-8 shadow-sm">
+          <h2 className="text-2xl font-bold text-gray-900 mb-6">Garantias e Suporte</h2>
           <div className="space-y-3">
             {benefits.map((benefit, index) => (
               <div key={index} className="flex items-center gap-3">
-                <CheckCircle className="w-5 h-5 text-blue-500 flex-shrink-0" />
-                <span className="text-white text-sm">{benefit}</span>
+                <CheckCircle className="w-5 h-5 text-blue-600 flex-shrink-0" />
+                <span className="text-gray-700 text-sm">{benefit}</span>
               </div>
             ))}
           </div>
         </div>
 
-        <div className="border border-gray-800 rounded-lg p-8 mb-8 bg-black">
-          <h2 className="text-2xl font-bold text-white mb-6">{checkout.title}</h2>
+        <div className="bg-white border border-gray-200 rounded-lg p-8 mb-8 shadow-sm">
+          <h2 className="text-2xl font-bold text-gray-900 mb-6">{checkout.title}</h2>
           <div className="space-y-3">
             {checkout.items.map((item, index) => (
               <div key={index} className="flex items-start gap-3">
-                <CheckCircle className="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" />
-                <span className="text-white text-sm">{item}</span>
+                <CheckCircle className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
+                <span className="text-gray-700 text-sm">{item}</span>
               </div>
             ))}
           </div>

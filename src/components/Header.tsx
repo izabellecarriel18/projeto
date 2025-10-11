@@ -25,20 +25,20 @@ export default function Header({ onNavigate, currentPage }: HeaderProps) {
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 bg-black z-50 border-b border-gray-800">
+    <header className="fixed top-0 left-0 right-0 bg-white/95 backdrop-blur-sm z-50 border-b border-gray-200 shadow-sm">
       <div className="container mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
         <div
           className="flex items-center gap-2 cursor-pointer z-50"
           onClick={() => onNavigate('home')}
         >
           <Zap className="w-6 h-6 sm:w-8 sm:h-8 text-red-600" />
-          <span className="text-base sm:text-xl font-bold text-white tracking-wider">
+          <span className="text-base sm:text-xl font-bold text-gray-900 tracking-wider">
             ULTIMATECAR<span className="text-red-600">3D</span>
           </span>
         </div>
 
         <button
-          className="lg:hidden text-white z-50"
+          className="lg:hidden text-gray-900 z-50"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           aria-label="Toggle menu"
         >
@@ -53,8 +53,8 @@ export default function Header({ onNavigate, currentPage }: HeaderProps) {
               className={`text-sm font-medium transition-colors px-6 ${
                 currentPage === item.id
                   ? 'text-red-600'
-                  : 'text-white hover:text-red-600'
-              } ${index === 0 ? 'border-l border-gray-700' : ''} border-r border-gray-700`}
+                  : 'text-gray-900 hover:text-red-600'
+              } ${index === 0 ? 'border-l border-gray-200' : ''} border-r border-gray-200`}
             >
               {item.label}
             </button>
@@ -65,12 +65,12 @@ export default function Header({ onNavigate, currentPage }: HeaderProps) {
           <>
             {user && profile ? (
               <div className="hidden lg:flex items-center gap-4">
-                <span className="text-sm font-medium text-white">
+                <span className="text-sm font-medium text-gray-900">
                   Olá, <span className="text-red-600">{profile.name}</span>
                 </span>
                 <button
                   onClick={signOut}
-                  className="flex items-center gap-2 text-white hover:text-red-600 transition-colors"
+                  className="flex items-center gap-2 text-gray-900 hover:text-red-600 transition-colors"
                 >
                   <LogOut className="w-5 h-5" />
                   <span className="text-sm font-medium">SAIR</span>
@@ -79,7 +79,7 @@ export default function Header({ onNavigate, currentPage }: HeaderProps) {
             ) : (
               <button
                 onClick={() => setAuthModalOpen(true)}
-                className="hidden lg:flex items-center gap-2 text-white hover:text-red-600 transition-colors"
+                className="hidden lg:flex items-center gap-2 text-gray-900 hover:text-red-600 transition-colors"
               >
                 <User className="w-5 h-5" />
                 <span className="text-sm font-medium">LOGIN</span>
@@ -89,7 +89,7 @@ export default function Header({ onNavigate, currentPage }: HeaderProps) {
         )}
 
         {mobileMenuOpen && (
-          <div className="fixed inset-0 bg-black/95 backdrop-blur-sm lg:hidden">
+          <div className="fixed inset-0 bg-white/95 backdrop-blur-sm lg:hidden">
             <nav className="flex flex-col items-center justify-center h-full gap-0 px-6">
               {menuItems.map((item, index) => (
                 <button
@@ -98,15 +98,15 @@ export default function Header({ onNavigate, currentPage }: HeaderProps) {
                   className={`text-lg font-medium transition-colors py-6 w-full text-center ${
                     currentPage === item.id
                       ? 'text-red-600'
-                      : 'text-white hover:text-red-600'
-                  } ${index === 0 ? 'border-t border-gray-700' : ''} border-b border-gray-700`}
+                      : 'text-gray-900 hover:text-red-600'
+                  } ${index === 0 ? 'border-t border-gray-200' : ''} border-b border-gray-200`}
                 >
                   {item.label}
                 </button>
               ))}
               {user && profile ? (
                 <>
-                  <div className="flex items-center justify-center gap-2 text-white py-6 w-full border-b border-gray-700">
+                  <div className="flex items-center justify-center gap-2 text-gray-900 py-6 w-full border-b border-gray-200">
                     <span className="text-lg font-medium">
                       Olá, <span className="text-red-600">{profile.name}</span>
                     </span>
@@ -116,7 +116,7 @@ export default function Header({ onNavigate, currentPage }: HeaderProps) {
                       signOut();
                       setMobileMenuOpen(false);
                     }}
-                    className="flex items-center justify-center gap-2 text-white hover:text-red-600 transition-colors py-6 w-full border-b border-gray-700"
+                    className="flex items-center justify-center gap-2 text-gray-900 hover:text-red-600 transition-colors py-6 w-full border-b border-gray-200"
                   >
                     <LogOut className="w-5 h-5" />
                     <span className="text-lg font-medium">SAIR</span>
@@ -128,7 +128,7 @@ export default function Header({ onNavigate, currentPage }: HeaderProps) {
                     setAuthModalOpen(true);
                     setMobileMenuOpen(false);
                   }}
-                  className="flex items-center justify-center gap-2 text-white hover:text-red-600 transition-colors py-6 w-full border-b border-gray-700"
+                  className="flex items-center justify-center gap-2 text-gray-900 hover:text-red-600 transition-colors py-6 w-full border-b border-gray-200"
                 >
                   <User className="w-5 h-5" />
                   <span className="text-lg font-medium">LOGIN</span>
