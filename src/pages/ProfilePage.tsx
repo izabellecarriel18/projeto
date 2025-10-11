@@ -88,11 +88,8 @@ export default function ProfilePage() {
     return `R$ ${amount.toFixed(2).replace('.', ',')}`;
   };
 
-  const handleDownload = async (productId: string, fileName: string) => {
+  const handleDownload = async (filePath: string) => {
     try {
-      const fileExt = fileName.split('.').pop();
-      const filePath = `${productId}.${fileExt}`;
-
       const { data, error } = await supabase.storage
         .from('product-files')
         .createSignedUrl(filePath, 60 * 60);
@@ -104,7 +101,12 @@ export default function ProfilePage() {
       }
 
       if (data?.signedUrl) {
-        window.open(data.signedUrl, '_blank');
+        const link = document.createElement('a');
+        link.href = data.signedUrl;
+        link.download = filePath.split('/').pop() || 'download';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
       }
     } catch (error) {
       console.error('Error downloading file:', error);
@@ -180,9 +182,9 @@ export default function ProfilePage() {
                     <div className="text-white font-bold text-xl mb-4">
                       {formatPrice(purchase.amount_paid)}
                     </div>
-                    {purchase.products.file_url && purchase.products.file_name ? (
+                    {purchase.products.file_url ? (
                       <button
-                        onClick={() => handleDownload(purchase.products.id, purchase.products.file_name!)}
+                        onClick={() => handleDownload(purchase.products.file_url!)}
                         className="w-full bg-red-600 hover:bg-red-700 text-white py-3 rounded-lg font-bold text-sm transition-colors flex items-center justify-center gap-2"
                       >
                         <Download className="w-4 h-4" />

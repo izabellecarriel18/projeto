@@ -252,26 +252,22 @@ export function ProductCard({ product, onImageUpload, onDelete }: ProductCardPro
         .from('product-files')
         .upload(filePath, file, {
           upsert: true,
-          contentType: file.type,
+          contentType: file.type || 'application/octet-stream',
         });
 
       if (uploadError) throw uploadError;
 
-      const { data: { publicUrl } } = supabase.storage
-        .from('product-files')
-        .getPublicUrl(filePath);
-
       const { error: updateError } = await supabase
         .from('products')
         .update({
-          file_url: publicUrl,
+          file_url: filePath,
           file_name: file.name
         })
         .eq('id', product.id);
 
       if (updateError) throw updateError;
 
-      setFileUrl(publicUrl);
+      setFileUrl(filePath);
       setFileName(file.name);
       alert('Arquivo enviado com sucesso!');
     } catch (error) {
