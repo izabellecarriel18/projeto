@@ -76,8 +76,10 @@ export function ProductCard({ product, onImageUpload }: ProductCardProps) {
     checkAndGenerate();
   }, []);
 
-  async function generateDescription() {
-    if (isGenerating || generatingCache.has(product.id)) return;
+  async function generateDescription(forceRegenerate = false) {
+    if (isGenerating) return;
+
+    if (!forceRegenerate && generatingCache.has(product.id)) return;
 
     generatingCache.add(product.id);
     setIsGenerating(true);
@@ -124,9 +126,11 @@ export function ProductCard({ product, onImageUpload }: ProductCardProps) {
       console.error('Error generating description:', error);
       const fallbackDesc = `Modelo 3D do ${product.name} para impressão. Detalhes precisos e alta qualidade.`;
       setDescription(fallbackDesc);
-      generatingCache.delete(product.id);
     } finally {
       setIsGenerating(false);
+      if (forceRegenerate) {
+        generatingCache.delete(product.id);
+      }
     }
   }
 
@@ -170,7 +174,7 @@ export function ProductCard({ product, onImageUpload }: ProductCardProps) {
 
   const handleDescriptionClick = () => {
     if (!isAdmin) return;
-    generateDescription();
+    generateDescription(true);
   };
 
   const handleBuyClick = () => {
