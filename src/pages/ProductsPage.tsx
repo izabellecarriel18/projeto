@@ -52,7 +52,7 @@ export default function ProductsPage() {
   ];
 
   const solidCarsBrands = [
-    'Audi',
+    'AUDI',
     'BMW',
     'CADILLAC',
     'CHEVROLET / GM',

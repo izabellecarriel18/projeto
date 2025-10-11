@@ -29,7 +29,7 @@ export function AddProductModal({ isOpen, onClose, category, onSuccess }: AddPro
   };
 
   const solidCarsBrands = [
-    'Audi',
+    'AUDI',
     'BMW',
     'CADILLAC',
     'CHEVROLET / GM',
