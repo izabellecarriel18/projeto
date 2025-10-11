@@ -146,6 +146,10 @@ export default function ProductsPage() {
   }, []);
 
   useEffect(() => {
+    setSelectedBrand('all');
+  }, [selectedCategory]);
+
+  useEffect(() => {
     filterProducts();
   }, [products, selectedCategory, selectedBrand, searchTerm]);
 
