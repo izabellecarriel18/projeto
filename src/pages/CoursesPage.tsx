@@ -63,6 +63,9 @@ export default function CoursesPage() {
   return (
     <div className="min-h-screen pt-20 pb-20">
       <div className="container mx-auto">
+        <h1 className="text-3xl sm:text-4xl font-bold text-white text-center mb-8 sm:mb-12 px-4">
+          Cursos Disponíveis
+        </h1>
         <div className="lg:hidden overflow-x-auto scrollbar-hide px-4 mb-12">
           <div className="flex gap-6 pb-4" style={{ width: 'max-content' }}>
             {courses.map((course, index) => {
