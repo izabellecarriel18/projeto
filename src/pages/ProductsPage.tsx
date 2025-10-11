@@ -160,7 +160,7 @@ export default function ProductsPage() {
     const { data, error } = await supabase
       .from('products')
       .select('*')
-      .order('created_at', { ascending: false });
+      .order('name', { ascending: true });
 
     console.log('Supabase response - data:', data);
     console.log('Supabase response - error:', error);
