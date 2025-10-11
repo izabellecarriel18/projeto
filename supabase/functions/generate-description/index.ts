@@ -34,9 +34,46 @@ function smartTruncate(text: string, maxLength: number): string {
 async function generateWithRetry(
   openaiApiKey: string,
   productName: string,
+  category: string,
   maxAttempts: number = 2
 ): Promise<string> {
-  const basePrompt = `LIMITE CRÍTICO: MÁXIMO 340 CARACTERES!
+  const isWheel = category === 'Rodas';
+
+  const basePrompt = isWheel
+    ? `LIMITE CRÍTICO: MÁXIMO 340 CARACTERES!
+
+Roda: ${productName}
+
+DESCRIÇÃO VENDA ARQUIVO 3D DE RODA (340 chars máx):
+
+ESTILO:
+- Descreva o design e características visuais da roda
+- Seja criativo e variado (não use sempre as mesmas palavras)
+- Tom natural e envolvente
+- Mencione aplicações ou veículos compatíveis quando relevante
+
+ELEMENTOS INCLUIR:
+- Estilo do design (esportivo, clássico, moderno, etc)
+- Características visuais (raios, furos, acabamento)
+- Para que serve (miniaturas, dioramas, modelismo)
+- Qualidade e precisão do arquivo 3D
+
+PROIBIDO:
+- Descrições metódicas e repetitivas
+- Sempre usar "Arquivo 3D de roda..."
+- Mencionar "impressão 3D" ou "STL"
+
+EXEMPLOS VARIADOS:
+
+1. "Reprodução digital da icônica roda Porsche Carrera T com design de 5 raios e acabamento detalhado. Perfeita para projetos de miniaturas esportivas em escala. Geometria precisa mantém as proporções originais."
+
+2. "Design clássico da roda VW Fusca 1300 com detalhes autênticos dos anos dourados. Ideal para restaurações virtuais e maquetes de colecionador. Arquivo otimizado com alta fidelidade ao modelo original."
+
+3. "Roda esportiva Toyota Corolla GR com padrão agressivo de raios duplos. Essencial para dioramas de carros tunados e projetos de modelismo avançado. Qualidade premium e detalhamento excepcional."
+
+VARIE O ESTILO! Seja criativo e único para cada roda.
+NÃO ULTRAPASSE 340 CARACTERES!`
+    : `LIMITE CRÍTICO: MÁXIMO 340 CARACTERES!
 
 Veículo: ${productName}
 
@@ -81,7 +118,9 @@ NÃO ULTRAPASSE 340 CARACTERES!`;
         messages: [
           {
             role: "system",
-            content: `Você é copywriter especializado em MODELOS 3D DIGITAIS de veículos. REGRA CRÍTICA: descrição com MÁXIMO 340 caracteres (não ultrapasse!). Estrutura: Parte 1 (150-170 chars): características do modelo 3D e veículo SEM ANO. Parte 2 (150-170 chars): call-to-action para colecionadores. Use: 'modelo 3D', 'réplica digital'. NUNCA fale como se fosse carro real. PROIBIDO mencionar interior do veículo.`
+            content: isWheel
+              ? `Você é copywriter especializado em ARQUIVOS 3D DE RODAS para modelismo. REGRA CRÍTICA: descrição com MÁXIMO 340 caracteres. Seja CRIATIVO e VARIADO - cada descrição deve ser única e natural. Descreva design, características visuais, aplicações. PROÍBIDO: descrições metódicas repetitivas, sempre começar com "Arquivo 3D de roda", mencionar "impressão 3D" ou "STL". Use linguagem envolvente e variada.`
+              : `Você é copywriter especializado em MODELOS 3D DIGITAIS de veículos. REGRA CRÍTICA: descrição com MÁXIMO 340 caracteres (não ultrapasse!). Estrutura: Parte 1 (150-170 chars): características do modelo 3D e veículo SEM ANO. Parte 2 (150-170 chars): call-to-action para colecionadores. Use: 'modelo 3D', 'réplica digital'. NUNCA fale como se fosse carro real. PROIBIDO mencionar interior do veículo.`
           },
           {
             role: "user",
@@ -132,7 +171,7 @@ Deno.serve(async (req: Request) => {
       throw new Error("OpenAI API key not configured");
     }
 
-    const description = await generateWithRetry(openaiApiKey, productName);
+    const description = await generateWithRetry(openaiApiKey, productName, category);
 
     return new Response(
       JSON.stringify({ description }),
