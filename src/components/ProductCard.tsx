@@ -248,11 +248,48 @@ export function ProductCard({ product, onImageUpload, onDelete }: ProductCardPro
     }
   };
 
-  const handleBuyClick = () => {
+  const handleBuyClick = async () => {
     if (isAdmin) {
       setIsLinkModalOpen(true);
-    } else {
-      window.open(purchaseUrl || '#', '_blank');
+      return;
+    }
+
+    if (purchaseUrl && purchaseUrl.trim() !== '') {
+      window.open(purchaseUrl, '_blank');
+      return;
+    }
+
+    try {
+      const apiUrl = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/create-checkout`;
+      const { data: { session } } = await supabase.auth.getSession();
+
+      if (!session) {
+        alert('Por favor, faça login para comprar');
+        return;
+      }
+
+      const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${session.access_token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          productId: product.id,
+          productName: name,
+          price: price,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to create checkout session');
+      }
+
+      const data = await response.json();
+      window.location.href = data.url;
+    } catch (error) {
+      console.error('Error creating checkout:', error);
+      alert('Erro ao processar pagamento. Tente novamente.');
     }
   };
 
