@@ -251,10 +251,10 @@ export function ProductCard({ product, onImageUpload, onDelete }: ProductCardPro
       let uploadFileName = file.name;
       let originalFileName = file.name;
 
+      let wasCompressed = false;
+
       if (file.size > maxSize) {
         try {
-          alert(`Arquivo muito grande (${(file.size / 1024 / 1024).toFixed(2)}MB). Comprimindo automaticamente...`);
-
           const zip = new JSZip();
           zip.file(file.name, file);
 
@@ -280,7 +280,7 @@ export function ProductCard({ product, onImageUpload, onDelete }: ProductCardPro
 
           fileToUpload = zipBlob;
           uploadFileName = file.name.replace(/\.[^/.]+$/, '') + '.zip';
-          alert(`Arquivo comprimido! Tamanho reduzido para ${(zipBlob.size / 1024 / 1024).toFixed(2)}MB`);
+          wasCompressed = true;
         } catch (zipError) {
           console.error('Error compressing file:', zipError);
           alert('Erro ao comprimir arquivo. Tente novamente.');
@@ -316,7 +316,12 @@ export function ProductCard({ product, onImageUpload, onDelete }: ProductCardPro
 
       setFileUrl(filePath);
       setFileName(originalFileName);
-      alert('Arquivo enviado com sucesso!');
+
+      if (wasCompressed) {
+        alert('Arquivo comprimido e adicionado ao card');
+      } else {
+        alert('Arquivo enviado com sucesso!');
+      }
     } catch (error: any) {
       console.error('Error uploading file:', error);
       if (error.message?.includes('exceeded the maximum allowed size')) {
