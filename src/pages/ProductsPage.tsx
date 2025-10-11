@@ -45,9 +45,9 @@ export default function ProductsPage() {
   };
 
   const categories = [
+    { id: 'wheels', label: 'RODAS' },
     { id: 'solid_cars', label: 'CARROS SÓLIDOS' },
     { id: 'complete_cars', label: 'CARROS COMPLETOS' },
-    { id: 'wheels', label: 'RODAS' },
     { id: 'bus_truck', label: 'ÔNIBUS E CAMINHÃO' },
   ];
 
