@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Teste Stripe</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 600px;
+      margin: 50px auto;
+      padding: 20px;
+    }
+    button {
+      background: #635bff;
+      color: white;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    button:hover {
+      background: #4f46e5;
+    }
+    button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+    .result {
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 6px;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+    .success {
+      background: #d1fae5;
+      border: 1px solid #10b981;
+      color: #065f46;
+    }
+    .error {
+      background: #fee2e2;
+      border: 1px solid #ef4444;
+      color: #991b1b;
+    }
+    .info {
+      background: #dbeafe;
+      border: 1px solid #3b82f6;
+      color: #1e40af;
+    }
+  </style>
+</head>
+<body>
+  <h1>Teste de Integração Stripe</h1>
+  <p>Este teste verificará se as chaves do Stripe estão configuradas corretamente.</p>
+
+  <button id="testBtn" onclick="testStripe()">Testar Conexão Stripe</button>
+
+  <div id="result"></div>
+
+  <script>
+    const SUPABASE_URL = 'https://ixviaudojrlinobazrrm.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml4dmlhdWRvanJsaW5vYmF6cnJtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjAwNDA4ODUsImV4cCI6MjA3NTYxNjg4NX0.DVpuaQ-X6VoJzludjonvnZqm0-lnPNGz71BpcgTqrz0';
+
+    async function testStripe() {
+      const btn = document.getElementById('testBtn');
+      const resultDiv = document.getElementById('result');
+
+      btn.disabled = true;
+      btn.textContent = 'Testando...';
+      resultDiv.innerHTML = '<div class="info">Testando a conexão com o Stripe...</div>';
+
+      try {
+        // Primeiro, vamos fazer login de teste ou usar a key anon
+        const response = await fetch(`${SUPABASE_URL}/functions/v1/create-checkout`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+          },
+          body: JSON.stringify({
+            productId: 'test-product-123',
+            productName: 'Produto de Teste',
+            price: 99.90
+          })
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.url) {
+          resultDiv.innerHTML = `
+            <div class="success">
+              <strong>✅ Sucesso!</strong><br><br>
+              A integração com o Stripe está funcionando corretamente!<br><br>
+              <strong>URL de Checkout gerada:</strong><br>
+              ${data.url}
+            </div>
+          `;
+        } else if (data.error === 'Unauthorized') {
+          resultDiv.innerHTML = `
+            <div class="info">
+              <strong>ℹ️ Autenticação Necessária</strong><br><br>
+              A função está configurada, mas requer autenticação de usuário.<br><br>
+              <strong>Próximo passo:</strong> Faça login na aplicação e teste o checkout de um produto real.<br><br>
+              <strong>Mensagem:</strong> ${data.error}
+            </div>
+          `;
+        } else if (data.error === 'Stripe secret key not configured') {
+          resultDiv.innerHTML = `
+            <div class="error">
+              <strong>❌ Chave do Stripe Não Configurada</strong><br><br>
+              A variável de ambiente <code>CHAVE_SECRETA_DA_FAIXA</code> não está configurada no Supabase.<br><br>
+              <strong>Solução:</strong><br>
+              1. Acesse: https://supabase.com/dashboard/project/ixviaudojrlinobazrrm/settings/secrets<br>
+              2. Adicione a secret <code>CHAVE_SECRETA_DA_FAIXA</code> com sua Stripe Secret Key
+            </div>
+          `;
+        } else {
+          resultDiv.innerHTML = `
+            <div class="error">
+              <strong>⚠️ Erro</strong><br><br>
+              ${JSON.stringify(data, null, 2)}
+            </div>
+          `;
+        }
+      } catch (error) {
+        resultDiv.innerHTML = `
+          <div class="error">
+            <strong>❌ Erro de Conexão</strong><br><br>
+            ${error.message}
+          </div>
+        `;
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Testar Novamente';
+      }
+    }
+  </script>
+</body>
+</html>
