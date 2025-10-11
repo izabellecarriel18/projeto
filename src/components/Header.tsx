@@ -1,5 +1,5 @@
 import { Zap, Menu, X, User, LogOut, ShoppingBag } from 'lucide-react';
-import { useState, useRef, useEffect } from 'react';
+import { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import AuthModal from './AuthModal';
 
@@ -11,9 +11,7 @@ interface HeaderProps {
 export default function Header({ onNavigate, currentPage }: HeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [authModalOpen, setAuthModalOpen] = useState(false);
-  const [userMenuOpen, setUserMenuOpen] = useState(false);
   const { user, profile, loading, signOut } = useAuth();
-  const userMenuRef = useRef<HTMLDivElement>(null);
 
   const menuItems = [
     { id: 'home', label: 'MARCA' },
@@ -21,23 +19,9 @@ export default function Header({ onNavigate, currentPage }: HeaderProps) {
     { id: 'courses', label: 'CURSOS' },
   ];
 
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (userMenuRef.current && !userMenuRef.current.contains(event.target as Node)) {
-        setUserMenuOpen(false);
-      }
-    }
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
-
   const handleNavigation = (page: string) => {
     onNavigate(page);
     setMobileMenuOpen(false);
-    setUserMenuOpen(false);
   };
 
   return (
@@ -90,26 +74,13 @@ export default function Header({ onNavigate, currentPage }: HeaderProps) {
                   <ShoppingBag className="w-5 h-5" />
                   <span className="text-sm font-medium">MINHAS COMPRAS</span>
                 </button>
-                <div className="relative" ref={userMenuRef}>
-                  <button
-                    onClick={() => setUserMenuOpen(!userMenuOpen)}
-                    className="flex items-center gap-2 text-white hover:text-red-600 transition-colors"
-                  >
-                    <User className="w-5 h-5" />
-                    <span className="text-sm font-medium">{profile.name}</span>
-                  </button>
-                  {userMenuOpen && (
-                    <div className="absolute right-0 mt-2 w-48 bg-gray-900 border border-gray-800 rounded-lg shadow-lg overflow-hidden">
-                      <button
-                        onClick={() => handleNavigation('profile')}
-                        className="w-full px-4 py-3 text-left text-white hover:bg-gray-800 transition-colors flex items-center gap-2"
-                      >
-                        <User className="w-4 h-4" />
-                        <span className="text-sm">Credenciais</span>
-                      </button>
-                    </div>
-                  )}
-                </div>
+                <button
+                  onClick={() => handleNavigation('profile')}
+                  className="flex items-center gap-2 text-white hover:text-red-600 transition-colors"
+                >
+                  <User className="w-5 h-5" />
+                  <span className="text-sm font-medium">{profile.name}</span>
+                </button>
                 <button
                   onClick={signOut}
                   className="flex items-center gap-2 text-white hover:text-red-600 transition-colors"
