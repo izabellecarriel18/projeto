@@ -1,4 +1,4 @@
-import { Shield, Zap, Headphones, ChevronDown } from 'lucide-react';
+import { Shield, Zap, Headphones, ChevronDown, Printer, Package, Ruler } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
@@ -44,6 +44,24 @@ export default function Differentials() {
       title: 'Suporte Especializado',
       description:
         'Suporte direto para tirar suas dúvidas e fazer orçamentos.',
+    },
+    {
+      icon: Printer,
+      title: 'Compatibilidade com impressora',
+      description:
+        'Os arquivos servem em qualquer impressora do mercado, sem problemas com compatibilidade.',
+    },
+    {
+      icon: Package,
+      title: 'Matérias para impressão',
+      description:
+        'Podem ser utilizados resina e filamento.',
+    },
+    {
+      icon: Ruler,
+      title: 'Em qual tamanho pode ser impresso',
+      description:
+        'Arquivos feitos para qualquer escala. Partindo dos 5cm até 1m, ele pode ser dividido em partes em projetos maiores.',
     },
   ];
 
