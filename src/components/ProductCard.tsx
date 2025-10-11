@@ -253,6 +253,10 @@ export function ProductCard({ product, onImageUpload, onDelete }: ProductCardPro
 
       let wasCompressed = false;
 
+      console.log(`[Upload Debug] File size: ${file.size} bytes (${(file.size / 1024).toFixed(2)} KB, ${(file.size / 1024 / 1024).toFixed(2)} MB)`);
+      console.log(`[Upload Debug] Max size: ${maxSize} bytes (${(maxSize / 1024 / 1024).toFixed(2)} MB)`);
+      console.log(`[Upload Debug] File exceeds limit: ${file.size > maxSize}`);
+
       if (file.size > maxSize) {
         try {
           const zip = new JSZip();
@@ -324,10 +328,16 @@ export function ProductCard({ product, onImageUpload, onDelete }: ProductCardPro
       }
     } catch (error: any) {
       console.error('Error uploading file:', error);
-      if (error.message?.includes('exceeded the maximum allowed size')) {
-        alert('Arquivo muito grande! O limite é 50MB.');
+      console.error('Error details:', {
+        message: error.message,
+        statusCode: error.statusCode,
+        error: error.error,
+      });
+
+      if (error.message?.includes('exceeded the maximum allowed size') || error.message?.includes('Payload too large')) {
+        alert(`Arquivo muito grande!\n\nTamanho: ${(file.size / 1024).toFixed(2)} KB\nLimite: 50 MB`);
       } else {
-        alert('Erro ao enviar arquivo. Tente novamente.');
+        alert(`Erro ao enviar arquivo: ${error.message || 'Tente novamente.'}`);
       }
     } finally {
       setIsUploadingFile(false);
