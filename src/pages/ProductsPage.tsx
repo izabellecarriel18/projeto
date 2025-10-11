@@ -45,10 +45,10 @@ export default function ProductsPage() {
   };
 
   const categories = [
-    { id: 'solid_cars', label: 'Carros Sólidos' },
-    { id: 'complete_cars', label: 'Carros Completos' },
-    { id: 'wheels', label: 'Rodas' },
-    { id: 'bus_truck', label: 'Ônibus e Caminhão' },
+    { id: 'solid_cars', label: 'CARROS SÓLIDOS' },
+    { id: 'complete_cars', label: 'CARROS COMPLETOS' },
+    { id: 'wheels', label: 'RODAS' },
+    { id: 'bus_truck', label: 'ÔNIBUS E CAMINHÃO' },
   ];
 
   const solidCarsBrands = [
