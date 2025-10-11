@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 
@@ -12,10 +12,18 @@ interface AddProductModalProps {
 
 export function AddProductModal({ isOpen, onClose, category, selectedBrand, onSuccess }: AddProductModalProps) {
   const [name, setName] = useState('');
-  const [brand, setBrand] = useState(selectedBrand !== 'all' ? selectedBrand : '');
+  const [brand, setBrand] = useState('');
   const [price, setPrice] = useState('0.00');
   const [formats, setFormats] = useState('STL');
   const [isCreating, setIsCreating] = useState(false);
+
+  useEffect(() => {
+    if (isOpen && selectedBrand !== 'all') {
+      setBrand(selectedBrand);
+    } else if (isOpen && selectedBrand === 'all') {
+      setBrand('');
+    }
+  }, [isOpen, selectedBrand]);
 
   if (!isOpen) return null;
 
