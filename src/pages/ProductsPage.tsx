@@ -159,8 +159,7 @@ export default function ProductsPage() {
     console.log('=== LOADING PRODUCTS ===');
     const { data, error } = await supabase
       .from('products')
-      .select('*')
-      .order('name', { ascending: true });
+      .select('*');
 
     console.log('Supabase response - data:', data);
     console.log('Supabase response - error:', error);
@@ -171,8 +170,11 @@ export default function ProductsPage() {
     }
 
     if (data) {
-      console.log('Setting products, count:', data.length);
-      setProducts(data);
+      const sortedData = [...data].sort((a, b) =>
+        a.name.localeCompare(b.name, 'pt-BR', { sensitivity: 'base' })
+      );
+      console.log('Setting products, count:', sortedData.length);
+      setProducts(sortedData);
     }
   }
 
@@ -370,6 +372,7 @@ export default function ProductsPage() {
         isOpen={addProductModalOpen}
         onClose={() => setAddProductModalOpen(false)}
         category={selectedCategory}
+        selectedBrand={selectedBrand}
         onSuccess={handleUploadSuccess}
       />
     </div>

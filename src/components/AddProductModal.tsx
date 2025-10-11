@@ -6,12 +6,13 @@ interface AddProductModalProps {
   isOpen: boolean;
   onClose: () => void;
   category: string;
+  selectedBrand: string;
   onSuccess: () => void;
 }
 
-export function AddProductModal({ isOpen, onClose, category, onSuccess }: AddProductModalProps) {
+export function AddProductModal({ isOpen, onClose, category, selectedBrand, onSuccess }: AddProductModalProps) {
   const [name, setName] = useState('');
-  const [brand, setBrand] = useState('');
+  const [brand, setBrand] = useState(selectedBrand !== 'all' ? selectedBrand : '');
   const [price, setPrice] = useState('0.00');
   const [formats, setFormats] = useState('STL');
   const [isCreating, setIsCreating] = useState(false);
@@ -225,25 +226,38 @@ export function AddProductModal({ isOpen, onClose, category, onSuccess }: AddPro
             />
           </div>
 
-          <div className="mb-4">
-            <label htmlFor="brand" className="block text-sm font-medium text-gray-300 mb-2">
-              Marca *
-            </label>
-            <select
-              id="brand"
-              value={brand}
-              onChange={(e) => setBrand(e.target.value)}
-              className="w-full px-4 py-2 bg-gray-950 border border-gray-800 rounded-lg text-white focus:outline-none focus:border-red-600"
-              required
-            >
-              <option value="" disabled>Selecione uma marca</option>
-              {availableBrands.map((brandOption) => (
-                <option key={brandOption} value={brandOption}>
-                  {brandOption}
-                </option>
-              ))}
-            </select>
-          </div>
+          {selectedBrand === 'all' && (
+            <div className="mb-4">
+              <label htmlFor="brand" className="block text-sm font-medium text-gray-300 mb-2">
+                Marca *
+              </label>
+              <select
+                id="brand"
+                value={brand}
+                onChange={(e) => setBrand(e.target.value)}
+                className="w-full px-4 py-2 bg-gray-950 border border-gray-800 rounded-lg text-white focus:outline-none focus:border-red-600"
+                required
+              >
+                <option value="" disabled>Selecione uma marca</option>
+                {availableBrands.map((brandOption) => (
+                  <option key={brandOption} value={brandOption}>
+                    {brandOption}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+
+          {selectedBrand !== 'all' && (
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-300 mb-2">
+                Marca
+              </label>
+              <div className="w-full px-4 py-2 bg-gray-950 border border-gray-800 rounded-lg text-white">
+                {brand}
+              </div>
+            </div>
+          )}
 
           <div className="mb-4">
             <label htmlFor="price" className="block text-sm font-medium text-gray-300 mb-2">
