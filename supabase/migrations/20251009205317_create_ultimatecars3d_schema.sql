@@ -9,7 +9,7 @@
       - `brand` (text) - Car brand (Audi, BMW, etc.)
       - `image_url` (text) - Product image URL
       - `price` (numeric) - Price in BRL
-      - `formats` (text[]) - Available file formats (MAX, STL, OBJ)
+      - `formats` (text[]) - Available file formats (STL)
       - `description` (text) - Product description
       - `created_at` (timestamptz)
       

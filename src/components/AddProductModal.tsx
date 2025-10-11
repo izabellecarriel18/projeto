@@ -13,7 +13,7 @@ export function AddProductModal({ isOpen, onClose, category, onSuccess }: AddPro
   const [name, setName] = useState('');
   const [brand, setBrand] = useState('');
   const [price, setPrice] = useState('0.00');
-  const [formats, setFormats] = useState('BLEND, FBX, OBJ');
+  const [formats, setFormats] = useState('STL');
   const [isCreating, setIsCreating] = useState(false);
 
   if (!isOpen) return null;
@@ -72,7 +72,7 @@ export function AddProductModal({ isOpen, onClose, category, onSuccess }: AddPro
       setName('');
       setBrand('');
       setPrice('0.00');
-      setFormats('BLEND, FBX, OBJ');
+      setFormats('STL');
       onSuccess();
       onClose();
     } catch (error) {
@@ -156,7 +156,7 @@ export function AddProductModal({ isOpen, onClose, category, onSuccess }: AddPro
               type="text"
               value={formats}
               onChange={(e) => setFormats(e.target.value)}
-              placeholder="BLEND, FBX, OBJ"
+              placeholder="STL"
               className="w-full px-4 py-2 bg-gray-950 border border-gray-800 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-red-600"
             />
           </div>
