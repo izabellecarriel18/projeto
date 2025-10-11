@@ -66,7 +66,7 @@ export default function ProductsPage() {
     'KOENIGSEGG',
     'MAZDA',
     'MCLAREN',
-    'MERCEDES',
+    'MERCEDES-BENZ',
     'MITSUBISHI',
     'NISSAN',
     'NOBLE',
@@ -77,8 +77,8 @@ export default function ProductsPage() {
     'SCANIA',
     'SUBARU',
     'TOYOTA',
-    'TROLLER',
-    'VOLKSWAGEN',
+    'TROLLER (FORD)',
+    'VOLKSWAGEN (VW)',
     'VOLVO',
   ];
 
