@@ -1,9 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
-import { Upload } from 'lucide-react';
+import { Upload, RefreshCw } from 'lucide-react';
 import { EditPurchaseLinkModal } from './EditPurchaseLinkModal';
 import { EditPriceModal } from './EditPriceModal';
+import { EditDescriptionModal } from './EditDescriptionModal';
 
 interface Product {
   id: string;
@@ -32,6 +33,7 @@ export function ProductCard({ product, onImageUpload }: ProductCardProps) {
   const [isGenerating, setIsGenerating] = useState(false);
   const [isLinkModalOpen, setIsLinkModalOpen] = useState(false);
   const [isPriceModalOpen, setIsPriceModalOpen] = useState(false);
+  const [isDescriptionModalOpen, setIsDescriptionModalOpen] = useState(false);
   const hasChecked = useRef(false);
   const isAdmin = profile?.role === 'admin';
 
@@ -172,7 +174,26 @@ export function ProductCard({ product, onImageUpload }: ProductCardProps) {
     setPrice(newPrice);
   };
 
+  const handleSaveDescription = async (newDescription: string) => {
+    const { error } = await supabase
+      .from('products')
+      .update({ description: newDescription })
+      .eq('id', product.id);
+
+    if (error) {
+      console.error('Error updating description:', error);
+      throw error;
+    }
+
+    setDescription(newDescription);
+  };
+
   const handleDescriptionClick = () => {
+    if (!isAdmin) return;
+    setIsDescriptionModalOpen(true);
+  };
+
+  const handleRegenerateDescription = () => {
     if (!isAdmin) return;
     generateDescription(true);
   };
@@ -217,13 +238,26 @@ export function ProductCard({ product, onImageUpload }: ProductCardProps) {
           <p className="text-gray-400 text-xs mb-2 uppercase tracking-wide">
             {product.formats.join(' , ')}
           </p>
-          <p
-            onClick={handleDescriptionClick}
-            className={`text-gray-300 text-sm leading-relaxed mb-3 min-h-[9rem] ${isAdmin ? 'cursor-pointer hover:text-white transition-colors' : ''}`}
-            title={isAdmin ? 'Clique para regerar descrição' : ''}
-          >
-            {isGenerating ? 'Gerando descrição...' : description}
-          </p>
+          <div className="mb-3">
+            <p
+              onClick={handleDescriptionClick}
+              className={`text-gray-300 text-sm leading-relaxed min-h-[9rem] ${isAdmin ? 'cursor-pointer hover:text-white transition-colors' : ''}`}
+              title={isAdmin ? 'Clique para editar descrição' : ''}
+            >
+              {isGenerating ? 'Gerando descrição...' : description}
+            </p>
+            {isAdmin && (
+              <button
+                onClick={handleRegenerateDescription}
+                disabled={isGenerating}
+                className="mt-2 flex items-center gap-2 text-xs text-gray-400 hover:text-red-500 transition-colors disabled:opacity-50"
+                title="Gerar nova descrição com IA"
+              >
+                <RefreshCw className={`w-3 h-3 ${isGenerating ? 'animate-spin' : ''}`} />
+                {isGenerating ? 'Gerando...' : 'Regenerar com IA'}
+              </button>
+            )}
+          </div>
           <div
             onClick={handlePriceClick}
             className={`text-white font-bold text-2xl mb-3 ${isAdmin ? 'cursor-pointer hover:text-red-500 transition-colors' : ''}`}
@@ -252,6 +286,13 @@ export function ProductCard({ product, onImageUpload }: ProductCardProps) {
         onClose={() => setIsPriceModalOpen(false)}
         currentPrice={price}
         onSave={handleSavePrice}
+      />
+
+      <EditDescriptionModal
+        isOpen={isDescriptionModalOpen}
+        onClose={() => setIsDescriptionModalOpen(false)}
+        currentDescription={description}
+        onSave={handleSaveDescription}
       />
     </>
   );
