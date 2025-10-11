@@ -1,4 +1,4 @@
-import { Shield, Zap, Headphones } from 'lucide-react';
+import { Shield, Zap, Headphones, ChevronDown } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
@@ -7,6 +7,7 @@ import EditableBackgroundImage from './EditableBackgroundImage';
 export default function Differentials() {
   const { profile } = useAuth();
   const [differentialsImage, setDifferentialsImage] = useState<string>('https://i.imgur.com/nHXjTtQ.jpg');
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
   const isAdmin = profile?.role === 'admin';
 
   useEffect(() => {
@@ -46,6 +47,10 @@ export default function Differentials() {
     },
   ];
 
+  const toggleItem = (index: number) => {
+    setOpenIndex(openIndex === index ? null : index);
+  };
+
   return (
     <EditableBackgroundImage
       slotId="differentials_bg"
@@ -55,47 +60,44 @@ export default function Differentials() {
       className="py-12 sm:py-20 flex items-center"
       style={{ minHeight: '67.5vh' }}
     >
-      <div className="relative z-10 max-w-4xl mx-auto w-full">
-        <h2 className="text-3xl sm:text-4xl font-bold text-white text-center mb-8 sm:mb-12 px-4">
+      <div className="relative z-10 max-w-4xl mx-auto w-full px-4">
+        <h2 className="text-3xl sm:text-4xl font-bold text-white text-center mb-8 sm:mb-12">
           Diferenciais
         </h2>
 
-        <div className="md:hidden overflow-x-auto scrollbar-hide px-4">
-          <div className="flex gap-4 pb-4" style={{ width: 'max-content' }}>
-            {differentials.map((item, index) => (
-              <div
-                key={index}
-                className="bg-gray-800/50 backdrop-blur border border-gray-700 rounded-lg p-6 flex flex-col items-center gap-4 hover:border-red-600 transition-all flex-shrink-0"
-                style={{ width: '300px' }}
+        <div className="space-y-4">
+          {differentials.map((item, index) => (
+            <div
+              key={index}
+              className="bg-gray-800/50 backdrop-blur border border-gray-700 rounded-lg overflow-hidden hover:border-red-600 transition-all"
+            >
+              <button
+                onClick={() => toggleItem(index)}
+                className="w-full flex items-center justify-between p-6 text-left"
               >
-                <div className="bg-red-600/10 p-4 rounded-full">
-                  <item.icon className="w-10 h-10 text-red-600" />
+                <div className="flex items-center gap-4">
+                  <div className="bg-red-600/10 p-3 rounded-full">
+                    <item.icon className="w-6 h-6 text-red-600" />
+                  </div>
+                  <h3 className="text-xl font-bold text-white">{item.title}</h3>
                 </div>
-                <div className="flex-1 text-center">
-                  <h3 className="text-xl font-bold text-white mb-2">{item.title}</h3>
+                <ChevronDown
+                  className={`w-6 h-6 text-white transition-transform ${
+                    openIndex === index ? 'rotate-180' : ''
+                  }`}
+                />
+              </button>
+              <div
+                className={`overflow-hidden transition-all duration-300 ${
+                  openIndex === index ? 'max-h-96' : 'max-h-0'
+                }`}
+              >
+                <div className="px-6 pb-6 pl-20">
                   <p className="text-white text-base leading-relaxed">{item.description}</p>
                 </div>
               </div>
-            ))}
-          </div>
-        </div>
-        <div className="hidden md:block px-4">
-          <div className="space-y-6">
-            {differentials.map((item, index) => (
-              <div
-                key={index}
-                className="bg-gray-800/50 backdrop-blur border border-gray-700 rounded-lg p-8 flex flex-row items-center gap-6 hover:border-red-600 transition-all"
-              >
-                <div className="bg-red-600/10 p-6 rounded-full">
-                  <item.icon className="w-12 h-12 text-red-600" />
-                </div>
-                <div className="flex-1 text-left">
-                  <h3 className="text-2xl font-bold text-white mb-3">{item.title}</h3>
-                  <p className="text-white text-lg leading-relaxed">{item.description}</p>
-                </div>
-              </div>
-            ))}
-          </div>
+            </div>
+          ))}
         </div>
       </div>
     </EditableBackgroundImage>
