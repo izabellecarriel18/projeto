@@ -214,7 +214,7 @@ export function ProductCard({ product, onImageUpload }: ProductCardProps) {
 
   return (
     <>
-      <div className="flex flex-col bg-gray-900 border border-gray-800 rounded-lg overflow-hidden hover:border-gray-700 transition-colors">
+      <div className="flex flex-col h-full bg-gray-900 border border-gray-800 rounded-lg overflow-hidden hover:border-gray-700 transition-colors">
         <div className="aspect-[16/11] bg-gray-950 overflow-hidden relative group">
           <img
             src={product.image_url}
@@ -233,15 +233,15 @@ export function ProductCard({ product, onImageUpload }: ProductCardProps) {
             </button>
           )}
         </div>
-        <div className="flex flex-col p-5">
+        <div className="flex flex-col flex-1 p-5">
           <h3 className="text-white font-bold text-lg mb-1">{product.name}</h3>
           <p className="text-gray-400 text-xs mb-2 uppercase tracking-wide">
             {product.formats.join(' , ')}
           </p>
-          <div className="mb-3">
+          <div className="flex-1 mb-3">
             <p
               onClick={handleDescriptionClick}
-              className={`text-gray-300 text-sm leading-relaxed min-h-[9rem] ${isAdmin ? 'cursor-pointer hover:text-white transition-colors' : ''}`}
+              className={`text-gray-300 text-sm leading-relaxed ${isAdmin ? 'cursor-pointer hover:text-white transition-colors' : ''}`}
               title={isAdmin ? 'Clique para editar descrição' : ''}
             >
               {isGenerating ? 'Gerando descrição...' : description}
@@ -267,7 +267,7 @@ export function ProductCard({ product, onImageUpload }: ProductCardProps) {
           </div>
           <button
             onClick={handleBuyClick}
-            className="w-full bg-red-600 hover:bg-red-700 text-white py-3 rounded-lg font-bold text-sm transition-colors z-20 relative"
+            className="w-full bg-red-600 hover:bg-red-700 text-white py-3 rounded-lg font-bold text-sm transition-colors z-20 relative mt-auto"
           >
             {isAdmin ? 'Editar Link' : 'Comprar'}
           </button>
