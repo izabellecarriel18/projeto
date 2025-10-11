@@ -83,7 +83,7 @@ export default function Differentials() {
           Diferenciais
         </h2>
 
-        <div className="space-y-4">
+        <div className="space-y-3">
           {differentials.map((item, index) => (
             <div
               key={index}
@@ -91,16 +91,16 @@ export default function Differentials() {
             >
               <button
                 onClick={() => toggleItem(index)}
-                className="w-full flex items-center justify-between p-6 text-left"
+                className="w-full flex items-center justify-between px-4 sm:px-6 py-4 sm:py-5 text-left"
               >
                 <div className="flex items-center gap-4">
                   <div className="bg-red-600/10 p-3 rounded-full">
                     <item.icon className="w-6 h-6 text-red-600" />
                   </div>
-                  <h3 className="text-xl font-bold text-white">{item.title}</h3>
+                  <h3 className="text-base sm:text-lg font-semibold text-white">{item.title}</h3>
                 </div>
                 <ChevronDown
-                  className={`w-6 h-6 text-white transition-transform ${
+                  className={`w-5 h-5 text-red-600 transition-transform ${
                     openIndex === index ? 'rotate-180' : ''
                   }`}
                 />
@@ -110,8 +110,8 @@ export default function Differentials() {
                   openIndex === index ? 'max-h-96' : 'max-h-0'
                 }`}
               >
-                <div className="px-6 pb-6 pl-20">
-                  <p className="text-white text-base leading-relaxed">{item.description}</p>
+                <div className="px-4 sm:px-6 pb-4 sm:pb-5 pl-16 sm:pl-20">
+                  <p className="text-white text-sm sm:text-base leading-relaxed">{item.description}</p>
                 </div>
               </div>
             </div>
