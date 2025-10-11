@@ -37,14 +37,24 @@ Deno.serve(async (req: Request) => {
     const { data: { user }, error: userError } = await supabase.auth.getUser(token);
 
     if (userError || !user) {
+      console.error("User auth error:", userError);
       throw new Error("Unauthorized");
     }
+
+    console.log("User authenticated:", user.id, user.email);
 
     const { productId, productName, price } = await req.json();
 
     if (!productId || !productName || !price) {
       throw new Error("Missing required fields");
     }
+
+    console.log("Creating checkout session with:", {
+      productId,
+      productName,
+      price,
+      userEmail: user.email,
+    });
 
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card", "pix"],
@@ -70,6 +80,8 @@ Deno.serve(async (req: Request) => {
       },
     });
 
+    console.log("Checkout session created successfully:", session.id);
+
     return new Response(
       JSON.stringify({ url: session.url }),
       {
@@ -81,8 +93,17 @@ Deno.serve(async (req: Request) => {
     );
   } catch (error) {
     console.error("Error creating checkout session:", error);
+
+    const errorMessage = error instanceof Error ? error.message : "Unknown error";
+    const errorDetails = error instanceof Error && 'raw' in error ? error : null;
+
+    console.error("Error details:", errorDetails);
+
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({
+        error: errorMessage,
+        details: errorDetails ? JSON.stringify(errorDetails) : undefined
+      }),
       {
         status: 400,
         headers: {

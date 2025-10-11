@@ -260,13 +260,20 @@ export function ProductCard({ product, onImageUpload, onDelete }: ProductCardPro
     }
 
     try {
-      const apiUrl = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/create-checkout`;
       const { data: { session } } = await supabase.auth.getSession();
 
       if (!session) {
         alert('Por favor, faça login para comprar');
         return;
       }
+
+      console.log('Creating checkout with data:', {
+        productId: product.id,
+        productName: name,
+        price: price,
+      });
+
+      const apiUrl = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/create-checkout`;
 
       const response = await fetch(apiUrl, {
         method: 'POST',
@@ -281,11 +288,14 @@ export function ProductCard({ product, onImageUpload, onDelete }: ProductCardPro
         }),
       });
 
+      const data = await response.json();
+
       if (!response.ok) {
-        throw new Error('Failed to create checkout session');
+        console.error('Checkout error:', data);
+        throw new Error(data.error || 'Failed to create checkout session');
       }
 
-      const data = await response.json();
+      console.log('Checkout created successfully:', data);
       window.location.href = data.url;
     } catch (error) {
       console.error('Error creating checkout:', error);
