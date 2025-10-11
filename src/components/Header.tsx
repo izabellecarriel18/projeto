@@ -73,7 +73,7 @@ export default function Header({ onNavigate, currentPage }: HeaderProps) {
                     }`}
                   >
                     <ShoppingBag className="w-5 h-5" />
-                    <span className="text-sm font-medium">MINHAS COMPRAS</span>
+                    <span className="text-sm font-medium">COMPRAS</span>
                   </button>
                 )}
                 <button
@@ -127,7 +127,7 @@ export default function Header({ onNavigate, currentPage }: HeaderProps) {
                       className="flex items-center justify-center gap-2 text-white hover:text-red-600 transition-colors py-6 w-full border-b border-gray-700"
                     >
                       <ShoppingBag className="w-5 h-5" />
-                      <span className="text-lg font-medium">MINHAS COMPRAS</span>
+                      <span className="text-lg font-medium">COMPRAS</span>
                     </button>
                   )}
                   <button
