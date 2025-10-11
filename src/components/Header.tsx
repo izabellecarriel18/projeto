@@ -107,19 +107,16 @@ export default function Header({ onNavigate, currentPage }: HeaderProps) {
                         <User className="w-4 h-4" />
                         <span className="text-sm">Credenciais</span>
                       </button>
-                      <button
-                        onClick={() => {
-                          signOut();
-                          setUserMenuOpen(false);
-                        }}
-                        className="w-full px-4 py-3 text-left text-white hover:bg-gray-800 transition-colors flex items-center gap-2 border-t border-gray-800"
-                      >
-                        <LogOut className="w-4 h-4" />
-                        <span className="text-sm">Sair</span>
-                      </button>
                     </div>
                   )}
                 </div>
+                <button
+                  onClick={signOut}
+                  className="flex items-center gap-2 text-white hover:text-red-600 transition-colors"
+                >
+                  <LogOut className="w-5 h-5" />
+                  <span className="text-sm font-medium">SAIR</span>
+                </button>
               </div>
             ) : (
               <button
