@@ -13,44 +13,69 @@ export default function PaymentSuccessPage({ onNavigate }: PaymentSuccessPagePro
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    verifyAndRecordPurchase();
-  }, []);
+    const timer = setTimeout(() => {
+      verifyAndRecordPurchase();
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, [user]);
 
   async function verifyAndRecordPurchase() {
     try {
       const params = new URLSearchParams(window.location.search);
       const sessionId = params.get('session_id');
 
-      if (!sessionId || !user) {
+      console.log('PaymentSuccessPage - sessionId:', sessionId);
+      console.log('PaymentSuccessPage - user:', user?.id);
+
+      if (!sessionId) {
         setError('Sessão de pagamento não encontrada');
         setLoading(false);
         return;
       }
 
-      const apiUrl = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/verify-payment`;
-
-      const { data: { session } } = await supabase.auth.getSession();
-
-      const response = await fetch(apiUrl, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${session?.access_token}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ sessionId }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Erro ao verificar pagamento');
+      if (!user) {
+        console.log('Aguardando autenticação...');
+        return;
       }
 
-      setLoading(false);
+      console.log('Verificando se a compra já foi registrada pelo webhook...');
 
-      setTimeout(() => {
-        onNavigate('purchases');
-      }, 3000);
+      let attempts = 0;
+      const maxAttempts = 10;
+      const checkInterval = 1000;
+
+      while (attempts < maxAttempts) {
+        const { data: purchase, error } = await supabase
+          .from('user_purchases')
+          .select('id, product_id, status')
+          .eq('stripe_session_id', sessionId)
+          .eq('user_id', user.id);
+
+        console.log(`Tentativa ${attempts + 1}:`, { purchase, error });
+
+        if (error) {
+          console.error('Erro ao verificar compra:', error);
+          attempts++;
+          await new Promise(resolve => setTimeout(resolve, checkInterval));
+          continue;
+        }
+
+        if (purchase && purchase.length > 0) {
+          console.log('Compra encontrada!', purchase);
+          setLoading(false);
+          setTimeout(() => {
+            onNavigate('purchases');
+          }, 2000);
+          return;
+        }
+
+        attempts++;
+        await new Promise(resolve => setTimeout(resolve, checkInterval));
+      }
+
+      setError('A compra foi aprovada, mas ainda está sendo processada. Por favor, verifique suas compras em alguns instantes.');
+      setLoading(false);
     } catch (error: any) {
       console.error('Error verifying payment:', error);
       setError(error.message);
