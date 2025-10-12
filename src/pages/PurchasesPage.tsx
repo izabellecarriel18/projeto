@@ -118,26 +118,6 @@ export default function PurchasesPage() {
     }
   };
 
-  const handleDownloadAll = async (product: Purchase['products']) => {
-    const files = [];
-    if (product.file_url) {
-      files.push({ url: product.file_url, name: product.file_name });
-    }
-    if (product.wheel_file_url) {
-      files.push({ url: product.wheel_file_url, name: product.wheel_file_name });
-    }
-
-    if (files.length === 0) {
-      alert('Nenhum arquivo disponível para download.');
-      return;
-    }
-
-    for (const file of files) {
-      await handleDownload(file.url, file.name);
-      await new Promise(resolve => setTimeout(resolve, 500));
-    }
-  };
-
   if (!user) {
     return (
       <div className="min-h-screen pt-20 sm:pt-24 pb-12 sm:pb-20">
@@ -198,19 +178,31 @@ export default function PurchasesPage() {
                     <div className="text-white font-bold text-xl mb-4">
                       {formatPrice(purchase.amount_paid)}
                     </div>
-                    {purchase.products.file_url || purchase.products.wheel_file_url ? (
-                      <button
-                        onClick={() => handleDownloadAll(purchase.products)}
-                        className="w-full bg-red-600 hover:bg-red-700 text-white py-3 rounded-lg font-bold text-sm transition-colors flex items-center justify-center gap-2"
-                      >
-                        <Download className="w-4 h-4" />
-                        Baixar Arquivos ({[purchase.products.file_url, purchase.products.wheel_file_url].filter(Boolean).length})
-                      </button>
-                    ) : (
-                      <div className="w-full bg-gray-700 text-gray-400 py-3 rounded-lg font-bold text-sm text-center">
-                        Arquivo não disponível
-                      </div>
-                    )}
+                    <div className="space-y-2">
+                      {purchase.products.file_url ? (
+                        <button
+                          onClick={() => handleDownload(purchase.products.file_url!, purchase.products.file_name)}
+                          className="w-full bg-red-600 hover:bg-red-700 text-white py-3 rounded-lg font-bold text-sm transition-colors flex items-center justify-center gap-2"
+                        >
+                          <Download className="w-4 h-4" />
+                          Baixar Carro ({purchase.products.file_name || 'arquivo'})
+                        </button>
+                      ) : null}
+                      {purchase.products.wheel_file_url ? (
+                        <button
+                          onClick={() => handleDownload(purchase.products.wheel_file_url!, purchase.products.wheel_file_name)}
+                          className="w-full bg-red-600 hover:bg-red-700 text-white py-3 rounded-lg font-bold text-sm transition-colors flex items-center justify-center gap-2"
+                        >
+                          <Download className="w-4 h-4" />
+                          Baixar Roda ({purchase.products.wheel_file_name || 'arquivo'})
+                        </button>
+                      ) : null}
+                      {!purchase.products.file_url && !purchase.products.wheel_file_url && (
+                        <div className="w-full bg-gray-700 text-gray-400 py-3 rounded-lg font-bold text-sm text-center">
+                          Nenhum arquivo disponível
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
               ))}
