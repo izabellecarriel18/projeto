@@ -9,9 +9,12 @@ import ProductsPage from './pages/ProductsPage';
 import CoursesPage from './pages/CoursesPage';
 import ProfilePage from './pages/ProfilePage';
 import PurchasesPage from './pages/PurchasesPage';
+import PaymentSuccessPage from './pages/PaymentSuccessPage';
 
 function App() {
-  const [currentPage, setCurrentPage] = useState('home');
+  const urlParams = new URLSearchParams(window.location.search);
+  const hasSessionId = urlParams.get('session_id');
+  const [currentPage, setCurrentPage] = useState(hasSessionId ? 'payment-success' : 'home');
 
   const handleNavigate = (page: string) => {
     setCurrentPage(page);
@@ -30,6 +33,7 @@ function App() {
       {currentPage === 'courses' && <CoursesPage />}
       {currentPage === 'profile' && <ProfilePage />}
       {currentPage === 'purchases' && <PurchasesPage />}
+      {currentPage === 'payment-success' && <PaymentSuccessPage onNavigate={handleNavigate} />}
 
         <Footer />
         </div>
