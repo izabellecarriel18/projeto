@@ -135,8 +135,8 @@ Deno.serve(async (req: Request) => {
       line_items: lineItems,
       mode: "payment",
       payment_method_types: ["card"],
-      success_url: `${req.headers.get("origin")}/produtos?success=true&session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${req.headers.get("origin")}/produtos?canceled=true`,
+      success_url: `${req.headers.get("origin")}/?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${req.headers.get("origin")}/`,
       metadata: metadata,
     };
 
