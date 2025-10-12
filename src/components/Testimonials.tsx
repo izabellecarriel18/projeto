@@ -62,14 +62,14 @@ export default function Testimonials() {
 
         <>
           <div className="md:hidden overflow-x-auto scrollbar-hide px-4">
-          <div className="flex gap-4 pb-4" style={{ width: 'max-content' }}>
+          <div className="flex gap-4 py-4" style={{ width: 'max-content', paddingLeft: '4px', paddingRight: '4px' }}>
             {testimonials.map((testimonial) => (
               <div
                 key={testimonial.id}
-                className="bg-gray-800/50 backdrop-blur border border-gray-700 rounded-lg p-4 hover:border-red-600 transition-all flex-shrink-0"
-                style={{ width: '280px' }}
+                className="bg-gray-800/50 backdrop-blur border border-gray-700 rounded-2xl p-8 hover:border-red-600 transition-all flex-shrink-0 flex flex-col"
+                style={{ width: '280px', minHeight: '280px' }}
               >
-                <div className="flex items-center gap-3 mb-3">
+                <div className="flex items-center gap-3 mb-4">
                   <img
                     src={testimonial.avatar_url}
                     alt={testimonial.name}
@@ -84,7 +84,7 @@ export default function Testimonials() {
                     </div>
                   </div>
                 </div>
-                <p className="text-white text-sm leading-relaxed">{testimonial.text}</p>
+                <p className="text-white text-sm leading-relaxed flex-1">{testimonial.text}</p>
               </div>
             ))}
           </div>
@@ -93,9 +93,10 @@ export default function Testimonials() {
           {testimonials.map((testimonial) => (
             <div
               key={testimonial.id}
-              className="bg-gray-800/50 backdrop-blur border border-gray-700 rounded-lg p-6 hover:border-red-600 transition-all"
+              className="bg-gray-800/50 backdrop-blur border border-gray-700 rounded-2xl p-12 hover:border-red-600 hover:scale-105 transition-all flex flex-col"
+              style={{ minHeight: '280px' }}
             >
-              <div className="flex items-center gap-3 mb-3">
+              <div className="flex items-center gap-3 mb-6">
                 <img
                   src={testimonial.avatar_url}
                   alt={testimonial.name}
@@ -110,7 +111,7 @@ export default function Testimonials() {
                   </div>
                 </div>
               </div>
-              <p className="text-white text-sm leading-relaxed">{testimonial.text}</p>
+              <p className="text-white text-sm leading-relaxed flex-1">{testimonial.text}</p>
             </div>
           ))}
         </div>
