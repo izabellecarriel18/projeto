@@ -557,8 +557,15 @@ export function ProductCard({ product, onImageUpload, onDelete }: ProductCardPro
   };
 
   const handleAddToCart = () => {
-    if (!fileUrl || !wheelFileUrl) {
-      alert('Este produto precisa ter os 2 arquivos (carro e roda) disponíveis');
+    const isWheel = product.category === 'Rodas';
+    const hasRequiredFiles = isWheel ? wheelFileUrl : (fileUrl && wheelFileUrl);
+
+    if (!hasRequiredFiles) {
+      if (isWheel) {
+        alert('Este produto precisa ter o arquivo da roda disponível');
+      } else {
+        alert('Este produto precisa ter os 2 arquivos (carro e roda) disponíveis');
+      }
       return;
     }
 
@@ -570,7 +577,8 @@ export function ProductCard({ product, onImageUpload, onDelete }: ProductCardPro
     });
   };
 
-  const hasBothFiles = fileUrl && wheelFileUrl;
+  const isWheel = product.category === 'Rodas';
+  const hasBothFiles = isWheel ? wheelFileUrl : (fileUrl && wheelFileUrl);
 
   return (
     <>
@@ -642,42 +650,46 @@ export function ProductCard({ product, onImageUpload, onDelete }: ProductCardPro
           </div>
           {isAdmin && (
             <>
-              <input
-                ref={fileInputRef}
-                type="file"
-                onChange={handleFileUpload}
-                className="hidden"
-                accept=".zip,.rar,.7z,.blend,.fbx,.obj,.stl,.max,.c4d"
-              />
-              <button
-                onClick={() => fileInputRef.current?.click()}
-                disabled={isUploadingFile}
-                className={`w-full ${fileUrl ? 'bg-green-600 hover:bg-green-700' : 'bg-blue-600 hover:bg-blue-700'} disabled:bg-blue-800 disabled:cursor-not-allowed text-white py-3 rounded-lg font-bold text-sm transition-colors flex items-center justify-center gap-2 mb-2`}
-              >
-                {isUploadingFile ? (
-                  <>
-                    <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    <span>Enviando...</span>
-                  </>
-                ) : fileUrl ? (
-                  <>
-                    <FileCheck className="w-5 h-5" />
-                    <span>Arquivo já incluído</span>
-                  </>
-                ) : (
-                  <>
-                    <FileUp className="w-5 h-5" />
-                    <span>Upload Arquivo</span>
-                  </>
-                )}
-              </button>
-              {fileName && (
-                <p className="text-xs text-gray-400 mb-2 truncate" title={fileName}>
-                  📎 Carro: {fileName}
-                </p>
+              {product.category !== 'Rodas' && (
+                <>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    onChange={handleFileUpload}
+                    className="hidden"
+                    accept=".zip,.rar,.7z,.blend,.fbx,.obj,.stl,.max,.c4d"
+                  />
+                  <button
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={isUploadingFile}
+                    className={`w-full ${fileUrl ? 'bg-green-600 hover:bg-green-700' : 'bg-blue-600 hover:bg-blue-700'} disabled:bg-blue-800 disabled:cursor-not-allowed text-white py-3 rounded-lg font-bold text-sm transition-colors flex items-center justify-center gap-2 mb-2`}
+                  >
+                    {isUploadingFile ? (
+                      <>
+                        <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        <span>Enviando...</span>
+                      </>
+                    ) : fileUrl ? (
+                      <>
+                        <FileCheck className="w-5 h-5" />
+                        <span>Arquivo já incluído</span>
+                      </>
+                    ) : (
+                      <>
+                        <FileUp className="w-5 h-5" />
+                        <span>Upload Arquivo</span>
+                      </>
+                    )}
+                  </button>
+                  {fileName && (
+                    <p className="text-xs text-gray-400 mb-2 truncate" title={fileName}>
+                      📎 Carro: {fileName}
+                    </p>
+                  )}
+                </>
               )}
               <input
                 ref={wheelFileInputRef}
@@ -707,7 +719,7 @@ export function ProductCard({ product, onImageUpload, onDelete }: ProductCardPro
                 ) : (
                   <>
                     <FileUp className="w-5 h-5" />
-                    <span>Upload Arquivo Roda</span>
+                    <span>Upload {product.category === 'Rodas' ? 'Roda' : 'Arquivo Roda'}</span>
                   </>
                 )}
               </button>
@@ -723,7 +735,7 @@ export function ProductCard({ product, onImageUpload, onDelete }: ProductCardPro
               onClick={handleAddToCart}
               disabled={!hasBothFiles || isInCart}
               className="w-full bg-gray-700 hover:bg-gray-600 disabled:bg-gray-800 disabled:cursor-not-allowed text-white py-3 rounded-lg font-bold text-sm transition-colors z-20 relative mt-auto flex items-center justify-center gap-2 mb-2"
-              title={!hasBothFiles ? 'Produto precisa ter os 2 arquivos (carro e roda)' : isInCart ? 'Já está no carrinho' : ''}
+              title={!hasBothFiles ? (isWheel ? 'Produto precisa ter o arquivo da roda' : 'Produto precisa ter os 2 arquivos (carro e roda)') : isInCart ? 'Já está no carrinho' : ''}
             >
               <ShoppingCart className="w-5 h-5" />
               <span>{isInCart ? 'No Carrinho' : 'Adicionar ao Carrinho'}</span>
@@ -733,7 +745,7 @@ export function ProductCard({ product, onImageUpload, onDelete }: ProductCardPro
             onClick={handleBuyClick}
             disabled={isProcessingPayment || !hasBothFiles}
             className="w-full bg-red-600 hover:bg-red-700 disabled:bg-red-800 disabled:cursor-not-allowed text-white py-3 rounded-lg font-bold text-sm transition-colors z-20 relative mt-auto flex items-center justify-center gap-2"
-            title={!hasBothFiles ? 'Produto precisa ter os 2 arquivos (carro e roda)' : ''}
+            title={!hasBothFiles ? (isWheel ? 'Produto precisa ter o arquivo da roda' : 'Produto precisa ter os 2 arquivos (carro e roda)') : ''}
           >
             {isProcessingPayment ? (
               <>
