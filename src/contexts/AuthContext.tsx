@@ -13,7 +13,7 @@ interface AuthContextType {
   user: User | null;
   profile: Profile | null;
   loading: boolean;
-  signOut: () => Promise<void>;
+  signOut: (onNavigate?: (page: string) => void) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -73,10 +73,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const signOut = async () => {
+  const signOut = async (onNavigate?: (page: string) => void) => {
     await supabase.auth.signOut();
     setUser(null);
     setProfile(null);
+    if (onNavigate) {
+      onNavigate('home');
+    }
   };
 
   return (

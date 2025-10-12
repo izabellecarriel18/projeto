@@ -102,7 +102,7 @@ export default function Header({ onNavigate, currentPage }: HeaderProps) {
                   <span className="text-sm font-medium">{profile.name}</span>
                 </button>
                 <button
-                  onClick={signOut}
+                  onClick={() => signOut(onNavigate)}
                   className="flex items-center gap-2 text-white hover:text-red-600 transition-colors"
                 >
                   <LogOut className="w-5 h-5" />
@@ -174,7 +174,7 @@ export default function Header({ onNavigate, currentPage }: HeaderProps) {
                   </button>
                   <button
                     onClick={() => {
-                      signOut();
+                      signOut(onNavigate);
                       setMobileMenuOpen(false);
                     }}
                     className="flex items-center justify-center gap-2 text-white hover:text-red-600 transition-colors py-6 w-full border-b border-gray-700"
