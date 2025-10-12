@@ -39,43 +39,48 @@ export default function PaymentSuccessPage({ onNavigate }: PaymentSuccessPagePro
         return;
       }
 
-      console.log('Verificando se a compra já foi registrada pelo webhook...');
+      console.log('Verificando compra no banco de dados...');
 
-      let attempts = 0;
-      const maxAttempts = 10;
-      const checkInterval = 1000;
+      const { data: existingPurchase } = await supabase
+        .from('user_purchases')
+        .select('id, product_id, status')
+        .eq('stripe_session_id', sessionId)
+        .eq('user_id', user.id);
 
-      while (attempts < maxAttempts) {
-        const { data: purchase, error } = await supabase
-          .from('user_purchases')
-          .select('id, product_id, status')
-          .eq('stripe_session_id', sessionId)
-          .eq('user_id', user.id);
-
-        console.log(`Tentativa ${attempts + 1}:`, { purchase, error });
-
-        if (error) {
-          console.error('Erro ao verificar compra:', error);
-          attempts++;
-          await new Promise(resolve => setTimeout(resolve, checkInterval));
-          continue;
-        }
-
-        if (purchase && purchase.length > 0) {
-          console.log('Compra encontrada!', purchase);
-          setLoading(false);
-          setTimeout(() => {
-            onNavigate('purchases');
-          }, 2000);
-          return;
-        }
-
-        attempts++;
-        await new Promise(resolve => setTimeout(resolve, checkInterval));
+      if (existingPurchase && existingPurchase.length > 0) {
+        console.log('Compra já registrada!', existingPurchase);
+        setLoading(false);
+        setTimeout(() => {
+          onNavigate('purchases');
+        }, 2000);
+        return;
       }
 
-      setError('A compra foi aprovada, mas ainda está sendo processada. Por favor, verifique suas compras em alguns instantes.');
+      console.log('Compra não encontrada, verificando com Stripe...');
+
+      const apiUrl = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/verify-payment`;
+      const { data: { session } } = await supabase.auth.getSession();
+
+      const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${session?.access_token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ sessionId }),
+      });
+
+      const data = await response.json();
+      console.log('Resposta verify-payment:', { status: response.status, data });
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Erro ao verificar pagamento');
+      }
+
       setLoading(false);
+      setTimeout(() => {
+        onNavigate('purchases');
+      }, 2000);
     } catch (error: any) {
       console.error('Error verifying payment:', error);
       setError(error.message);
