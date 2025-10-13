@@ -144,7 +144,6 @@ export default function ProductsPage() {
     'MITSUBISHI',
     'MOMO',
     'NISSAN',
-    'OUTROS',
     'PEUGEOT',
     'PORSCHE',
     'RENAULT',
@@ -156,6 +155,7 @@ export default function ProductsPage() {
     'VOLCANO',
     'VOLKSWAGEN',
     'VOLVO',
+    'OUTROS',
   ];
 
   useEffect(() => {
