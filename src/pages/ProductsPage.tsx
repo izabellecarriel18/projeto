@@ -21,7 +21,7 @@ export default function ProductsPage() {
   const { profile } = useAuth();
   const [products, setProducts] = useState<Product[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
-  const [selectedCategory, setSelectedCategory] = useState<string>('solid_cars');
+  const [selectedCategory, setSelectedCategory] = useState<string>('wheels');
   const [selectedBrand, setSelectedBrand] = useState<string>('all');
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [uploadModalOpen, setUploadModalOpen] = useState(false);
