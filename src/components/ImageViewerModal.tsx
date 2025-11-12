@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { X, ZoomIn, ZoomOut } from 'lucide-react';
+import { X } from 'lucide-react';
 
 interface ImageViewerModalProps {
   isOpen: boolean;
@@ -13,7 +13,8 @@ export function ImageViewerModal({ isOpen, onClose, imageUrl, alt }: ImageViewer
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
-  const imageRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const imageRef = useRef<HTMLImageElement>(null);
 
   useEffect(() => {
     if (isOpen) {
@@ -35,16 +36,39 @@ export function ImageViewerModal({ isOpen, onClose, imageUrl, alt }: ImageViewer
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [isOpen, onClose]);
 
-  const handleZoomIn = () => {
-    setScale(prev => Math.min(prev + 0.5, 5));
-  };
+  const handleImageClick = (e: React.MouseEvent<HTMLImageElement>) => {
+    e.stopPropagation();
 
-  const handleZoomOut = () => {
-    setScale(prev => Math.max(prev - 0.5, 0.5));
+    if (!imageRef.current || !containerRef.current) return;
+
+    const rect = imageRef.current.getBoundingClientRect();
+    const clickX = e.clientX - rect.left;
+    const clickY = e.clientY - rect.top;
+
+    const clickPercentX = clickX / rect.width;
+    const clickPercentY = clickY / rect.height;
+
+    if (scale === 1) {
+      const newScale = 2.5;
+      setScale(newScale);
+
+      const containerRect = containerRef.current.getBoundingClientRect();
+      const scaledWidth = rect.width * newScale;
+      const scaledHeight = rect.height * newScale;
+
+      const targetX = containerRect.width / 2 - clickPercentX * scaledWidth;
+      const targetY = containerRect.height / 2 - clickPercentY * scaledHeight;
+
+      setPosition({ x: targetX, y: targetY });
+    } else {
+      setScale(1);
+      setPosition({ x: 0, y: 0 });
+    }
   };
 
   const handleMouseDown = (e: React.MouseEvent) => {
     if (scale > 1) {
+      e.preventDefault();
       setIsDragging(true);
       setDragStart({
         x: e.clientX - position.x,
@@ -68,54 +92,53 @@ export function ImageViewerModal({ isOpen, onClose, imageUrl, alt }: ImageViewer
 
   const handleWheel = (e: React.WheelEvent) => {
     e.preventDefault();
-    const delta = e.deltaY > 0 ? -0.2 : 0.2;
-    setScale(prev => Math.max(0.5, Math.min(5, prev + delta)));
+
+    if (!imageRef.current || !containerRef.current) return;
+
+    const rect = imageRef.current.getBoundingClientRect();
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
+
+    const mousePercentX = mouseX / rect.width;
+    const mousePercentY = mouseY / rect.height;
+
+    const delta = e.deltaY > 0 ? -0.3 : 0.3;
+    const newScale = Math.max(0.5, Math.min(5, scale + delta));
+
+    if (newScale !== scale) {
+      setScale(newScale);
+
+      if (newScale > 1) {
+        const containerRect = containerRef.current.getBoundingClientRect();
+        const scaledWidth = (rect.width / scale) * newScale;
+        const scaledHeight = (rect.height / scale) * newScale;
+
+        const targetX = containerRect.width / 2 - mousePercentX * scaledWidth;
+        const targetY = containerRect.height / 2 - mousePercentY * scaledHeight;
+
+        setPosition({ x: targetX, y: targetY });
+      } else if (newScale === 1) {
+        setPosition({ x: 0, y: 0 });
+      }
+    }
   };
 
   if (!isOpen) return null;
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 backdrop-blur-sm"
       onClick={onClose}
     >
       <button
         onClick={onClose}
-        className="absolute top-4 right-4 z-50 bg-white/10 hover:bg-white/20 text-white p-2 rounded-lg transition-colors"
+        className="absolute top-4 right-4 z-50 bg-white/10 hover:bg-white/20 text-white p-3 rounded-lg transition-colors"
       >
         <X className="w-6 h-6" />
       </button>
 
-      <div className="absolute top-4 left-1/2 -translate-x-1/2 z-50 flex items-center gap-4 bg-white/10 backdrop-blur-md px-4 py-2 rounded-lg">
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            handleZoomOut();
-          }}
-          className="text-white hover:text-red-500 transition-colors p-2"
-          title="Diminuir zoom"
-        >
-          <ZoomOut className="w-5 h-5" />
-        </button>
-
-        <span className="text-white text-sm font-medium min-w-[60px] text-center">
-          {Math.round(scale * 100)}%
-        </span>
-
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            handleZoomIn();
-          }}
-          className="text-white hover:text-red-500 transition-colors p-2"
-          title="Aumentar zoom"
-        >
-          <ZoomIn className="w-5 h-5" />
-        </button>
-      </div>
-
       <div
-        ref={imageRef}
+        ref={containerRef}
         className="relative w-full h-full flex items-center justify-center overflow-hidden"
         onClick={(e) => e.stopPropagation()}
         onMouseDown={handleMouseDown}
@@ -124,26 +147,27 @@ export function ImageViewerModal({ isOpen, onClose, imageUrl, alt }: ImageViewer
         onMouseLeave={handleMouseUp}
         onWheel={handleWheel}
         style={{
-          cursor: scale > 1 ? (isDragging ? 'grabbing' : 'grab') : 'default',
+          cursor: scale > 1 ? (isDragging ? 'grabbing' : 'grab') : 'zoom-in',
         }}
       >
         <img
+          ref={imageRef}
           src={imageUrl}
           alt={alt}
-          className="max-w-none select-none"
+          onClick={handleImageClick}
+          className="max-w-full max-h-full select-none object-contain"
           draggable={false}
           style={{
             transform: `translate(${position.x}px, ${position.y}px) scale(${scale})`,
-            transition: isDragging ? 'none' : 'transform 0.2s ease-out',
+            transformOrigin: '0 0',
+            transition: isDragging ? 'none' : 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
           }}
         />
       </div>
 
-      {scale > 1 && (
-        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-white text-sm bg-white/10 backdrop-blur-md px-4 py-2 rounded-lg">
-          Arraste para mover a imagem
-        </div>
-      )}
+      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-white text-sm bg-white/10 backdrop-blur-md px-4 py-2 rounded-lg pointer-events-none">
+        {scale === 1 ? 'Clique na imagem para dar zoom' : 'Arraste para mover • Clique para resetar'}
+      </div>
     </div>
   );
 }
