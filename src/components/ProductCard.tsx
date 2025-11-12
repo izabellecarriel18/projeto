@@ -874,7 +874,7 @@ export function ProductCard({ product, onImageUpload, onDelete }: ProductCardPro
               <button
                 onClick={() => tireFileInputRef.current?.click()}
                 disabled={isUploadingTireFile}
-                className={`w-full ${tireFileUrl ? 'bg-green-600 hover:bg-green-700' : 'bg-orange-600 hover:bg-orange-700'} disabled:bg-orange-800 disabled:cursor-not-allowed text-white py-3 rounded-lg font-bold text-sm transition-colors flex items-center justify-center gap-2 mb-2`}
+                className={`w-full ${tireFileUrl ? 'bg-green-600 hover:bg-green-700' : 'bg-amber-800 hover:bg-amber-900'} disabled:bg-amber-950 disabled:cursor-not-allowed text-white py-3 rounded-lg font-bold text-sm transition-colors flex items-center justify-center gap-2 mb-2`}
               >
                 {isUploadingTireFile ? (
                   <>
