@@ -14,6 +14,8 @@ export function ImageViewerModal({ isOpen, onClose, imageUrl, alt }: ImageViewer
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [lastTouchDistance, setLastTouchDistance] = useState<number | null>(null);
+  const [lastTouchCenter, setLastTouchCenter] = useState<{ x: number; y: number } | null>(null);
+  const [isPinching, setIsPinching] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLImageElement>(null);
 
@@ -164,8 +166,12 @@ export function ImageViewerModal({ isOpen, onClose, imageUrl, alt }: ImageViewer
   const handleTouchStart = (e: React.TouchEvent) => {
     if (e.touches.length === 2) {
       e.preventDefault();
+      setIsDragging(false);
+      setIsPinching(true);
       const distance = getTouchDistance(e.touches);
+      const center = getTouchCenter(e.touches);
       setLastTouchDistance(distance);
+      setLastTouchCenter(center);
     } else if (e.touches.length === 1) {
       if (scale > 1) {
         e.preventDefault();
@@ -179,42 +185,33 @@ export function ImageViewerModal({ isOpen, onClose, imageUrl, alt }: ImageViewer
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
-    if (e.touches.length === 2 && lastTouchDistance !== null) {
+    if (e.touches.length === 2 && lastTouchDistance !== null && lastTouchCenter !== null) {
       e.preventDefault();
 
       if (!imageRef.current || !containerRef.current) return;
 
       const currentDistance = getTouchDistance(e.touches);
-      const touchCenter = getTouchCenter(e.touches);
-
-      const rect = imageRef.current.getBoundingClientRect();
-      const touchX = touchCenter.x - rect.left;
-      const touchY = touchCenter.y - rect.top;
-
-      const touchPercentX = touchX / rect.width;
-      const touchPercentY = touchY / rect.height;
+      const currentCenter = getTouchCenter(e.touches);
 
       const scaleDelta = currentDistance / lastTouchDistance;
       const newScale = Math.max(0.5, Math.min(10, scale * scaleDelta));
 
-      if (newScale !== scale) {
-        setScale(newScale);
+      const centerDeltaX = currentCenter.x - lastTouchCenter.x;
+      const centerDeltaY = currentCenter.y - lastTouchCenter.y;
 
-        if (newScale > 1) {
-          const containerRect = containerRef.current.getBoundingClientRect();
-          const scaledWidth = (rect.width / scale) * newScale;
-          const scaledHeight = (rect.height / scale) * newScale;
+      const newX = position.x * scaleDelta + centerDeltaX;
+      const newY = position.y * scaleDelta + centerDeltaY;
 
-          const targetX = containerRect.width / 2 - touchPercentX * scaledWidth;
-          const targetY = containerRect.height / 2 - touchPercentY * scaledHeight;
+      setScale(newScale);
 
-          setPosition({ x: targetX, y: targetY });
-        } else if (newScale === 1) {
-          setPosition({ x: 0, y: 0 });
-        }
+      if (newScale <= 1) {
+        setPosition({ x: 0, y: 0 });
+      } else {
+        setPosition({ x: newX, y: newY });
       }
 
       setLastTouchDistance(currentDistance);
+      setLastTouchCenter(currentCenter);
     } else if (e.touches.length === 1 && isDragging && scale > 1) {
       e.preventDefault();
       setPosition({
@@ -227,6 +224,8 @@ export function ImageViewerModal({ isOpen, onClose, imageUrl, alt }: ImageViewer
   const handleTouchEnd = (e: React.TouchEvent) => {
     if (e.touches.length < 2) {
       setLastTouchDistance(null);
+      setLastTouchCenter(null);
+      setIsPinching(false);
     }
     if (e.touches.length === 0) {
       setIsDragging(false);
@@ -279,7 +278,7 @@ export function ImageViewerModal({ isOpen, onClose, imageUrl, alt }: ImageViewer
           style={{
             transform: `translate(${position.x}px, ${position.y}px) scale(${scale})`,
             transformOrigin: '0 0',
-            transition: isDragging ? 'none' : 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+            transition: (isDragging || isPinching) ? 'none' : 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
           }}
         />
       </div>
