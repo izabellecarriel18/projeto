@@ -174,12 +174,20 @@ export function ImageViewerModal({ isOpen, onClose, imageUrl, alt }: ImageViewer
 
     if (!imageRef.current || !containerRef.current) return;
 
-    const rect = imageRef.current.getBoundingClientRect();
-    const mouseX = e.clientX - rect.left;
-    const mouseY = e.clientY - rect.top;
+    const containerRect = containerRef.current.getBoundingClientRect();
+    const { width: baseWidth, height: baseHeight } = getImageDimensions();
 
-    const mousePercentX = mouseX / rect.width;
-    const mousePercentY = mouseY / rect.height;
+    const currentImgWidth = baseWidth * scale;
+    const currentImgHeight = baseHeight * scale;
+
+    const imgCenterX = containerRect.width / 2 + position.x;
+    const imgCenterY = containerRect.height / 2 + position.y;
+
+    const mouseRelativeToContainerX = e.clientX - containerRect.left;
+    const mouseRelativeToContainerY = e.clientY - containerRect.top;
+
+    const offsetFromCenterX = mouseRelativeToContainerX - imgCenterX;
+    const offsetFromCenterY = mouseRelativeToContainerY - imgCenterY;
 
     const delta = e.deltaY > 0 ? -0.3 : 0.3;
     const newScale = Math.max(0.5, Math.min(10, scale + delta));
@@ -187,17 +195,22 @@ export function ImageViewerModal({ isOpen, onClose, imageUrl, alt }: ImageViewer
     if (newScale !== scale) {
       setScale(newScale);
 
-      if (newScale > 1) {
-        const containerRect = containerRef.current.getBoundingClientRect();
-        const scaledWidth = (rect.width / scale) * newScale;
-        const scaledHeight = (rect.height / scale) * newScale;
-
-        const targetX = containerRect.width / 2 - mousePercentX * scaledWidth;
-        const targetY = containerRect.height / 2 - mousePercentY * scaledHeight;
-
-        setPosition({ x: targetX, y: targetY });
-      } else if (newScale === 1) {
+      if (newScale <= 1) {
         setPosition({ x: 0, y: 0 });
+      } else {
+        const scaleRatio = newScale / scale;
+
+        const newOffsetX = offsetFromCenterX * scaleRatio;
+        const newOffsetY = offsetFromCenterY * scaleRatio;
+
+        const newCenterX = mouseRelativeToContainerX - newOffsetX;
+        const newCenterY = mouseRelativeToContainerY - newOffsetY;
+
+        const newX = newCenterX - containerRect.width / 2;
+        const newY = newCenterY - containerRect.height / 2;
+
+        const constrainedPos = constrainPosition(newX, newY, newScale);
+        setPosition(constrainedPos);
       }
     }
   };
@@ -255,32 +268,29 @@ export function ImageViewerModal({ isOpen, onClose, imageUrl, alt }: ImageViewer
       const pinchCenterX = currentCenter.x - containerRect.left;
       const pinchCenterY = currentCenter.y - containerRect.top;
 
-      const currentImgWidth = baseWidth * scale;
-      const currentImgHeight = baseHeight * scale;
+      const imgCenterX = containerRect.width / 2 + position.x;
+      const imgCenterY = containerRect.height / 2 + position.y;
 
-      const imgLeft = position.x + (containerRect.width - currentImgWidth) / 2;
-      const imgTop = position.y + (containerRect.height - currentImgHeight) / 2;
-
-      const relativeX = pinchCenterX - imgLeft;
-      const relativeY = pinchCenterY - imgTop;
+      const offsetFromCenterX = pinchCenterX - imgCenterX;
+      const offsetFromCenterY = pinchCenterY - imgCenterY;
 
       const scaleDelta = currentDistance / lastTouchDistance;
       const newScale = Math.max(0.5, Math.min(10, scale * scaleDelta));
-
-      const newImgWidth = baseWidth * newScale;
-      const newImgHeight = baseHeight * newScale;
-
-      const newImgLeft = pinchCenterX - (relativeX * scaleDelta);
-      const newImgTop = pinchCenterY - (relativeY * scaleDelta);
-
-      const newX = newImgLeft - (containerRect.width - newImgWidth) / 2;
-      const newY = newImgTop - (containerRect.height - newImgHeight) / 2;
 
       setScale(newScale);
 
       if (newScale <= 1) {
         setPosition({ x: 0, y: 0 });
       } else {
+        const newOffsetX = offsetFromCenterX * scaleDelta;
+        const newOffsetY = offsetFromCenterY * scaleDelta;
+
+        const newCenterX = pinchCenterX - newOffsetX;
+        const newCenterY = pinchCenterY - newOffsetY;
+
+        const newX = newCenterX - containerRect.width / 2;
+        const newY = newCenterY - containerRect.height / 2;
+
         const constrainedPos = constrainPosition(newX, newY, newScale);
         setPosition(constrainedPos);
       }
