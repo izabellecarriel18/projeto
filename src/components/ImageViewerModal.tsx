@@ -100,12 +100,46 @@ export function ImageViewerModal({ isOpen, onClose, imageUrl, alt }: ImageViewer
     }
   };
 
+  const constrainPosition = (x: number, y: number, currentScale: number) => {
+    if (!imageRef.current || !containerRef.current) return { x, y };
+
+    const containerRect = containerRef.current.getBoundingClientRect();
+    const imgRect = imageRef.current.getBoundingClientRect();
+
+    const imgWidth = (imgRect.width / scale) * currentScale;
+    const imgHeight = (imgRect.height / scale) * currentScale;
+
+    const minX = containerRect.width - imgWidth;
+    const maxX = 0;
+    const minY = containerRect.height - imgHeight;
+    const maxY = 0;
+
+    let constrainedX = x;
+    let constrainedY = y;
+
+    if (imgWidth > containerRect.width) {
+      constrainedX = Math.min(maxX, Math.max(minX, x));
+    } else {
+      constrainedX = (containerRect.width - imgWidth) / 2;
+    }
+
+    if (imgHeight > containerRect.height) {
+      constrainedY = Math.min(maxY, Math.max(minY, y));
+    } else {
+      constrainedY = (containerRect.height - imgHeight) / 2;
+    }
+
+    return { x: constrainedX, y: constrainedY };
+  };
+
   const handleMouseMove = (e: React.MouseEvent) => {
     if (isDragging && scale > 1) {
-      setPosition({
-        x: e.clientX - dragStart.x,
-        y: e.clientY - dragStart.y,
-      });
+      const newPos = constrainPosition(
+        e.clientX - dragStart.x,
+        e.clientY - dragStart.y,
+        scale
+      );
+      setPosition(newPos);
     }
   };
 
@@ -193,31 +227,43 @@ export function ImageViewerModal({ isOpen, onClose, imageUrl, alt }: ImageViewer
       const currentDistance = getTouchDistance(e.touches);
       const currentCenter = getTouchCenter(e.touches);
 
+      const containerRect = containerRef.current.getBoundingClientRect();
+      const imgRect = imageRef.current.getBoundingClientRect();
+
+      const pinchCenterX = currentCenter.x - containerRect.left;
+      const pinchCenterY = currentCenter.y - containerRect.top;
+
+      const imgCenterX = imgRect.left - containerRect.left + imgRect.width / 2;
+      const imgCenterY = imgRect.top - containerRect.top + imgRect.height / 2;
+
+      const offsetX = pinchCenterX - imgCenterX;
+      const offsetY = pinchCenterY - imgCenterY;
+
       const scaleDelta = currentDistance / lastTouchDistance;
       const newScale = Math.max(0.5, Math.min(10, scale * scaleDelta));
 
-      const centerDeltaX = currentCenter.x - lastTouchCenter.x;
-      const centerDeltaY = currentCenter.y - lastTouchCenter.y;
-
-      const newX = position.x * scaleDelta + centerDeltaX;
-      const newY = position.y * scaleDelta + centerDeltaY;
+      const newX = position.x - offsetX * (scaleDelta - 1);
+      const newY = position.y - offsetY * (scaleDelta - 1);
 
       setScale(newScale);
 
       if (newScale <= 1) {
         setPosition({ x: 0, y: 0 });
       } else {
-        setPosition({ x: newX, y: newY });
+        const constrainedPos = constrainPosition(newX, newY, newScale);
+        setPosition(constrainedPos);
       }
 
       setLastTouchDistance(currentDistance);
       setLastTouchCenter(currentCenter);
     } else if (e.touches.length === 1 && isDragging && scale > 1) {
       e.preventDefault();
-      setPosition({
-        x: e.touches[0].clientX - dragStart.x,
-        y: e.touches[0].clientY - dragStart.y,
-      });
+      const newPos = constrainPosition(
+        e.touches[0].clientX - dragStart.x,
+        e.touches[0].clientY - dragStart.y,
+        scale
+      );
+      setPosition(newPos);
     }
   };
 
