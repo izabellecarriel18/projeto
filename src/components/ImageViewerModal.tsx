@@ -100,33 +100,55 @@ export function ImageViewerModal({ isOpen, onClose, imageUrl, alt }: ImageViewer
     }
   };
 
+  const getImageDimensions = () => {
+    if (!imageRef.current) return { width: 0, height: 0 };
+
+    const img = imageRef.current;
+    const containerRect = containerRef.current?.getBoundingClientRect();
+    if (!containerRect) return { width: 0, height: 0 };
+
+    const imgAspect = img.naturalWidth / img.naturalHeight;
+    const containerAspect = containerRect.width / containerRect.height;
+
+    let baseWidth, baseHeight;
+
+    if (imgAspect > containerAspect) {
+      baseWidth = Math.min(img.naturalWidth, containerRect.width);
+      baseHeight = baseWidth / imgAspect;
+    } else {
+      baseHeight = Math.min(img.naturalHeight, containerRect.height);
+      baseWidth = baseHeight * imgAspect;
+    }
+
+    return { width: baseWidth, height: baseHeight };
+  };
+
   const constrainPosition = (x: number, y: number, currentScale: number) => {
     if (!imageRef.current || !containerRef.current) return { x, y };
 
     const containerRect = containerRef.current.getBoundingClientRect();
-    const imgRect = imageRef.current.getBoundingClientRect();
+    const { width: baseWidth, height: baseHeight } = getImageDimensions();
 
-    const imgWidth = (imgRect.width / scale) * currentScale;
-    const imgHeight = (imgRect.height / scale) * currentScale;
-
-    const minX = containerRect.width - imgWidth;
-    const maxX = 0;
-    const minY = containerRect.height - imgHeight;
-    const maxY = 0;
+    const scaledWidth = baseWidth * currentScale;
+    const scaledHeight = baseHeight * currentScale;
 
     let constrainedX = x;
     let constrainedY = y;
 
-    if (imgWidth > containerRect.width) {
+    if (scaledWidth > containerRect.width) {
+      const minX = containerRect.width - scaledWidth;
+      const maxX = 0;
       constrainedX = Math.min(maxX, Math.max(minX, x));
     } else {
-      constrainedX = (containerRect.width - imgWidth) / 2;
+      constrainedX = (containerRect.width - scaledWidth) / 2;
     }
 
-    if (imgHeight > containerRect.height) {
+    if (scaledHeight > containerRect.height) {
+      const minY = containerRect.height - scaledHeight;
+      const maxY = 0;
       constrainedY = Math.min(maxY, Math.max(minY, y));
     } else {
-      constrainedY = (containerRect.height - imgHeight) / 2;
+      constrainedY = (containerRect.height - scaledHeight) / 2;
     }
 
     return { x: constrainedX, y: constrainedY };
@@ -228,22 +250,31 @@ export function ImageViewerModal({ isOpen, onClose, imageUrl, alt }: ImageViewer
       const currentCenter = getTouchCenter(e.touches);
 
       const containerRect = containerRef.current.getBoundingClientRect();
-      const imgRect = imageRef.current.getBoundingClientRect();
+      const { width: baseWidth, height: baseHeight } = getImageDimensions();
 
       const pinchCenterX = currentCenter.x - containerRect.left;
       const pinchCenterY = currentCenter.y - containerRect.top;
 
-      const imgCenterX = imgRect.left - containerRect.left + imgRect.width / 2;
-      const imgCenterY = imgRect.top - containerRect.top + imgRect.height / 2;
+      const currentImgWidth = baseWidth * scale;
+      const currentImgHeight = baseHeight * scale;
 
-      const offsetX = pinchCenterX - imgCenterX;
-      const offsetY = pinchCenterY - imgCenterY;
+      const imgLeft = position.x + (containerRect.width - currentImgWidth) / 2;
+      const imgTop = position.y + (containerRect.height - currentImgHeight) / 2;
+
+      const relativeX = pinchCenterX - imgLeft;
+      const relativeY = pinchCenterY - imgTop;
 
       const scaleDelta = currentDistance / lastTouchDistance;
       const newScale = Math.max(0.5, Math.min(10, scale * scaleDelta));
 
-      const newX = position.x - offsetX * (scaleDelta - 1);
-      const newY = position.y - offsetY * (scaleDelta - 1);
+      const newImgWidth = baseWidth * newScale;
+      const newImgHeight = baseHeight * newScale;
+
+      const newImgLeft = pinchCenterX - (relativeX * scaleDelta);
+      const newImgTop = pinchCenterY - (relativeY * scaleDelta);
+
+      const newX = newImgLeft - (containerRect.width - newImgWidth) / 2;
+      const newY = newImgTop - (containerRect.height - newImgHeight) / 2;
 
       setScale(newScale);
 
