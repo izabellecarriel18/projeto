@@ -7,6 +7,7 @@ import { EditPriceModal } from './EditPriceModal';
 import { EditDescriptionModal } from './EditDescriptionModal';
 import { EditProductNameModal } from './EditProductNameModal';
 import { ImageViewerModal } from './ImageViewerModal';
+import AuthModal from './AuthModal';
 import JSZip from 'jszip';
 
 interface Product {
@@ -34,7 +35,7 @@ interface ProductCardProps {
 const generatingCache = new Set<string>();
 
 export function ProductCard({ product, onImageUpload, onDelete }: ProductCardProps) {
-  const { profile } = useAuth();
+  const { profile, user } = useAuth();
   const { addToCart, cart } = useCart();
   const [name, setName] = useState(product.name);
   const [description, setDescription] = useState(product.description || '');
@@ -51,6 +52,7 @@ export function ProductCard({ product, onImageUpload, onDelete }: ProductCardPro
   const [isNameModalOpen, setIsNameModalOpen] = useState(false);
   const [isImageViewerOpen, setIsImageViewerOpen] = useState(false);
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const wheelFileInputRef = useRef<HTMLInputElement>(null);
   const hasChecked = useRef(false);
@@ -498,13 +500,18 @@ export function ProductCard({ product, onImageUpload, onDelete }: ProductCardPro
   const handleBuyClick = async () => {
     if (isProcessingPayment) return;
 
+    if (!user) {
+      setIsAuthModalOpen(true);
+      return;
+    }
+
     try {
       setIsProcessingPayment(true);
 
       const { data: { session } } = await supabase.auth.getSession();
 
       if (!session) {
-        alert('Por favor, faça login para comprar');
+        setIsAuthModalOpen(true);
         setIsProcessingPayment(false);
         return;
       }
@@ -559,6 +566,11 @@ export function ProductCard({ product, onImageUpload, onDelete }: ProductCardPro
   };
 
   const handleAddToCart = () => {
+    if (!user) {
+      setIsAuthModalOpen(true);
+      return;
+    }
+
     const isWheel = product.category === 'Rodas';
     const hasRequiredFiles = isWheel ? wheelFileUrl : (fileUrl && wheelFileUrl);
 
@@ -791,6 +803,11 @@ export function ProductCard({ product, onImageUpload, onDelete }: ProductCardPro
         onClose={() => setIsImageViewerOpen(false)}
         imageUrl={product.image_url}
         alt={name}
+      />
+
+      <AuthModal
+        isOpen={isAuthModalOpen}
+        onClose={() => setIsAuthModalOpen(false)}
       />
     </>
   );
