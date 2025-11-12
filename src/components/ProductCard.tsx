@@ -583,11 +583,11 @@ export function ProductCard({ product, onImageUpload, onDelete }: ProductCardPro
   return (
     <>
       <div className="flex flex-col h-full bg-gray-900 border border-gray-800 rounded-lg overflow-hidden hover:border-gray-700 transition-colors">
-        <div className="h-64 bg-gradient-to-b from-gray-900 to-gray-950 overflow-hidden relative group flex items-center justify-center">
+        <div className="bg-gray-950 overflow-hidden relative group">
           <img
             src={product.image_url}
             alt={product.name}
-            className="w-full h-full object-contain p-4"
+            className="w-full h-auto"
           />
           {isAdmin && onImageUpload && (
             <button
