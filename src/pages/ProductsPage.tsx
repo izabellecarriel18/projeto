@@ -571,24 +571,6 @@ export default function ProductsPage() {
             </div>
           )}
 
-          {selectedCategory === 'tires' && (
-            <div className="flex flex-wrap gap-1.5 sm:gap-2 mb-4 sm:mb-6">
-              {tiresBrands.map((brand) => (
-                <button
-                  key={brand}
-                  onClick={() => setSelectedBrand(brand)}
-                  className={`px-2.5 sm:px-4 py-1.5 rounded text-xs sm:text-sm font-medium transition-all ${
-                    selectedBrand === brand
-                      ? 'bg-red-600 text-white'
-                      : 'bg-gray-800 text-white hover:bg-gray-700'
-                  }`}
-                >
-                  {brand}
-                </button>
-              ))}
-            </div>
-          )}
-
           {selectedCategory === 'bus_truck' && (
             <div className="bg-gray-900/50 border border-red-600/50 rounded-lg p-4 sm:p-6 mb-4 sm:mb-6 text-center">
               <p className="text-red-500 text-sm sm:text-base font-semibold uppercase">
