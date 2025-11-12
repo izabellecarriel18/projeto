@@ -124,7 +124,7 @@ export function ImageViewerModal({ isOpen, onClose, imageUrl, alt }: ImageViewer
     const mousePercentY = mouseY / rect.height;
 
     const delta = e.deltaY > 0 ? -0.3 : 0.3;
-    const newScale = Math.max(0.5, Math.min(5, scale + delta));
+    const newScale = Math.max(0.5, Math.min(10, scale + delta));
 
     if (newScale !== scale) {
       setScale(newScale);
@@ -195,7 +195,7 @@ export function ImageViewerModal({ isOpen, onClose, imageUrl, alt }: ImageViewer
       const touchPercentY = touchY / rect.height;
 
       const scaleDelta = currentDistance / lastTouchDistance;
-      const newScale = Math.max(0.5, Math.min(5, scale * scaleDelta));
+      const newScale = Math.max(0.5, Math.min(10, scale * scaleDelta));
 
       if (newScale !== scale) {
         setScale(newScale);
