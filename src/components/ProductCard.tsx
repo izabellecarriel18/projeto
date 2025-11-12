@@ -583,7 +583,7 @@ export function ProductCard({ product, onImageUpload, onDelete }: ProductCardPro
   return (
     <>
       <div className="flex flex-col h-full bg-gray-900 border border-gray-800 rounded-lg overflow-hidden hover:border-gray-700 transition-colors">
-        <div className="aspect-[16/11] bg-gray-950 overflow-hidden relative group flex items-center justify-center">
+        <div className="aspect-[4/3] bg-gray-950 overflow-hidden relative group flex items-center justify-center">
           <img
             src={product.image_url}
             alt={product.name}
