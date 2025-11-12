@@ -13,6 +13,7 @@ export function ImageViewerModal({ isOpen, onClose, imageUrl, alt }: ImageViewer
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+  const [lastTouchDistance, setLastTouchDistance] = useState<number | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLImageElement>(null);
 
@@ -123,6 +124,93 @@ export function ImageViewerModal({ isOpen, onClose, imageUrl, alt }: ImageViewer
     }
   };
 
+  const getTouchDistance = (touches: TouchList) => {
+    const touch1 = touches[0];
+    const touch2 = touches[1];
+    const dx = touch1.clientX - touch2.clientX;
+    const dy = touch1.clientY - touch2.clientY;
+    return Math.sqrt(dx * dx + dy * dy);
+  };
+
+  const getTouchCenter = (touches: TouchList) => {
+    const touch1 = touches[0];
+    const touch2 = touches[1];
+    return {
+      x: (touch1.clientX + touch2.clientX) / 2,
+      y: (touch1.clientY + touch2.clientY) / 2,
+    };
+  };
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if (e.touches.length === 2) {
+      e.preventDefault();
+      const distance = getTouchDistance(e.touches);
+      setLastTouchDistance(distance);
+    } else if (e.touches.length === 1 && scale > 1) {
+      e.preventDefault();
+      setIsDragging(true);
+      setDragStart({
+        x: e.touches[0].clientX - position.x,
+        y: e.touches[0].clientY - position.y,
+      });
+    }
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (e.touches.length === 2 && lastTouchDistance !== null) {
+      e.preventDefault();
+
+      if (!imageRef.current || !containerRef.current) return;
+
+      const currentDistance = getTouchDistance(e.touches);
+      const touchCenter = getTouchCenter(e.touches);
+
+      const rect = imageRef.current.getBoundingClientRect();
+      const touchX = touchCenter.x - rect.left;
+      const touchY = touchCenter.y - rect.top;
+
+      const touchPercentX = touchX / rect.width;
+      const touchPercentY = touchY / rect.height;
+
+      const scaleDelta = currentDistance / lastTouchDistance;
+      const newScale = Math.max(0.5, Math.min(5, scale * scaleDelta));
+
+      if (newScale !== scale) {
+        setScale(newScale);
+
+        if (newScale > 1) {
+          const containerRect = containerRef.current.getBoundingClientRect();
+          const scaledWidth = (rect.width / scale) * newScale;
+          const scaledHeight = (rect.height / scale) * newScale;
+
+          const targetX = containerRect.width / 2 - touchPercentX * scaledWidth;
+          const targetY = containerRect.height / 2 - touchPercentY * scaledHeight;
+
+          setPosition({ x: targetX, y: targetY });
+        } else if (newScale === 1) {
+          setPosition({ x: 0, y: 0 });
+        }
+      }
+
+      setLastTouchDistance(currentDistance);
+    } else if (e.touches.length === 1 && isDragging && scale > 1) {
+      e.preventDefault();
+      setPosition({
+        x: e.touches[0].clientX - dragStart.x,
+        y: e.touches[0].clientY - dragStart.y,
+      });
+    }
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (e.touches.length < 2) {
+      setLastTouchDistance(null);
+    }
+    if (e.touches.length === 0) {
+      setIsDragging(false);
+    }
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -146,8 +234,12 @@ export function ImageViewerModal({ isOpen, onClose, imageUrl, alt }: ImageViewer
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseUp}
         onWheel={handleWheel}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
         style={{
           cursor: scale > 1 ? (isDragging ? 'grabbing' : 'grab') : 'zoom-in',
+          touchAction: 'none',
         }}
       >
         <img
@@ -165,8 +257,8 @@ export function ImageViewerModal({ isOpen, onClose, imageUrl, alt }: ImageViewer
         />
       </div>
 
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-white text-sm bg-white/10 backdrop-blur-md px-4 py-2 rounded-lg pointer-events-none">
-        {scale === 1 ? 'Clique na imagem para dar zoom' : 'Arraste para mover • Clique para resetar'}
+      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-white text-xs sm:text-sm bg-white/10 backdrop-blur-md px-3 sm:px-4 py-2 rounded-lg pointer-events-none text-center max-w-[90%]">
+        {scale === 1 ? 'Toque na imagem para dar zoom' : 'Arraste para mover • Toque para resetar'}
       </div>
     </div>
   );
