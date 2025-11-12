@@ -6,6 +6,7 @@ import { Upload, RefreshCw, Trash2, FileUp, FileCheck, ShoppingCart } from 'luci
 import { EditPriceModal } from './EditPriceModal';
 import { EditDescriptionModal } from './EditDescriptionModal';
 import { EditProductNameModal } from './EditProductNameModal';
+import { ImageViewerModal } from './ImageViewerModal';
 import JSZip from 'jszip';
 
 interface Product {
@@ -48,6 +49,7 @@ export function ProductCard({ product, onImageUpload, onDelete }: ProductCardPro
   const [isPriceModalOpen, setIsPriceModalOpen] = useState(false);
   const [isDescriptionModalOpen, setIsDescriptionModalOpen] = useState(false);
   const [isNameModalOpen, setIsNameModalOpen] = useState(false);
+  const [isImageViewerOpen, setIsImageViewerOpen] = useState(false);
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const wheelFileInputRef = useRef<HTMLInputElement>(null);
@@ -587,7 +589,8 @@ export function ProductCard({ product, onImageUpload, onDelete }: ProductCardPro
           <img
             src={product.image_url}
             alt={product.name}
-            className="w-full h-auto"
+            className="w-full h-auto cursor-pointer"
+            onClick={() => setIsImageViewerOpen(true)}
           />
           {isAdmin && onImageUpload && (
             <button
@@ -781,6 +784,13 @@ export function ProductCard({ product, onImageUpload, onDelete }: ProductCardPro
         onClose={() => setIsNameModalOpen(false)}
         currentName={name}
         onSave={handleSaveName}
+      />
+
+      <ImageViewerModal
+        isOpen={isImageViewerOpen}
+        onClose={() => setIsImageViewerOpen(false)}
+        imageUrl={product.image_url}
+        alt={name}
       />
     </>
   );
