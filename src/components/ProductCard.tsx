@@ -24,6 +24,8 @@ interface Product {
   file_name?: string;
   wheel_file_url?: string;
   wheel_file_name?: string;
+  tire_file_url?: string;
+  tire_file_name?: string;
 }
 
 interface ProductCardProps {
@@ -44,9 +46,12 @@ export function ProductCard({ product, onImageUpload, onDelete }: ProductCardPro
   const [fileName, setFileName] = useState(product.file_name || '');
   const [wheelFileUrl, setWheelFileUrl] = useState(product.wheel_file_url || '');
   const [wheelFileName, setWheelFileName] = useState(product.wheel_file_name || '');
+  const [tireFileUrl, setTireFileUrl] = useState(product.tire_file_url || '');
+  const [tireFileName, setTireFileName] = useState(product.tire_file_name || '');
   const [isGenerating, setIsGenerating] = useState(false);
   const [isUploadingFile, setIsUploadingFile] = useState(false);
   const [isUploadingWheelFile, setIsUploadingWheelFile] = useState(false);
+  const [isUploadingTireFile, setIsUploadingTireFile] = useState(false);
   const [isPriceModalOpen, setIsPriceModalOpen] = useState(false);
   const [isDescriptionModalOpen, setIsDescriptionModalOpen] = useState(false);
   const [isNameModalOpen, setIsNameModalOpen] = useState(false);
@@ -55,6 +60,7 @@ export function ProductCard({ product, onImageUpload, onDelete }: ProductCardPro
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const wheelFileInputRef = useRef<HTMLInputElement>(null);
+  const tireFileInputRef = useRef<HTMLInputElement>(null);
   const hasChecked = useRef(false);
   const isAdmin = profile?.role === 'admin';
   const isInCart = cart.some(item => item.id === product.id);
@@ -497,6 +503,121 @@ export function ProductCard({ product, onImageUpload, onDelete }: ProductCardPro
     }
   };
 
+  const handleTireFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file || !isAdmin) return;
+
+    setIsUploadingTireFile(true);
+
+    try {
+      const maxSize = 50 * 1024 * 1024;
+      let fileToUpload: File | Blob = file;
+      let uploadFileName = file.name;
+      let originalFileName = file.name;
+
+      let wasCompressed = false;
+
+      const isAlreadyCompressed = /\.(zip|rar|7z)$/i.test(file.name);
+
+      if (file.size > maxSize) {
+        if (isAlreadyCompressed) {
+          alert(
+            `Arquivo muito grande (${(file.size / 1024 / 1024).toFixed(2)}MB).\n\n` +
+            `O arquivo já está comprimido e excede o limite de 50MB.\n` +
+            `Por favor, reduza o tamanho do arquivo ou divida em partes menores.`
+          );
+          setIsUploadingTireFile(false);
+          if (tireFileInputRef.current) {
+            tireFileInputRef.current.value = '';
+          }
+          return;
+        }
+
+        try {
+          const zip = new JSZip();
+          zip.file(file.name, file);
+
+          const zipBlob = await zip.generateAsync({
+            type: 'blob',
+            compression: 'DEFLATE',
+            compressionOptions: {
+              level: 9
+            },
+            streamFiles: true
+          });
+
+          if (zipBlob.size > maxSize) {
+            alert(
+              `Mesmo após compressão, o arquivo ainda é muito grande (${(zipBlob.size / 1024 / 1024).toFixed(2)}MB).\n\n` +
+              `O limite é 50MB. Por favor, reduza o tamanho do arquivo original.`
+            );
+            setIsUploadingTireFile(false);
+            if (tireFileInputRef.current) {
+              tireFileInputRef.current.value = '';
+            }
+            return;
+          }
+
+          fileToUpload = zipBlob;
+          uploadFileName = file.name.replace(/\.[^/.]+$/, '') + '.zip';
+          wasCompressed = true;
+        } catch (zipError) {
+          console.error('Error compressing file:', zipError);
+          alert('Erro ao comprimir arquivo. Tente novamente.');
+          setIsUploadingTireFile(false);
+          if (tireFileInputRef.current) {
+            tireFileInputRef.current.value = '';
+          }
+          return;
+        }
+      }
+
+      const fileExt = uploadFileName.split('.').pop();
+      const filePath = `${product.id}_tire.${fileExt}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('product-files')
+        .upload(filePath, fileToUpload, {
+          upsert: true,
+          contentType: uploadFileName.endsWith('.zip') ? 'application/zip' : (file.type || 'application/octet-stream'),
+        });
+
+      if (uploadError) throw uploadError;
+
+      const { error: updateError } = await supabase
+        .from('products')
+        .update({
+          tire_file_url: filePath,
+          tire_file_name: originalFileName
+        })
+        .eq('id', product.id);
+
+      if (updateError) throw updateError;
+
+      setTireFileUrl(filePath);
+      setTireFileName(originalFileName);
+
+      if (wasCompressed) {
+        alert('Arquivo do pneu comprimido e adicionado ao card');
+      } else {
+        alert('Arquivo do pneu enviado com sucesso!');
+      }
+    } catch (error: any) {
+      console.error('Error uploading tire file:', error);
+
+      if (error.message?.includes('exceeded the maximum allowed size') || error.message?.includes('Payload too large')) {
+        alert(`Arquivo muito grande!\n\nTamanho: ${(file.size / 1024 / 1024).toFixed(2)} MB\nLimite: 50 MB`);
+      } else {
+        alert(`Erro ao enviar arquivo do pneu: ${error.message || 'Tente novamente.'}`);
+      }
+    } finally {
+      setIsUploadingTireFile(false);
+      if (tireFileInputRef.current) {
+        tireFileInputRef.current.value = '';
+      }
+    }
+  };
+
   const handleBuyClick = async () => {
     if (isProcessingPayment) return;
 
@@ -741,6 +862,43 @@ export function ProductCard({ product, onImageUpload, onDelete }: ProductCardPro
               {wheelFileName && (
                 <p className="text-xs text-gray-400 mb-2 truncate" title={wheelFileName}>
                   📎 Roda: {wheelFileName}
+                </p>
+              )}
+              <input
+                ref={tireFileInputRef}
+                type="file"
+                onChange={handleTireFileUpload}
+                className="hidden"
+                accept=".zip,.rar,.7z,.blend,.fbx,.obj,.stl,.max,.c4d"
+              />
+              <button
+                onClick={() => tireFileInputRef.current?.click()}
+                disabled={isUploadingTireFile}
+                className={`w-full ${tireFileUrl ? 'bg-green-600 hover:bg-green-700' : 'bg-orange-600 hover:bg-orange-700'} disabled:bg-orange-800 disabled:cursor-not-allowed text-white py-3 rounded-lg font-bold text-sm transition-colors flex items-center justify-center gap-2 mb-2`}
+              >
+                {isUploadingTireFile ? (
+                  <>
+                    <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    <span>Enviando Pneu...</span>
+                  </>
+                ) : tireFileUrl ? (
+                  <>
+                    <FileCheck className="w-5 h-5" />
+                    <span>Arquivo Pneu incluído</span>
+                  </>
+                ) : (
+                  <>
+                    <FileUp className="w-5 h-5" />
+                    <span>Upload Arquivo Pneu</span>
+                  </>
+                )}
+              </button>
+              {tireFileName && (
+                <p className="text-xs text-gray-400 mb-2 truncate" title={tireFileName}>
+                  📎 Pneu: {tireFileName}
                 </p>
               )}
             </>
