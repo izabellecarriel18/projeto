@@ -19,8 +19,8 @@ export default function Header({ onNavigate, currentPage }: HeaderProps) {
 
   const menuItems = [
     { id: 'home', label: 'MARCA' },
-    { id: 'products', label: 'ARQUIVOS' },
     { id: 'instructions', label: 'INSTRUÇÕES E USO' },
+    { id: 'products', label: 'ARQUIVOS' },
     { id: 'courses', label: 'CURSOS' },
   ];
 
