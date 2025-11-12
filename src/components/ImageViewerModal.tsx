@@ -37,14 +37,29 @@ export function ImageViewerModal({ isOpen, onClose, imageUrl, alt }: ImageViewer
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [isOpen, onClose]);
 
-  const handleImageClick = (e: React.MouseEvent<HTMLImageElement>) => {
+  const handleImageClick = (e: React.MouseEvent<HTMLImageElement> | React.TouchEvent<HTMLImageElement>) => {
     e.stopPropagation();
 
     if (!imageRef.current || !containerRef.current) return;
 
     const rect = imageRef.current.getBoundingClientRect();
-    const clickX = e.clientX - rect.left;
-    const clickY = e.clientY - rect.top;
+    const containerRect = containerRef.current.getBoundingClientRect();
+
+    let clientX: number;
+    let clientY: number;
+
+    if ('touches' in e && e.touches.length > 0) {
+      clientX = e.touches[0].clientX;
+      clientY = e.touches[0].clientY;
+    } else if ('clientX' in e) {
+      clientX = e.clientX;
+      clientY = e.clientY;
+    } else {
+      return;
+    }
+
+    const clickX = clientX - rect.left;
+    const clickY = clientY - rect.top;
 
     const clickPercentX = clickX / rect.width;
     const clickPercentY = clickY / rect.height;
@@ -53,12 +68,17 @@ export function ImageViewerModal({ isOpen, onClose, imageUrl, alt }: ImageViewer
       const newScale = 2.5;
       setScale(newScale);
 
-      const containerRect = containerRef.current.getBoundingClientRect();
-      const scaledWidth = rect.width * newScale;
-      const scaledHeight = rect.height * newScale;
+      const imageNaturalWidth = rect.width;
+      const imageNaturalHeight = rect.height;
 
-      const targetX = containerRect.width / 2 - clickPercentX * scaledWidth;
-      const targetY = containerRect.height / 2 - clickPercentY * scaledHeight;
+      const scaledWidth = imageNaturalWidth * newScale;
+      const scaledHeight = imageNaturalHeight * newScale;
+
+      const offsetX = (containerRect.width - imageNaturalWidth) / 2;
+      const offsetY = (containerRect.height - imageNaturalHeight) / 2;
+
+      const targetX = offsetX + (containerRect.width / 2 - (clickX + offsetX) * newScale);
+      const targetY = offsetY + (containerRect.height / 2 - (clickY + offsetY) * newScale);
 
       setPosition({ x: targetX, y: targetY });
     } else {
@@ -146,13 +166,15 @@ export function ImageViewerModal({ isOpen, onClose, imageUrl, alt }: ImageViewer
       e.preventDefault();
       const distance = getTouchDistance(e.touches);
       setLastTouchDistance(distance);
-    } else if (e.touches.length === 1 && scale > 1) {
-      e.preventDefault();
-      setIsDragging(true);
-      setDragStart({
-        x: e.touches[0].clientX - position.x,
-        y: e.touches[0].clientY - position.y,
-      });
+    } else if (e.touches.length === 1) {
+      if (scale > 1) {
+        e.preventDefault();
+        setIsDragging(true);
+        setDragStart({
+          x: e.touches[0].clientX - position.x,
+          y: e.touches[0].clientY - position.y,
+        });
+      }
     }
   };
 
@@ -247,6 +269,11 @@ export function ImageViewerModal({ isOpen, onClose, imageUrl, alt }: ImageViewer
           src={imageUrl}
           alt={alt}
           onClick={handleImageClick}
+          onTouchEnd={(e) => {
+            if (e.touches.length === 0 && !isDragging && e.changedTouches.length === 1) {
+              handleImageClick(e as any);
+            }
+          }}
           className="max-w-full max-h-full select-none object-contain"
           draggable={false}
           style={{
