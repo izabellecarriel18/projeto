@@ -6,6 +6,7 @@ import Footer from './components/Footer';
 import BackgroundPaths from './components/BackgroundPaths';
 import HomePage from './pages/HomePage';
 import ProductsPage from './pages/ProductsPage';
+import InstructionsPage from './pages/InstructionsPage';
 import CoursesPage from './pages/CoursesPage';
 import ProfilePage from './pages/ProfilePage';
 import PurchasesPage from './pages/PurchasesPage';
@@ -30,6 +31,7 @@ function App() {
 
       {currentPage === 'home' && <HomePage onNavigate={handleNavigate} />}
       {currentPage === 'products' && <ProductsPage />}
+      {currentPage === 'instructions' && <InstructionsPage />}
       {currentPage === 'courses' && <CoursesPage />}
       {currentPage === 'profile' && <ProfilePage />}
       {currentPage === 'purchases' && <PurchasesPage />}
