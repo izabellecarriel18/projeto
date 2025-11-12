@@ -2,11 +2,10 @@ import { useState, useEffect, useRef } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
 import { useCart } from '../contexts/CartContext';
-import { Upload, RefreshCw, Trash2, FileUp, FileCheck, ShoppingCart, FileText, Info } from 'lucide-react';
+import { Upload, RefreshCw, Trash2, FileUp, FileCheck, ShoppingCart } from 'lucide-react';
 import { EditPriceModal } from './EditPriceModal';
 import { EditDescriptionModal } from './EditDescriptionModal';
 import { EditProductNameModal } from './EditProductNameModal';
-import { EditInstructionsModal } from './EditInstructionsModal';
 import { ImageViewerModal } from './ImageViewerModal';
 import JSZip from 'jszip';
 
@@ -24,7 +23,6 @@ interface Product {
   file_name?: string;
   wheel_file_url?: string;
   wheel_file_name?: string;
-  instructions?: string;
 }
 
 interface ProductCardProps {
@@ -45,15 +43,12 @@ export function ProductCard({ product, onImageUpload, onDelete }: ProductCardPro
   const [fileName, setFileName] = useState(product.file_name || '');
   const [wheelFileUrl, setWheelFileUrl] = useState(product.wheel_file_url || '');
   const [wheelFileName, setWheelFileName] = useState(product.wheel_file_name || '');
-  const [instructions, setInstructions] = useState(product.instructions || '');
-  const [activeTab, setActiveTab] = useState<'files' | 'instructions'>('files');
   const [isGenerating, setIsGenerating] = useState(false);
   const [isUploadingFile, setIsUploadingFile] = useState(false);
   const [isUploadingWheelFile, setIsUploadingWheelFile] = useState(false);
   const [isPriceModalOpen, setIsPriceModalOpen] = useState(false);
   const [isDescriptionModalOpen, setIsDescriptionModalOpen] = useState(false);
   const [isNameModalOpen, setIsNameModalOpen] = useState(false);
-  const [isInstructionsModalOpen, setIsInstructionsModalOpen] = useState(false);
   const [isImageViewerOpen, setIsImageViewerOpen] = useState(false);
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -226,20 +221,6 @@ export function ProductCard({ product, onImageUpload, onDelete }: ProductCardPro
   const handleNameClick = () => {
     if (!isAdmin) return;
     setIsNameModalOpen(true);
-  };
-
-  const handleSaveInstructions = async (newInstructions: string) => {
-    const { error } = await supabase
-      .from('products')
-      .update({ instructions: newInstructions })
-      .eq('id', product.id);
-
-    if (error) {
-      console.error('Error updating instructions:', error);
-      throw error;
-    }
-
-    setInstructions(newInstructions);
   };
 
   const handleDelete = async () => {
@@ -670,34 +651,7 @@ export function ProductCard({ product, onImageUpload, onDelete }: ProductCardPro
           >
             R$ {price.toFixed(2).replace('.', ',')}
           </div>
-
-          <div className="border-t border-gray-800 pt-4 mb-4">
-            <div className="flex gap-2 mb-3">
-              <button
-                onClick={() => setActiveTab('files')}
-                className={`flex-1 py-2 px-3 rounded-lg font-medium text-sm transition-all flex items-center justify-center gap-2 ${
-                  activeTab === 'files'
-                    ? 'bg-red-600 text-white'
-                    : 'bg-gray-800 text-gray-400 hover:bg-gray-700 hover:text-white'
-                }`}
-              >
-                <FileText className="w-4 h-4" />
-                Arquivos
-              </button>
-              <button
-                onClick={() => setActiveTab('instructions')}
-                className={`flex-1 py-2 px-3 rounded-lg font-medium text-sm transition-all flex items-center justify-center gap-2 ${
-                  activeTab === 'instructions'
-                    ? 'bg-red-600 text-white'
-                    : 'bg-gray-800 text-gray-400 hover:bg-gray-700 hover:text-white'
-                }`}
-              >
-                <Info className="w-4 h-4" />
-                Instruções
-              </button>
-            </div>
-
-            {activeTab === 'files' && isAdmin && (
+          {isAdmin && (
             <>
               {product.category !== 'Rodas' && (
                 <>
@@ -779,44 +733,7 @@ export function ProductCard({ product, onImageUpload, onDelete }: ProductCardPro
               )}
             </>
           )}
-
-            {activeTab === 'instructions' && (
-              <div className="min-h-[120px]">
-                {instructions ? (
-                  <div className="bg-gray-800 rounded-lg p-3">
-                    <p className="text-gray-300 text-sm whitespace-pre-wrap leading-relaxed">
-                      {instructions}
-                    </p>
-                    {isAdmin && (
-                      <button
-                        onClick={() => setIsInstructionsModalOpen(true)}
-                        className="mt-3 text-xs text-red-500 hover:text-red-400 transition-colors"
-                      >
-                        Editar instruções
-                      </button>
-                    )}
-                  </div>
-                ) : (
-                  <div className="bg-gray-800 rounded-lg p-4 text-center">
-                    <Info className="w-8 h-8 text-gray-600 mx-auto mb-2" />
-                    <p className="text-gray-500 text-sm mb-3">
-                      {isAdmin ? 'Nenhuma instrução adicionada' : 'Sem instruções disponíveis'}
-                    </p>
-                    {isAdmin && (
-                      <button
-                        onClick={() => setIsInstructionsModalOpen(true)}
-                        className="text-sm text-red-500 hover:text-red-400 transition-colors"
-                      >
-                        Adicionar instruções
-                      </button>
-                    )}
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
-
-          {activeTab === 'files' && !isAdmin && (
+          {!isAdmin && (
             <button
               onClick={handleAddToCart}
               disabled={!hasBothFiles || isInCart}
@@ -827,27 +744,24 @@ export function ProductCard({ product, onImageUpload, onDelete }: ProductCardPro
               <span>{isInCart ? 'No Carrinho' : 'Adicionar ao Carrinho'}</span>
             </button>
           )}
-
-          {activeTab === 'files' && (
-            <button
-              onClick={handleBuyClick}
-              disabled={isProcessingPayment || !hasBothFiles}
-              className="w-full bg-red-600 hover:bg-red-700 disabled:bg-red-800 disabled:cursor-not-allowed text-white py-3 rounded-lg font-bold text-sm transition-colors z-20 relative mt-auto flex items-center justify-center gap-2"
-              title={!hasBothFiles ? (isWheel ? 'Produto precisa ter o arquivo da roda' : 'Produto precisa ter os 2 arquivos (carro e roda)') : ''}
-            >
-              {isProcessingPayment ? (
-                <>
-                  <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                  </svg>
-                  <span>Processando...</span>
-                </>
-              ) : (
-                <span>Comprar</span>
-              )}
-            </button>
-          )}
+          <button
+            onClick={handleBuyClick}
+            disabled={isProcessingPayment || !hasBothFiles}
+            className="w-full bg-red-600 hover:bg-red-700 disabled:bg-red-800 disabled:cursor-not-allowed text-white py-3 rounded-lg font-bold text-sm transition-colors z-20 relative mt-auto flex items-center justify-center gap-2"
+            title={!hasBothFiles ? (isWheel ? 'Produto precisa ter o arquivo da roda' : 'Produto precisa ter os 2 arquivos (carro e roda)') : ''}
+          >
+            {isProcessingPayment ? (
+              <>
+                <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                <span>Processando...</span>
+              </>
+            ) : (
+              <span>Comprar</span>
+            )}
+          </button>
         </div>
       </div>
 
@@ -870,13 +784,6 @@ export function ProductCard({ product, onImageUpload, onDelete }: ProductCardPro
         onClose={() => setIsNameModalOpen(false)}
         currentName={name}
         onSave={handleSaveName}
-      />
-
-      <EditInstructionsModal
-        isOpen={isInstructionsModalOpen}
-        onClose={() => setIsInstructionsModalOpen(false)}
-        currentInstructions={instructions}
-        onSave={handleSaveInstructions}
       />
 
       <ImageViewerModal
