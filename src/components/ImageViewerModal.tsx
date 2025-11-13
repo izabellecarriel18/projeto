@@ -10,6 +10,9 @@ interface ImageViewerModalProps {
 
 export function ImageViewerModal({ isOpen, onClose, imageUrl, alt }: ImageViewerModalProps) {
   const [scale, setScale] = useState(1);
+  const [positionX, setPositionX] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragStartX, setDragStartX] = useState(0);
   const [lastTouchDistance, setLastTouchDistance] = useState<number | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLImageElement>(null);
@@ -17,6 +20,7 @@ export function ImageViewerModal({ isOpen, onClose, imageUrl, alt }: ImageViewer
   useEffect(() => {
     if (isOpen) {
       setScale(1);
+      setPositionX(0);
     }
   }, [isOpen]);
 
@@ -40,9 +44,25 @@ export function ImageViewerModal({ isOpen, onClose, imageUrl, alt }: ImageViewer
       setScale(2.5);
     } else {
       setScale(1);
+      setPositionX(0);
     }
   };
 
+
+  const constrainPositionX = (x: number, currentScale: number) => {
+    if (!imageRef.current || !containerRef.current) return x;
+
+    const containerRect = containerRef.current.getBoundingClientRect();
+    const imgRect = imageRef.current.getBoundingClientRect();
+    const scaledWidth = imgRect.width * currentScale / scale;
+
+    if (scaledWidth <= containerRect.width) {
+      return 0;
+    }
+
+    const maxOffset = (scaledWidth - containerRect.width) / 2;
+    return Math.max(-maxOffset, Math.min(maxOffset, x));
+  };
 
   const handleWheel = (e: React.WheelEvent) => {
     e.preventDefault();
@@ -52,7 +72,31 @@ export function ImageViewerModal({ isOpen, onClose, imageUrl, alt }: ImageViewer
 
     if (newScale !== scale) {
       setScale(newScale);
+      if (newScale <= 1) {
+        setPositionX(0);
+      } else {
+        setPositionX(prev => constrainPositionX(prev, newScale));
+      }
     }
+  };
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if (scale > 1) {
+      e.preventDefault();
+      setIsDragging(true);
+      setDragStartX(e.clientX - positionX);
+    }
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (isDragging && scale > 1) {
+      const newX = e.clientX - dragStartX;
+      setPositionX(constrainPositionX(newX, scale));
+    }
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
   };
 
   const getTouchDistance = (touches: TouchList) => {
@@ -66,8 +110,13 @@ export function ImageViewerModal({ isOpen, onClose, imageUrl, alt }: ImageViewer
   const handleTouchStart = (e: React.TouchEvent) => {
     if (e.touches.length === 2) {
       e.preventDefault();
+      setIsDragging(false);
       const distance = getTouchDistance(e.touches);
       setLastTouchDistance(distance);
+    } else if (e.touches.length === 1 && scale > 1) {
+      e.preventDefault();
+      setIsDragging(true);
+      setDragStartX(e.touches[0].clientX - positionX);
     }
   };
 
@@ -80,13 +129,25 @@ export function ImageViewerModal({ isOpen, onClose, imageUrl, alt }: ImageViewer
       const newScale = Math.max(0.5, Math.min(10, scale * scaleDelta));
 
       setScale(newScale);
+      if (newScale <= 1) {
+        setPositionX(0);
+      } else {
+        setPositionX(prev => constrainPositionX(prev, newScale));
+      }
       setLastTouchDistance(currentDistance);
+    } else if (e.touches.length === 1 && isDragging && scale > 1) {
+      e.preventDefault();
+      const newX = e.touches[0].clientX - dragStartX;
+      setPositionX(constrainPositionX(newX, scale));
     }
   };
 
   const handleTouchEnd = (e: React.TouchEvent) => {
     if (e.touches.length < 2) {
       setLastTouchDistance(null);
+    }
+    if (e.touches.length === 0) {
+      setIsDragging(false);
     }
   };
 
@@ -108,12 +169,16 @@ export function ImageViewerModal({ isOpen, onClose, imageUrl, alt }: ImageViewer
         ref={containerRef}
         className="relative w-full h-full flex items-center justify-center overflow-hidden"
         onClick={(e) => e.stopPropagation()}
+        onMouseDown={handleMouseDown}
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUp}
+        onMouseLeave={handleMouseUp}
         onWheel={handleWheel}
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
         style={{
-          cursor: scale > 1 ? 'zoom-out' : 'zoom-in',
+          cursor: scale > 1 ? (isDragging ? 'grabbing' : 'grab') : 'zoom-in',
           touchAction: 'none',
         }}
       >
@@ -130,15 +195,15 @@ export function ImageViewerModal({ isOpen, onClose, imageUrl, alt }: ImageViewer
           className="max-w-full max-h-full select-none object-contain"
           draggable={false}
           style={{
-            transform: `scale(${scale})`,
+            transform: `translateX(${positionX}px) scale(${scale})`,
             transformOrigin: 'center center',
-            transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+            transition: isDragging ? 'none' : 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
           }}
         />
       </div>
 
       <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-white text-xs sm:text-sm bg-white/10 backdrop-blur-md px-3 sm:px-4 py-2 rounded-lg pointer-events-none text-center max-w-[90%]">
-        Arraste para mover • Toque para resetar
+        {scale === 1 ? 'Toque para dar zoom' : 'Arraste para os lados • Toque para resetar'}
       </div>
     </div>
   );
