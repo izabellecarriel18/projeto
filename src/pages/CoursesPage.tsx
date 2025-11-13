@@ -64,8 +64,8 @@ export default function CoursesPage() {
     <div className="min-h-screen pt-20 sm:pt-24 pb-12 sm:pb-20">
       <div className="container mx-auto px-4 sm:px-6">
         <div className="text-center mb-8 sm:mb-12">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-3 sm:mb-4">Cursos Disponíveis</h1>
-          <p className="text-base sm:text-lg md:text-xl text-gray-900">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-3 sm:mb-4">Cursos Disponíveis</h1>
+          <p className="text-base sm:text-lg md:text-xl text-white">
             Aprenda técnicas profissionais de modelagem automotiva 3D
           </p>
         </div>
@@ -75,7 +75,7 @@ export default function CoursesPage() {
             return (
             <div
               key={index}
-              className="bg-gray-800/50 backdrop-blur border border-gray-700 rounded-lg overflow-hidden hover:border-red-600 transition-all"
+              className="border border-gray-800 rounded-lg overflow-hidden hover:border-gray-700 transition-all"
             >
               {courseImage && (
                 <EditableImage

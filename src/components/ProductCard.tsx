@@ -717,7 +717,7 @@ export function ProductCard({ product, onImageUpload, onDelete }: ProductCardPro
 
   return (
     <>
-      <div className="flex flex-col h-full bg-gray-800/50 backdrop-blur border border-gray-700 rounded-lg overflow-hidden hover:border-red-600 transition-colors">
+      <div className="flex flex-col h-full bg-gray-900 border border-gray-800 rounded-lg overflow-hidden hover:border-gray-700 transition-colors">
         <div className="bg-gray-950 overflow-hidden relative group">
           <img
             src={product.image_url}

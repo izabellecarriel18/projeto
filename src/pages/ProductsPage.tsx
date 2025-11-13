@@ -243,14 +243,14 @@ export default function ProductsPage() {
     <div className="min-h-screen pt-20 sm:pt-24 pb-12 sm:pb-20">
       <div className="container mx-auto px-4 sm:px-6">
         <div className="text-center mb-8 sm:mb-12">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-3 sm:mb-4">Modelos 3D</h1>
-          <p className="text-base sm:text-lg md:text-xl text-gray-900">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-3 sm:mb-4">Modelos 3D</h1>
+          <p className="text-base sm:text-lg md:text-xl text-white">
             Biblioteca completa de modelos automotivos profissionais
           </p>
         </div>
 
 
-        <div className="bg-gray-800/50 backdrop-blur border border-gray-700 rounded-lg p-4 sm:p-6 mb-8 sm:mb-12">
+        <div className="backdrop-blur border border-gray-800 rounded-lg p-4 sm:p-6 mb-8 sm:mb-12">
           <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
             {categories.map((cat) => (
               <button
@@ -357,8 +357,8 @@ export default function ProductsPage() {
 
         {selectedCategory === 'bus_truck' ? null : filteredProducts.length === 0 ? (
           <div className="text-center py-12 sm:py-20">
-            <ShoppingCart className="w-12 h-12 sm:w-16 sm:h-16 text-gray-900 mx-auto mb-4" />
-            <p className="text-gray-900 text-lg sm:text-xl">Nenhum produto encontrado</p>
+            <ShoppingCart className="w-12 h-12 sm:w-16 sm:h-16 text-white mx-auto mb-4" />
+            <p className="text-white text-lg sm:text-xl">Nenhum produto encontrado</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 sm:gap-10">

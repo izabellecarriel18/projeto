@@ -56,7 +56,7 @@ export default function Testimonials() {
   return (
     <section className="py-12 sm:py-20 flex items-center" style={{ minHeight: 'calc(12rem + 5rem)' }}>
       <div className="max-w-5xl mx-auto w-full">
-        <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 text-center mb-8 sm:mb-12 px-4">
+        <h2 className="text-3xl sm:text-4xl font-bold text-white text-center mb-8 sm:mb-12 px-4">
           Depoimentos
         </h2>
 

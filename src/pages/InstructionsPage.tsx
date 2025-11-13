@@ -5,16 +5,16 @@ export default function InstructionsPage() {
     <div className="min-h-screen pt-20 sm:pt-24 pb-12 sm:pb-20">
       <div className="container mx-auto px-4 sm:px-6">
         <div className="text-center mb-8 sm:mb-12">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-3 sm:mb-4">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-3 sm:mb-4">
             Instruções e Uso
           </h1>
-          <p className="text-base sm:text-lg md:text-xl text-gray-900">
+          <p className="text-base sm:text-lg md:text-xl text-white">
             Guias completos para utilização dos modelos 3D
           </p>
         </div>
 
         <div className="max-w-5xl mx-auto space-y-6">
-          <div className="bg-gray-800/50 backdrop-blur border border-gray-700 rounded-lg p-6 sm:p-8 hover:border-red-600 transition-all">
+          <div className="backdrop-blur border border-gray-800 rounded-lg p-6 sm:p-8 hover:border-red-600/50 transition-all">
             <div className="flex items-start gap-4">
               <div className="bg-red-600/20 p-3 rounded-lg">
                 <Download className="w-6 h-6 text-red-600" />
@@ -44,7 +44,7 @@ export default function InstructionsPage() {
             </div>
           </div>
 
-          <div className="bg-gray-800/50 backdrop-blur border border-gray-700 rounded-lg p-6 sm:p-8 hover:border-red-600 transition-all">
+          <div className="backdrop-blur border border-gray-800 rounded-lg p-6 sm:p-8 hover:border-red-600/50 transition-all">
             <div className="flex items-start gap-4">
               <div className="bg-red-600/20 p-3 rounded-lg">
                 <FileText className="w-6 h-6 text-red-600" />
@@ -76,7 +76,7 @@ export default function InstructionsPage() {
             </div>
           </div>
 
-          <div className="bg-gray-800/50 backdrop-blur border border-gray-700 rounded-lg p-6 sm:p-8 hover:border-red-600 transition-all">
+          <div className="backdrop-blur border border-gray-800 rounded-lg p-6 sm:p-8 hover:border-red-600/50 transition-all">
             <div className="flex items-start gap-4">
               <div className="bg-red-600/20 p-3 rounded-lg">
                 <Wrench className="w-6 h-6 text-red-600" />
@@ -120,7 +120,7 @@ export default function InstructionsPage() {
             </div>
           </div>
 
-          <div className="bg-gray-800/50 backdrop-blur border border-gray-700 rounded-lg p-6 sm:p-8 hover:border-red-600 transition-all">
+          <div className="backdrop-blur border border-gray-800 rounded-lg p-6 sm:p-8 hover:border-red-600/50 transition-all">
             <div className="flex items-start gap-4">
               <div className="bg-red-600/20 p-3 rounded-lg">
                 <BookOpen className="w-6 h-6 text-red-600" />

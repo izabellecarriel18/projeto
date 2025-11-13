@@ -8,10 +8,10 @@ export default function FinalCTA({ onNavigate }: FinalCTAProps) {
   return (
     <section className="py-12 sm:py-20 flex items-center" style={{ minHeight: 'calc(12rem + 5rem)' }}>
       <div className="container mx-auto px-4 sm:px-6 text-center max-w-4xl">
-        <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-6 sm:mb-8">
+        <h2 className="text-3xl sm:text-4xl font-bold text-white mb-6 sm:mb-8">
           Pronto para elevar suas modelagens?
         </h2>
-        <p className="text-base sm:text-lg text-gray-900 mb-8 sm:mb-10 max-w-xl mx-auto px-4">
+        <p className="text-base sm:text-lg text-white mb-8 sm:mb-10 max-w-xl mx-auto px-4">
           Acesse nossa biblioteca completa de modelos 3D e cursos especializados
         </p>
 
