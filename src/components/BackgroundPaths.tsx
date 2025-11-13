@@ -16,7 +16,7 @@ function FloatingPaths({ position }: { position: number }) {
   return (
     <div className="absolute inset-0 pointer-events-none">
       <svg
-        className="w-full h-full text-blue-950"
+        className="w-full h-full text-blue-900"
         viewBox="0 0 696 316"
         fill="none"
       >
@@ -49,7 +49,7 @@ function FloatingPaths({ position }: { position: number }) {
 export default function BackgroundPaths() {
   return (
     <>
-      <div className="fixed inset-0 -z-10 bg-white">
+      <div className="fixed inset-0 -z-10 bg-black">
         <FloatingPaths position={1} />
         <FloatingPaths position={-1} />
       </div>
