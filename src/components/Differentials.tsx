@@ -75,43 +75,43 @@ export default function Differentials() {
       currentUrl={differentialsImage}
       isAdmin={isAdmin}
       onUpdate={loadDifferentialsImage}
-      className="py-16 sm:py-24 flex items-center gradient-overlay"
-      style={{ minHeight: '75vh' }}
+      className="py-12 sm:py-20 flex items-center"
+      style={{ minHeight: '67.5vh' }}
     >
-      <div className="relative z-10 max-w-5xl mx-auto w-full px-4">
-        <h2 className="text-4xl sm:text-5xl font-bold text-white text-center mb-12 sm:mb-16 text-shadow-xl">
-          Nossos Diferenciais
+      <div className="relative z-10 max-w-4xl mx-auto w-full px-4">
+        <h2 className="text-3xl sm:text-4xl font-bold text-white text-center mb-8 sm:mb-12">
+          Diferenciais
         </h2>
 
-        <div className="space-y-4">
+        <div className="space-y-3">
           {differentials.map((item, index) => (
             <div
               key={index}
-              className="bg-gray-800/60 backdrop-blur-md border border-gray-700/50 rounded-xl overflow-hidden hover:border-red-600/60 transition-all duration-300 hover:shadow-2xl hover:shadow-red-600/20 group"
+              className="bg-gray-800/50 backdrop-blur border border-gray-700 rounded-lg overflow-hidden hover:border-red-600 transition-all"
             >
               <button
                 onClick={() => toggleItem(index)}
-                className="w-full flex items-center justify-between px-5 sm:px-7 py-5 sm:py-6 text-left"
+                className="w-full flex items-center justify-between px-4 sm:px-6 py-4 sm:py-5 text-left"
               >
-                <div className="flex items-center gap-4 sm:gap-5">
-                  <div className="bg-gradient-to-br from-red-600/20 to-red-700/20 p-3.5 rounded-xl group-hover:from-red-600/30 group-hover:to-red-700/30 transition-all duration-300 shadow-lg">
-                    <item.icon className="w-6 h-6 sm:w-7 sm:h-7 text-red-500 group-hover:text-red-400 transition-colors duration-300" />
+                <div className="flex items-center gap-4">
+                  <div className="bg-red-600/10 p-3 rounded-full">
+                    <item.icon className="w-6 h-6 text-red-600" />
                   </div>
-                  <h3 className="text-base sm:text-xl font-bold text-white group-hover:text-red-500 transition-colors duration-300">{item.title}</h3>
+                  <h3 className="text-base sm:text-lg font-semibold text-white">{item.title}</h3>
                 </div>
                 <ChevronDown
-                  className={`w-5 h-5 sm:w-6 sm:h-6 text-red-500 transition-all duration-300 ${
+                  className={`w-5 h-5 text-red-600 transition-transform ${
                     openIndex === index ? 'rotate-180' : ''
                   }`}
                 />
               </button>
               <div
-                className={`overflow-hidden transition-all duration-500 ${
-                  openIndex === index ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+                className={`overflow-hidden transition-all duration-300 ${
+                  openIndex === index ? 'max-h-96' : 'max-h-0'
                 }`}
               >
-                <div className="px-5 sm:px-7 pb-5 sm:pb-6 pl-16 sm:pl-24 border-t border-gray-700/50">
-                  <p className="text-white/90 text-sm sm:text-base leading-relaxed pt-4">{item.description}</p>
+                <div className="px-4 sm:px-6 pb-4 sm:pb-5 pl-16 sm:pl-20">
+                  <p className="text-white text-sm sm:text-base leading-relaxed">{item.description}</p>
                 </div>
               </div>
             </div>

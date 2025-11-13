@@ -15,9 +15,9 @@ export default function AuthorityProof() {
   ];
 
   return (
-    <section className="py-16 sm:py-24 bg-gradient-to-b from-black via-gray-950 to-black">
+    <section className="py-12 sm:py-20">
       <div className="max-w-6xl mx-auto">
-        <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white text-center mb-12 sm:mb-16 px-4 text-shadow-xl">
+        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white text-center mb-8 sm:mb-12 px-4">
           Provas de Autoridade
         </h2>
         <div className="md:hidden overflow-x-auto scrollbar-hide px-4">
@@ -25,11 +25,11 @@ export default function AuthorityProof() {
             {metrics.map((metric, index) => (
               <div
                 key={index}
-                className="bg-gradient-to-br from-red-600/20 to-red-800/20 backdrop-blur-md border-2 border-red-600/60 rounded-2xl p-10 text-center flex-shrink-0 shadow-2xl shadow-red-600/20 hover:scale-105 transition-all duration-300"
-                style={{ width: '300px' }}
+                className="bg-red-600/10 backdrop-blur-sm border-2 border-red-600 rounded-2xl p-8 text-center flex-shrink-0"
+                style={{ width: '280px' }}
               >
-                <div className="text-6xl font-bold bg-gradient-to-r from-red-500 to-red-600 bg-clip-text text-transparent mb-4">{metric.value}</div>
-                <div className="text-white text-lg font-semibold">{metric.label}</div>
+                <div className="text-5xl font-bold text-red-600 mb-3">{metric.value}</div>
+                <div className="text-white text-base">{metric.label}</div>
               </div>
             ))}
           </div>
@@ -38,10 +38,10 @@ export default function AuthorityProof() {
           {metrics.map((metric, index) => (
             <div
               key={index}
-              className="bg-gradient-to-br from-red-600/20 to-red-800/20 backdrop-blur-md border-2 border-red-600/60 rounded-3xl p-12 text-center hover:scale-110 transition-all duration-300 shadow-2xl shadow-red-600/20 hover:shadow-red-600/40"
+              className="bg-red-600/10 backdrop-blur-sm border-2 border-red-600 rounded-2xl p-12 text-center hover:scale-105 transition-all"
             >
-              <div className="text-7xl font-bold bg-gradient-to-r from-red-500 to-red-600 bg-clip-text text-transparent mb-4">{metric.value}</div>
-              <div className="text-white text-xl font-semibold">{metric.label}</div>
+              <div className="text-6xl font-bold text-red-600 mb-3">{metric.value}</div>
+              <div className="text-white text-lg">{metric.label}</div>
             </div>
           ))}
         </div>

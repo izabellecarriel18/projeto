@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { AuthProvider } from './contexts/AuthContext';
 import { CartProvider } from './contexts/CartContext';
-import { ToastProvider } from './contexts/ToastContext';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import BackgroundPaths from './components/BackgroundPaths';
@@ -20,28 +19,26 @@ function App() {
 
   const handleNavigate = (page: string) => {
     setCurrentPage(page);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: 'auto' });
   };
 
   return (
     <AuthProvider>
       <CartProvider>
-        <ToastProvider>
-          <div className="min-h-screen">
-            <BackgroundPaths />
-            <Header onNavigate={handleNavigate} currentPage={currentPage} />
+        <div className="min-h-screen">
+          <BackgroundPaths />
+          <Header onNavigate={handleNavigate} currentPage={currentPage} />
 
-            {currentPage === 'home' && <HomePage onNavigate={handleNavigate} />}
-            {currentPage === 'products' && <ProductsPage />}
-            {currentPage === 'instructions' && <InstructionsPage />}
-            {currentPage === 'courses' && <CoursesPage />}
-            {currentPage === 'profile' && <ProfilePage />}
-            {currentPage === 'purchases' && <PurchasesPage />}
-            {currentPage === 'payment-success' && <PaymentSuccessPage onNavigate={handleNavigate} />}
+      {currentPage === 'home' && <HomePage onNavigate={handleNavigate} />}
+      {currentPage === 'products' && <ProductsPage />}
+      {currentPage === 'instructions' && <InstructionsPage />}
+      {currentPage === 'courses' && <CoursesPage />}
+      {currentPage === 'profile' && <ProfilePage />}
+      {currentPage === 'purchases' && <PurchasesPage />}
+      {currentPage === 'payment-success' && <PaymentSuccessPage onNavigate={handleNavigate} />}
 
-            <Footer />
-          </div>
-        </ToastProvider>
+        <Footer />
+        </div>
       </CartProvider>
     </AuthProvider>
   );

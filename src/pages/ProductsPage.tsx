@@ -5,7 +5,6 @@ import { useAuth } from '../contexts/AuthContext';
 import { ProductCard } from '../components/ProductCard';
 import ProductImageUploadModal from '../components/ProductImageUploadModal';
 import { AddProductModal } from '../components/AddProductModal';
-import { ProductCardSkeleton } from '../components/LoadingSkeleton';
 
 interface Product {
   id: string;
@@ -28,7 +27,6 @@ export default function ProductsPage() {
   const [uploadModalOpen, setUploadModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [addProductModalOpen, setAddProductModalOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
   const isAdmin = profile?.role === 'admin';
 
   console.log('[ProductsPage] Auth state:', { profile, isAdmin });
@@ -174,7 +172,6 @@ export default function ProductsPage() {
   }, [products, selectedCategory, selectedBrand, searchTerm]);
 
   async function loadProducts() {
-    setIsLoading(true);
     console.log('=== LOADING PRODUCTS ===');
     const { data, error } = await supabase
       .from('products')
@@ -185,7 +182,6 @@ export default function ProductsPage() {
 
     if (error) {
       console.error('Error loading products:', error);
-      setIsLoading(false);
       return;
     }
 
@@ -196,7 +192,6 @@ export default function ProductsPage() {
       console.log('Setting products, count:', sortedData.length);
       setProducts(sortedData);
     }
-    setIsLoading(false);
   }
 
   function filterProducts() {
@@ -261,24 +256,24 @@ export default function ProductsPage() {
               <button
                 key={cat.id}
                 onClick={() => setSelectedCategory(cat.id)}
-                className={`px-3 sm:px-4 md:px-6 py-2.5 rounded-xl font-bold text-sm sm:text-base transition-all duration-300 shadow-lg ${
+                className={`px-3 sm:px-4 md:px-6 py-2 rounded-lg font-medium text-sm sm:text-base transition-all ${
                   selectedCategory === cat.id
-                    ? 'bg-gradient-to-r from-red-600 to-red-700 text-white shadow-red-600/50 scale-105'
-                    : 'bg-gray-800 text-white hover:bg-gray-700 hover:scale-105'
+                    ? 'bg-red-600 text-white'
+                    : 'bg-gray-800 text-white hover:bg-gray-700'
                 }`}
               >
                 {cat.label}
               </button>
             ))}
-            <button className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white px-3 sm:px-4 md:px-6 py-2.5 rounded-xl font-bold text-sm sm:text-base transition-all duration-300 whitespace-nowrap shadow-lg hover:shadow-green-600/50 hover:scale-105">
+            <button className="bg-green-600 hover:bg-green-700 text-white px-3 sm:px-4 md:px-6 py-2 rounded-lg font-medium text-sm sm:text-base transition-all whitespace-nowrap">
               Solicitar Criação de Arquivo
             </button>
             {isAdmin && selectedCategory !== 'bus_truck' && (
               <button
                 onClick={() => setAddProductModalOpen(true)}
-                className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-3 sm:px-4 md:px-6 py-2.5 rounded-xl font-bold text-sm sm:text-base transition-all duration-300 whitespace-nowrap flex items-center gap-2 shadow-lg hover:shadow-blue-600/50 hover:scale-105"
+                className="bg-blue-600 hover:bg-blue-700 text-white px-3 sm:px-4 md:px-6 py-2 rounded-lg font-medium text-sm sm:text-base transition-all whitespace-nowrap flex items-center gap-2"
               >
-                <Plus className="w-5 h-5" />
+                <Plus className="w-4 h-4" />
                 Adicionar Card
               </button>
             )}
@@ -290,10 +285,10 @@ export default function ProductsPage() {
                 <button
                   key={brand}
                   onClick={() => setSelectedBrand(brand)}
-                  className={`px-2.5 sm:px-4 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition-all duration-300 ${
+                  className={`px-2.5 sm:px-4 py-1.5 rounded text-xs sm:text-sm font-medium transition-all ${
                     selectedBrand === brand
-                      ? 'bg-gradient-to-r from-red-600 to-red-700 text-white shadow-md scale-105'
-                      : 'bg-gray-800 text-white hover:bg-gray-700 hover:scale-105'
+                      ? 'bg-red-600 text-white'
+                      : 'bg-gray-800 text-white hover:bg-gray-700'
                   }`}
                 >
                   {brand}
@@ -308,10 +303,10 @@ export default function ProductsPage() {
                 <button
                   key={brand}
                   onClick={() => setSelectedBrand(brand)}
-                  className={`px-2.5 sm:px-4 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition-all duration-300 ${
+                  className={`px-2.5 sm:px-4 py-1.5 rounded text-xs sm:text-sm font-medium transition-all ${
                     selectedBrand === brand
-                      ? 'bg-gradient-to-r from-red-600 to-red-700 text-white shadow-md scale-105'
-                      : 'bg-gray-800 text-white hover:bg-gray-700 hover:scale-105'
+                      ? 'bg-red-600 text-white'
+                      : 'bg-gray-800 text-white hover:bg-gray-700'
                   }`}
                 >
                   {brand}
@@ -326,10 +321,10 @@ export default function ProductsPage() {
                 <button
                   key={brand}
                   onClick={() => setSelectedBrand(brand)}
-                  className={`px-2.5 sm:px-4 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition-all duration-300 ${
+                  className={`px-2.5 sm:px-4 py-1.5 rounded text-xs sm:text-sm font-medium transition-all ${
                     selectedBrand === brand
-                      ? 'bg-gradient-to-r from-red-600 to-red-700 text-white shadow-md scale-105'
-                      : 'bg-gray-800 text-white hover:bg-gray-700 hover:scale-105'
+                      ? 'bg-red-600 text-white'
+                      : 'bg-gray-800 text-white hover:bg-gray-700'
                   }`}
                 >
                   {brand}
@@ -360,13 +355,7 @@ export default function ProductsPage() {
           )}
         </div>
 
-        {isLoading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 sm:gap-10">
-            {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
-              <ProductCardSkeleton key={i} />
-            ))}
-          </div>
-        ) : selectedCategory === 'bus_truck' ? null : filteredProducts.length === 0 ? (
+        {selectedCategory === 'bus_truck' ? null : filteredProducts.length === 0 ? (
           <div className="text-center py-12 sm:py-20">
             <ShoppingCart className="w-12 h-12 sm:w-16 sm:h-16 text-white mx-auto mb-4" />
             <p className="text-white text-lg sm:text-xl">Nenhum produto encontrado</p>
