@@ -14,6 +14,7 @@ export function ImageViewerModal({ isOpen, onClose, imageUrl, alt }: ImageViewer
   const [isDragging, setIsDragging] = useState(false);
   const [dragStartX, setDragStartX] = useState(0);
   const [lastTouchDistance, setLastTouchDistance] = useState<number | null>(null);
+  const [isPinching, setIsPinching] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLImageElement>(null);
 
@@ -111,9 +112,10 @@ export function ImageViewerModal({ isOpen, onClose, imageUrl, alt }: ImageViewer
     if (e.touches.length === 2) {
       e.preventDefault();
       setIsDragging(false);
+      setIsPinching(true);
       const distance = getTouchDistance(e.touches);
       setLastTouchDistance(distance);
-    } else if (e.touches.length === 1 && scale > 1) {
+    } else if (e.touches.length === 1 && scale > 1 && !isPinching) {
       e.preventDefault();
       setIsDragging(true);
       setDragStartX(e.touches[0].clientX - positionX);
@@ -121,7 +123,7 @@ export function ImageViewerModal({ isOpen, onClose, imageUrl, alt }: ImageViewer
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
-    if (e.touches.length === 2 && lastTouchDistance !== null) {
+    if (e.touches.length === 2 && lastTouchDistance !== null && isPinching) {
       e.preventDefault();
 
       const currentDistance = getTouchDistance(e.touches);
@@ -131,11 +133,9 @@ export function ImageViewerModal({ isOpen, onClose, imageUrl, alt }: ImageViewer
       setScale(newScale);
       if (newScale <= 1) {
         setPositionX(0);
-      } else {
-        setPositionX(prev => constrainPositionX(prev, newScale));
       }
       setLastTouchDistance(currentDistance);
-    } else if (e.touches.length === 1 && isDragging && scale > 1) {
+    } else if (e.touches.length === 1 && isDragging && scale > 1 && !isPinching) {
       e.preventDefault();
       const newX = e.touches[0].clientX - dragStartX;
       setPositionX(constrainPositionX(newX, scale));
@@ -145,6 +145,10 @@ export function ImageViewerModal({ isOpen, onClose, imageUrl, alt }: ImageViewer
   const handleTouchEnd = (e: React.TouchEvent) => {
     if (e.touches.length < 2) {
       setLastTouchDistance(null);
+      if (isPinching) {
+        setPositionX(prev => constrainPositionX(prev, scale));
+      }
+      setIsPinching(false);
     }
     if (e.touches.length === 0) {
       setIsDragging(false);
@@ -197,7 +201,7 @@ export function ImageViewerModal({ isOpen, onClose, imageUrl, alt }: ImageViewer
           style={{
             transform: `translateX(${positionX}px) scale(${scale})`,
             transformOrigin: 'center center',
-            transition: isDragging ? 'none' : 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+            transition: (isDragging || isPinching) ? 'none' : 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
           }}
         />
       </div>
