@@ -54,10 +54,10 @@ export default function Testimonials() {
   }
 
   return (
-    <section className="py-12 sm:py-20 flex items-center" style={{ minHeight: 'calc(12rem + 5rem)' }}>
-      <div className="max-w-5xl mx-auto w-full">
-        <h2 className="text-3xl sm:text-4xl font-bold text-white text-center mb-8 sm:mb-12 px-4">
-          Depoimentos
+    <section className="py-16 sm:py-24 flex items-center bg-gradient-to-b from-black via-gray-950 to-black" style={{ minHeight: 'calc(12rem + 5rem)' }}>
+      <div className="max-w-6xl mx-auto w-full">
+        <h2 className="text-4xl sm:text-5xl font-bold text-white text-center mb-12 sm:mb-16 px-4 text-shadow-xl">
+          O Que Dizem Nossos Clientes
         </h2>
 
         <>
@@ -66,17 +66,17 @@ export default function Testimonials() {
             {testimonials.map((testimonial) => (
               <div
                 key={testimonial.id}
-                className="bg-gray-800/50 backdrop-blur border border-gray-700 rounded-2xl p-8 hover:border-red-600 transition-all flex-shrink-0 flex flex-col"
-                style={{ width: '280px', minHeight: '280px' }}
+                className="bg-gray-800/60 backdrop-blur-md border border-gray-700/50 rounded-2xl p-8 hover:border-red-600/60 transition-all duration-300 flex-shrink-0 flex flex-col shadow-xl hover:shadow-2xl hover:shadow-red-600/20 hover:-translate-y-2"
+                style={{ width: '320px', minHeight: '300px' }}
               >
                 <div className="flex items-center gap-3 mb-4">
                   <img
                     src={testimonial.avatar_url}
                     alt={testimonial.name}
-                    className="w-12 h-12 rounded-full object-cover"
+                    className="w-14 h-14 rounded-full object-cover border-2 border-red-600/30 shadow-lg"
                   />
                   <div>
-                    <h3 className="text-white font-semibold text-base">{testimonial.name}</h3>
+                    <h3 className="text-white font-bold text-lg">{testimonial.name}</h3>
                     <div className="flex gap-1">
                       {Array.from({ length: testimonial.rating }).map((_, i) => (
                         <Star key={i} className="w-3 h-3 text-yellow-500 fill-yellow-500" />
@@ -93,8 +93,8 @@ export default function Testimonials() {
           {testimonials.map((testimonial) => (
             <div
               key={testimonial.id}
-              className="bg-gray-800/50 backdrop-blur border border-gray-700 rounded-2xl p-12 hover:border-red-600 hover:scale-105 transition-all flex flex-col"
-              style={{ minHeight: '280px' }}
+              className="bg-gray-800/60 backdrop-blur-md border border-gray-700/50 rounded-2xl p-12 hover:border-red-600/60 hover:scale-105 transition-all duration-300 flex flex-col shadow-xl hover:shadow-2xl hover:shadow-red-600/20"
+              style={{ minHeight: '320px' }}
             >
               <div className="flex items-center gap-3 mb-6">
                 <img

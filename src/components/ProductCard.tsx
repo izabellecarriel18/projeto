@@ -717,18 +717,18 @@ export function ProductCard({ product, onImageUpload, onDelete }: ProductCardPro
 
   return (
     <>
-      <div className="flex flex-col h-full bg-gray-900 border border-gray-800 rounded-lg overflow-hidden hover:border-gray-700 transition-colors">
-        <div className="bg-gray-950 overflow-hidden relative group">
+      <div className="flex flex-col h-full bg-gray-900 border border-gray-800 rounded-xl overflow-hidden hover:border-red-600/50 transition-all duration-300 hover:shadow-2xl hover:shadow-red-600/20 group-main hover:-translate-y-2">
+        <div className="bg-gray-950 overflow-hidden relative group aspect-square">
           <img
             src={product.image_url}
             alt={product.name}
-            className="w-full h-auto cursor-pointer"
+            className="w-full h-full object-cover cursor-pointer transition-transform duration-500 group-hover:scale-110"
             onClick={() => setIsImageViewerOpen(true)}
           />
           {isAdmin && onImageUpload && (
             <button
               onClick={() => onImageUpload(product.id)}
-              className="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center z-10"
+              className="absolute inset-0 bg-black/80 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center justify-center z-10"
             >
               <div className="text-center pointer-events-none">
                 <Upload className="w-10 h-10 text-white mx-auto mb-2" />
@@ -739,28 +739,28 @@ export function ProductCard({ product, onImageUpload, onDelete }: ProductCardPro
           {isAdmin && (
             <button
               onClick={handleDelete}
-              className="absolute top-3 right-3 bg-red-600 hover:bg-red-700 text-white p-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity z-20"
+              className="absolute top-3 right-3 bg-red-600 hover:bg-red-700 text-white p-2 rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 hover:scale-110 shadow-lg z-20"
               title="Excluir produto"
             >
               <Trash2 className="w-5 h-5" />
             </button>
           )}
         </div>
-        <div className="flex flex-col flex-1 p-5">
+        <div className="flex flex-col flex-1 p-6">
           <h3
             onClick={handleNameClick}
-            className={`text-white font-bold text-lg mb-1 ${isAdmin ? 'cursor-pointer hover:text-red-500 transition-colors' : ''}`}
+            className={`text-white font-bold text-xl mb-2 ${isAdmin ? 'cursor-pointer hover:text-red-500 transition-colors duration-300' : ''}`}
             title={isAdmin ? 'Clique para editar nome' : ''}
           >
             {name}
           </h3>
-          <p className="text-gray-400 text-xs mb-2 uppercase tracking-wide">
-            {product.formats.join(' , ')}
+          <p className="text-gray-400 text-xs mb-3 uppercase tracking-wider font-semibold">
+            {product.formats.join(' • ')}
           </p>
-          <div className="flex-1 mb-3">
+          <div className="flex-1 mb-4">
             <p
               onClick={handleDescriptionClick}
-              className={`text-gray-300 text-sm leading-relaxed ${isAdmin ? 'cursor-pointer hover:text-white transition-colors' : ''}`}
+              className={`text-gray-300 text-sm leading-relaxed ${isAdmin ? 'cursor-pointer hover:text-white transition-colors duration-300' : ''}`}
               title={isAdmin ? 'Clique para editar descrição' : ''}
             >
               {isGenerating ? 'Gerando descrição...' : description}
@@ -779,7 +779,7 @@ export function ProductCard({ product, onImageUpload, onDelete }: ProductCardPro
           </div>
           <div
             onClick={handlePriceClick}
-            className={`text-white font-bold text-2xl mb-3 ${isAdmin ? 'cursor-pointer hover:text-red-500 transition-colors' : ''}`}
+            className={`text-white font-bold text-3xl mb-5 bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent ${isAdmin ? 'cursor-pointer hover:from-red-500 hover:to-red-400 transition-all duration-300' : ''}`}
             title={isAdmin ? 'Clique para editar preço' : ''}
           >
             R$ {price.toFixed(2).replace('.', ',')}
@@ -798,7 +798,7 @@ export function ProductCard({ product, onImageUpload, onDelete }: ProductCardPro
                   <button
                     onClick={() => fileInputRef.current?.click()}
                     disabled={isUploadingFile}
-                    className={`w-full ${fileUrl ? 'bg-green-600 hover:bg-green-700' : 'bg-blue-600 hover:bg-blue-700'} disabled:bg-blue-800 disabled:cursor-not-allowed text-white py-3 rounded-lg font-bold text-sm transition-colors flex items-center justify-center gap-2 mb-2`}
+                    className={`w-full ${fileUrl ? 'bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800' : 'bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800'} disabled:opacity-50 disabled:cursor-not-allowed text-white py-3 rounded-lg font-bold text-sm transition-all duration-300 flex items-center justify-center gap-2 mb-2 shadow-lg hover:shadow-xl hover:scale-[1.02]`}
                   >
                     {isUploadingFile ? (
                       <>
@@ -837,7 +837,7 @@ export function ProductCard({ product, onImageUpload, onDelete }: ProductCardPro
               <button
                 onClick={() => wheelFileInputRef.current?.click()}
                 disabled={isUploadingWheelFile}
-                className={`w-full ${wheelFileUrl ? 'bg-green-600 hover:bg-green-700' : 'bg-purple-600 hover:bg-purple-700'} disabled:bg-purple-800 disabled:cursor-not-allowed text-white py-3 rounded-lg font-bold text-sm transition-colors flex items-center justify-center gap-2 mb-2`}
+                className={`w-full ${wheelFileUrl ? 'bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800' : 'bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800'} disabled:opacity-50 disabled:cursor-not-allowed text-white py-3 rounded-lg font-bold text-sm transition-all duration-300 flex items-center justify-center gap-2 mb-2 shadow-lg hover:shadow-xl hover:scale-[1.02]`}
               >
                 {isUploadingWheelFile ? (
                   <>
@@ -874,7 +874,7 @@ export function ProductCard({ product, onImageUpload, onDelete }: ProductCardPro
               <button
                 onClick={() => tireFileInputRef.current?.click()}
                 disabled={isUploadingTireFile}
-                className={`w-full ${tireFileUrl ? 'bg-green-600 hover:bg-green-700' : 'bg-amber-800 hover:bg-amber-900'} disabled:bg-amber-950 disabled:cursor-not-allowed text-white py-3 rounded-lg font-bold text-sm transition-colors flex items-center justify-center gap-2 mb-2`}
+                className={`w-full ${tireFileUrl ? 'bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800' : 'bg-gradient-to-r from-amber-800 to-amber-900 hover:from-amber-900 hover:to-amber-950'} disabled:opacity-50 disabled:cursor-not-allowed text-white py-3 rounded-lg font-bold text-sm transition-all duration-300 flex items-center justify-center gap-2 mb-2 shadow-lg hover:shadow-xl hover:scale-[1.02]`}
               >
                 {isUploadingTireFile ? (
                   <>
@@ -907,7 +907,7 @@ export function ProductCard({ product, onImageUpload, onDelete }: ProductCardPro
             <button
               onClick={handleAddToCart}
               disabled={!hasBothFiles || isInCart}
-              className="w-full bg-gray-700 hover:bg-gray-600 disabled:bg-gray-800 disabled:cursor-not-allowed text-white py-3 rounded-lg font-bold text-sm transition-colors z-20 relative mt-auto flex items-center justify-center gap-2 mb-2"
+              className="w-full bg-gradient-to-r from-gray-700 to-gray-800 hover:from-gray-600 hover:to-gray-700 disabled:from-gray-800 disabled:to-gray-900 disabled:cursor-not-allowed text-white py-3.5 rounded-xl font-bold text-sm transition-all duration-300 z-20 relative mt-auto flex items-center justify-center gap-2 mb-3 shadow-lg hover:shadow-xl hover:scale-[1.02] disabled:opacity-50"
               title={!hasBothFiles ? (isWheel ? 'Produto precisa ter o arquivo da roda' : 'Produto precisa ter os 2 arquivos (carro e roda)') : isInCart ? 'Já está no carrinho' : ''}
             >
               <ShoppingCart className="w-5 h-5" />
@@ -917,7 +917,7 @@ export function ProductCard({ product, onImageUpload, onDelete }: ProductCardPro
           <button
             onClick={handleBuyClick}
             disabled={isProcessingPayment || !hasBothFiles}
-            className="w-full bg-red-600 hover:bg-red-700 disabled:bg-red-800 disabled:cursor-not-allowed text-white py-3 rounded-lg font-bold text-sm transition-colors z-20 relative mt-auto flex items-center justify-center gap-2"
+            className="w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 disabled:from-red-800 disabled:to-red-900 disabled:cursor-not-allowed text-white py-4 rounded-xl font-bold text-base transition-all duration-300 z-20 relative mt-auto flex items-center justify-center gap-2 shadow-xl hover:shadow-2xl hover:shadow-red-600/50 hover:scale-[1.02] disabled:opacity-50"
             title={!hasBothFiles ? (isWheel ? 'Produto precisa ter o arquivo da roda' : 'Produto precisa ter os 2 arquivos (carro e roda)') : ''}
           >
             {isProcessingPayment ? (

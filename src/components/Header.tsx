@@ -30,14 +30,14 @@ export default function Header({ onNavigate, currentPage }: HeaderProps) {
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 bg-black z-50 border-b border-gray-800">
+    <header className="fixed top-0 left-0 right-0 bg-black/80 backdrop-blur-xl z-50 border-b border-gray-800/50 shadow-2xl">
       <div className="container mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
         <div
-          className="flex items-center gap-2 cursor-pointer z-50"
+          className="flex items-center gap-2 cursor-pointer z-50 group"
           onClick={() => onNavigate('home')}
         >
-          <Zap className="w-6 h-6 sm:w-8 sm:h-8 text-red-600" />
-          <span className="text-base sm:text-xl font-bold text-white tracking-wider">
+          <Zap className="w-6 h-6 sm:w-8 sm:h-8 text-red-600 group-hover:rotate-12 transition-transform duration-300" />
+          <span className="text-base sm:text-xl font-bold text-white tracking-wider group-hover:text-red-500 transition-colors duration-300">
             ULTIMATECAR<span className="text-red-600">3D</span>
           </span>
         </div>
@@ -123,7 +123,7 @@ export default function Header({ onNavigate, currentPage }: HeaderProps) {
         )}
 
         {mobileMenuOpen && (
-          <div className="fixed inset-0 bg-black/95 backdrop-blur-sm lg:hidden">
+          <div className="fixed inset-0 bg-black/95 backdrop-blur-xl lg:hidden animate-fade-in">
             <nav className="flex flex-col items-center justify-center h-full gap-0 px-6">
               {menuItems.map((item, index) => (
                 <button
