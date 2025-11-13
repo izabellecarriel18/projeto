@@ -51,6 +51,7 @@ export function ImageViewerModal({ isOpen, onClose, imageUrl, alt }: ImageViewer
 
   const handleImageClick = (e: React.MouseEvent<HTMLImageElement>) => {
     e.stopPropagation();
+    e.preventDefault();
     toggleZoom();
   };
 
@@ -158,6 +159,7 @@ export function ImageViewerModal({ isOpen, onClose, imageUrl, alt }: ImageViewer
     const touchDuration = Date.now() - touchStartTime;
 
     if (e.touches.length === 1 && isPinching) {
+      e.preventDefault();
       setPositionX(prev => constrainPositionX(prev, scale));
       setLastTouchDistance(null);
       setIsPinching(false);
@@ -178,6 +180,7 @@ export function ImageViewerModal({ isOpen, onClose, imageUrl, alt }: ImageViewer
     if (e.touches.length === 0) {
       const wasTap = !touchMoved && touchDuration < 300;
       if (wasTap && e.changedTouches.length === 1) {
+        e.preventDefault();
         toggleZoom();
       }
       setIsDragging(false);
@@ -221,7 +224,8 @@ export function ImageViewerModal({ isOpen, onClose, imageUrl, alt }: ImageViewer
           src={imageUrl}
           alt={alt}
           onClick={handleImageClick}
-          className="max-w-full max-h-full select-none object-contain"
+          onTouchEnd={(e) => e.preventDefault()}
+          className="max-w-full max-h-full select-none object-contain pointer-events-none"
           draggable={false}
           style={{
             transform: `translateX(${positionX}px) scale(${scale})`,
