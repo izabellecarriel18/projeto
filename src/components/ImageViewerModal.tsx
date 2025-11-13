@@ -40,15 +40,18 @@ export function ImageViewerModal({ isOpen, onClose, imageUrl, alt }: ImageViewer
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [isOpen, onClose]);
 
-  const handleImageClick = (e: React.MouseEvent<HTMLImageElement> | React.TouchEvent<HTMLImageElement>) => {
-    e.stopPropagation();
-
+  const toggleZoom = () => {
     if (scale === 1) {
       setScale(2.5);
     } else {
       setScale(1);
       setPositionX(0);
     }
+  };
+
+  const handleImageClick = (e: React.MouseEvent<HTMLImageElement>) => {
+    e.stopPropagation();
+    toggleZoom();
   };
 
 
@@ -175,7 +178,7 @@ export function ImageViewerModal({ isOpen, onClose, imageUrl, alt }: ImageViewer
     if (e.touches.length === 0) {
       const wasTap = !touchMoved && touchDuration < 300;
       if (wasTap && e.changedTouches.length === 1) {
-        handleImageClick(e as any);
+        toggleZoom();
       }
       setIsDragging(false);
       setTouchMoved(false);
