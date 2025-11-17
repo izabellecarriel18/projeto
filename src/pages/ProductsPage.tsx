@@ -162,7 +162,7 @@ export default function ProductsPage() {
   const tiresBrands = [
     'ALTO',
     'BAIXO',
-    'OFF ROAD',
+    'MEDIO',
   ];
 
 

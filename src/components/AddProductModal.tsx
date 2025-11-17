@@ -148,7 +148,7 @@ export function AddProductModal({ isOpen, onClose, category, selectedBrand, onSu
   const tiresBrands = [
     'ALTO',
     'BAIXO',
-    'OFF ROAD',
+    'MEDIO',
   ];
 
   const getBrandsForCategory = (categoryId: string): string[] => {
