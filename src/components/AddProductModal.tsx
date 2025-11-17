@@ -32,6 +32,7 @@ export function AddProductModal({ isOpen, onClose, category, selectedBrand, onSu
       'solid_cars': 'Carros Sólidos',
       'complete_cars': 'Carros Completos',
       'wheels': 'Rodas',
+      'tires': 'Pneus',
       'bus_truck': 'Ônibus e Caminhão'
     };
     return categoryMap[categoryId] || categoryId;
@@ -144,6 +145,12 @@ export function AddProductModal({ isOpen, onClose, category, selectedBrand, onSu
     'VOLVO',
   ];
 
+  const tiresBrands = [
+    'ALTO',
+    'BAIXO',
+    'OFF ROAD',
+  ];
+
   const getBrandsForCategory = (categoryId: string): string[] => {
     switch (categoryId) {
       case 'solid_cars':
@@ -152,6 +159,8 @@ export function AddProductModal({ isOpen, onClose, category, selectedBrand, onSu
         return completeCarsBrands;
       case 'wheels':
         return wheelsBrands;
+      case 'tires':
+        return tiresBrands;
       default:
         return [];
     }
