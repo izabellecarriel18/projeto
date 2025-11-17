@@ -138,6 +138,9 @@ export default function PurchasesPage() {
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-3 sm:mb-4">
             Minhas Compras
           </h1>
+          <p className="text-gray-400 text-base sm:text-lg">
+            Acesse a aba PNEUS e baixe o arquivo que melhor se enquadra ao perfil desejado
+          </p>
         </div>
 
         <div className="backdrop-blur border border-gray-800 rounded-lg p-4 sm:p-6">
