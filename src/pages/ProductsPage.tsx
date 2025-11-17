@@ -48,6 +48,7 @@ export default function ProductsPage() {
     { id: 'wheels', label: 'RODAS' },
     { id: 'solid_cars', label: 'CARROS SÓLIDOS' },
     { id: 'complete_cars', label: 'CARROS COMPLETOS' },
+    { id: 'tires', label: 'PNEUS' },
     { id: 'bus_truck', label: 'ÔNIBUS E CAMINHÃO' },
   ];
 
@@ -158,6 +159,12 @@ export default function ProductsPage() {
     'OUTROS',
   ];
 
+  const tiresBrands = [
+    'ALTO',
+    'BAIXO',
+    'OFF ROAD',
+  ];
+
 
   useEffect(() => {
     loadProducts();
@@ -207,6 +214,7 @@ export default function ProductsPage() {
       'solid_cars': 'Carros Sólidos',
       'complete_cars': 'Carros Completos',
       'wheels': 'Rodas',
+      'tires': 'Pneus',
       'bus_truck': 'Ônibus e Caminhão'
     };
 
@@ -268,7 +276,7 @@ export default function ProductsPage() {
             <button className="bg-green-600 hover:bg-green-700 text-white px-3 sm:px-4 md:px-6 py-2 rounded-lg font-medium text-sm sm:text-base transition-all whitespace-nowrap">
               Solicitar Criação de Arquivo
             </button>
-            {isAdmin && selectedCategory !== 'bus_truck' && (
+            {isAdmin && selectedCategory !== 'bus_truck' && selectedCategory !== 'tires' && (
               <button
                 onClick={() => setAddProductModalOpen(true)}
                 className="bg-blue-600 hover:bg-blue-700 text-white px-3 sm:px-4 md:px-6 py-2 rounded-lg font-medium text-sm sm:text-base transition-all whitespace-nowrap flex items-center gap-2"
@@ -318,6 +326,24 @@ export default function ProductsPage() {
           {selectedCategory === 'wheels' && (
             <div className="flex flex-wrap gap-1.5 sm:gap-2 mb-4 sm:mb-6">
               {wheelsBrands.map((brand) => (
+                <button
+                  key={brand}
+                  onClick={() => setSelectedBrand(brand)}
+                  className={`px-2.5 sm:px-4 py-1.5 rounded text-xs sm:text-sm font-medium transition-all ${
+                    selectedBrand === brand
+                      ? 'bg-red-600 text-white'
+                      : 'bg-gray-800 text-white hover:bg-gray-700'
+                  }`}
+                >
+                  {brand}
+                </button>
+              ))}
+            </div>
+          )}
+
+          {selectedCategory === 'tires' && (
+            <div className="flex flex-wrap gap-1.5 sm:gap-2 mb-4 sm:mb-6">
+              {tiresBrands.map((brand) => (
                 <button
                   key={brand}
                   onClick={() => setSelectedBrand(brand)}
