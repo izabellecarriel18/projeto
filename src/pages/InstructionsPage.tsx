@@ -51,26 +51,18 @@ export default function InstructionsPage() {
               </div>
               <div className="flex-1">
                 <h2 className="text-xl sm:text-2xl font-bold text-white mb-3">
-                  Formatos Disponíveis
+                  Formato Disponível
                 </h2>
                 <div className="text-white space-y-2">
                   <p className="text-sm sm:text-base">
-                    Todos os modelos estão disponíveis nos seguintes formatos:
+                    Todos os modelos estão disponíveis no formato:
                   </p>
-                  <ul className="list-disc list-inside space-y-1 ml-2">
-                    <li className="text-sm sm:text-base">
-                      <span className="font-semibold text-red-600">OBJ</span> - Formato universal compatível com a maioria dos softwares 3D
-                    </li>
-                    <li className="text-sm sm:text-base">
-                      <span className="font-semibold text-red-600">FBX</span> - Ideal para Autodesk Maya, 3ds Max e Unity
-                    </li>
-                    <li className="text-sm sm:text-base">
-                      <span className="font-semibold text-red-600">BLEND</span> - Nativo do Blender
-                    </li>
-                    <li className="text-sm sm:text-base">
-                      <span className="font-semibold text-red-600">GLB</span> - Otimizado para web e realidade aumentada
-                    </li>
-                  </ul>
+                  <div className="bg-gray-800/50 p-4 rounded-lg mt-3">
+                    <p className="font-semibold text-red-600 mb-2">STL (Stereolithography)</p>
+                    <p className="text-sm sm:text-base">
+                      Formato padrão universal para impressão 3D, compatível com todos os slicers e impressoras 3D do mercado.
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -83,36 +75,44 @@ export default function InstructionsPage() {
               </div>
               <div className="flex-1">
                 <h2 className="text-xl sm:text-2xl font-bold text-white mb-3">
-                  Softwares Compatíveis
+                  Softwares de Impressão 3D (Slicers)
                 </h2>
                 <div className="text-white space-y-2">
                   <p className="text-sm sm:text-base mb-3">
-                    Nossos modelos são compatíveis com os principais softwares de modelagem 3D:
+                    Nossos modelos STL são compatíveis com os principais softwares de fatiamento para impressão 3D:
                   </p>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div className="bg-gray-800/50 p-3 rounded-lg">
-                      <p className="font-semibold text-red-600 mb-1">Blender</p>
-                      <p className="text-xs sm:text-sm">Software gratuito e open source</p>
+                      <p className="font-semibold text-red-600 mb-1">Cura (Ultimaker Cura)</p>
+                      <p className="text-xs sm:text-sm">Gratuito e amplamente utilizado</p>
                     </div>
                     <div className="bg-gray-800/50 p-3 rounded-lg">
-                      <p className="font-semibold text-red-600 mb-1">Autodesk Maya</p>
-                      <p className="text-xs sm:text-sm">Padrão da indústria profissional</p>
+                      <p className="font-semibold text-red-600 mb-1">PrusaSlicer</p>
+                      <p className="text-xs sm:text-sm">Excelente para impressoras Prusa e outras</p>
                     </div>
                     <div className="bg-gray-800/50 p-3 rounded-lg">
-                      <p className="font-semibold text-red-600 mb-1">3ds Max</p>
-                      <p className="text-xs sm:text-sm">Ideal para arquitetura e design</p>
+                      <p className="font-semibold text-red-600 mb-1">Simplify3D</p>
+                      <p className="text-xs sm:text-sm">Profissional com recursos avançados</p>
                     </div>
                     <div className="bg-gray-800/50 p-3 rounded-lg">
-                      <p className="font-semibold text-red-600 mb-1">Cinema 4D</p>
-                      <p className="text-xs sm:text-sm">Perfeito para motion graphics</p>
+                      <p className="font-semibold text-red-600 mb-1">Bambu Studio</p>
+                      <p className="text-xs sm:text-sm">Otimizado para impressoras Bambu Lab</p>
                     </div>
                     <div className="bg-gray-800/50 p-3 rounded-lg">
-                      <p className="font-semibold text-red-600 mb-1">Unity / Unreal Engine</p>
-                      <p className="text-xs sm:text-sm">Game engines e tempo real</p>
+                      <p className="font-semibold text-red-600 mb-1">Orca Slicer</p>
+                      <p className="text-xs sm:text-sm">Fork avançado do Bambu Studio</p>
                     </div>
                     <div className="bg-gray-800/50 p-3 rounded-lg">
-                      <p className="font-semibold text-red-600 mb-1">SketchUp</p>
-                      <p className="text-xs sm:text-sm">Modelagem rápida e intuitiva</p>
+                      <p className="font-semibold text-red-600 mb-1">Creality Slicer</p>
+                      <p className="text-xs sm:text-sm">Ideal para impressoras Creality</p>
+                    </div>
+                    <div className="bg-gray-800/50 p-3 rounded-lg">
+                      <p className="font-semibold text-red-600 mb-1">IdeaMaker</p>
+                      <p className="text-xs sm:text-sm">Para impressoras Raise3D</p>
+                    </div>
+                    <div className="bg-gray-800/50 p-3 rounded-lg">
+                      <p className="font-semibold text-red-600 mb-1">Repetier-Host</p>
+                      <p className="text-xs sm:text-sm">Controle completo da impressora</p>
                     </div>
                   </div>
                 </div>
@@ -131,27 +131,33 @@ export default function InstructionsPage() {
                 </h2>
                 <div className="text-white space-y-3">
                   <div className="bg-gray-800/50 p-4 rounded-lg">
-                    <p className="font-semibold text-red-600 mb-2">Escala e Proporções</p>
+                    <p className="font-semibold text-red-600 mb-2">Escala e Tamanho</p>
                     <p className="text-sm sm:text-base">
-                      Todos os modelos estão em escala real. Certifique-se de verificar as unidades do seu software antes de importar.
+                      Os modelos estão em escala real de carros. Você pode redimensionar conforme necessário no seu slicer para ajustar ao tamanho da sua impressora 3D.
                     </p>
                   </div>
                   <div className="bg-gray-800/50 p-4 rounded-lg">
-                    <p className="font-semibold text-red-600 mb-2">Texturas e Materiais</p>
+                    <p className="font-semibold text-red-600 mb-2">Configurações Recomendadas</p>
                     <p className="text-sm sm:text-base">
-                      As texturas estão incluídas nos arquivos. Alguns softwares podem requerer o mapeamento manual dos caminhos das texturas.
+                      Para melhores resultados, recomendamos: camada de 0.2mm, preenchimento de 15-20%, suportes apenas onde necessário. Use material PLA ou ABS conforme sua preferência.
                     </p>
                   </div>
                   <div className="bg-gray-800/50 p-4 rounded-lg">
-                    <p className="font-semibold text-red-600 mb-2">Otimização</p>
+                    <p className="font-semibold text-red-600 mb-2">Suportes</p>
                     <p className="text-sm sm:text-base">
-                      Os modelos são otimizados para uso profissional. Para jogos ou aplicações em tempo real, pode ser necessário reduzir a densidade de polígonos.
+                      Os modelos são otimizados para minimizar a necessidade de suportes. Configure seu slicer para gerar suportes apenas em ângulos maiores que 45°.
                     </p>
                   </div>
                   <div className="bg-gray-800/50 p-4 rounded-lg">
-                    <p className="font-semibold text-red-600 mb-2">Suporte</p>
+                    <p className="font-semibold text-red-600 mb-2">Pós-Processamento</p>
                     <p className="text-sm sm:text-base">
-                      Em caso de dúvidas ou problemas técnicos, entre em contato através do seu perfil. Nossa equipe está pronta para ajudar.
+                      Após a impressão, você pode lixar, pintar e aplicar acabamentos para melhorar a aparência final do seu modelo.
+                    </p>
+                  </div>
+                  <div className="bg-gray-800/50 p-4 rounded-lg">
+                    <p className="font-semibold text-red-600 mb-2">Suporte Técnico</p>
+                    <p className="text-sm sm:text-base">
+                      Em caso de dúvidas ou problemas com os arquivos, entre em contato através do seu perfil. Nossa equipe está pronta para ajudar.
                     </p>
                   </div>
                 </div>
