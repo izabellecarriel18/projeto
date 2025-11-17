@@ -276,7 +276,7 @@ export default function ProductsPage() {
             <button className="bg-green-600 hover:bg-green-700 text-white px-3 sm:px-4 md:px-6 py-2 rounded-lg font-medium text-sm sm:text-base transition-all whitespace-nowrap">
               Solicitar Criação de Arquivo
             </button>
-            {isAdmin && selectedCategory !== 'bus_truck' && selectedCategory !== 'tires' && (
+            {isAdmin && selectedCategory !== 'bus_truck' && (
               <button
                 onClick={() => setAddProductModalOpen(true)}
                 className="bg-blue-600 hover:bg-blue-700 text-white px-3 sm:px-4 md:px-6 py-2 rounded-lg font-medium text-sm sm:text-base transition-all whitespace-nowrap flex items-center gap-2"
