@@ -1,16 +1,8 @@
-const CACHE_NAME = 'ultimatecar3d-v3';
-const IMAGE_CACHE_NAME = 'ultimatecar3d-images-v2';
-const urlsToCache = [
-  '/',
-  '/index.html'
-];
+const CACHE_NAME = 'ultimatecar3d-v4';
+const IMAGE_CACHE_NAME = 'ultimatecar3d-images-v3';
 
 self.addEventListener('install', (event) => {
   self.skipWaiting();
-  event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then((cache) => cache.addAll(urlsToCache))
-  );
 });
 
 self.addEventListener('fetch', (event) => {
@@ -24,31 +16,42 @@ self.addEventListener('fetch', (event) => {
     event.respondWith(
       caches.open(IMAGE_CACHE_NAME).then((cache) => {
         return cache.match(event.request).then((cachedResponse) => {
-          if (cachedResponse) {
-            return cachedResponse;
-          }
-
-          return fetch(event.request).then((networkResponse) => {
+          const fetchPromise = fetch(event.request).then((networkResponse) => {
             if (networkResponse && networkResponse.status === 200) {
               cache.put(event.request, networkResponse.clone());
             }
             return networkResponse;
-          }).catch(() => {
-            return cachedResponse || new Response('Image not available', { status: 404 });
-          });
+          }).catch(() => cachedResponse);
+
+          return cachedResponse || fetchPromise;
         });
       })
     );
     return;
   }
 
+  if (event.request.method !== 'GET' ||
+      url.hostname.includes('supabase.co') ||
+      url.hostname.includes('stripe.com')) {
+    event.respondWith(fetch(event.request));
+    return;
+  }
+
   event.respondWith(
-    caches.match(event.request)
+    fetch(event.request)
       .then((response) => {
-        if (response) {
-          return response;
+        if (response && response.status === 200) {
+          const responseToCache = response.clone();
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(event.request, responseToCache);
+          });
         }
-        return fetch(event.request);
+        return response;
+      })
+      .catch(() => {
+        return caches.match(event.request).then((cachedResponse) => {
+          return cachedResponse || new Response('Offline', { status: 503 });
+        });
       })
   );
 });
