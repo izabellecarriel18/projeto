@@ -39,7 +39,7 @@ export default function Header({ onNavigate, currentPage }: HeaderProps) {
           <img
             src="https://i.imgur.com/HZU5pso.png"
             alt="ULTIMATECAR3D"
-            className="h-8 sm:h-10 w-auto"
+            className="h-8 sm:h-10 w-auto scale-x-150"
           />
         </div>
 
