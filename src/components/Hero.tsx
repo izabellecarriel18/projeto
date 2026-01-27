@@ -81,9 +81,7 @@ export default function Hero({ onNavigate }: HeroProps) {
 
       <div className="relative z-10 container mx-auto px-4 sm:px-6 text-center">
         <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-bold text-white mb-4 sm:mb-6 leading-tight">
-          Domine a Modelagem 3D
-          <br />
-          <span className="text-red-600">Automotiva</span>
+          Modelagem 3D <span className="text-red-600">Automotiva</span>
         </h1>
         <p className="text-base sm:text-lg md:text-xl text-white mb-8 sm:mb-12 max-w-2xl mx-auto px-4">
           Modelos 3D prontos para impressão e renderização. Os Arquivos são feitos em alta qualidade, todos reforçados e sem exagero de espessura, mantendo a aparência do veiculo.
