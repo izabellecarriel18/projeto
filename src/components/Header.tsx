@@ -30,7 +30,7 @@ export default function Header({ onNavigate, currentPage }: HeaderProps) {
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 bg-blue-950/70 backdrop-blur-sm z-[210] lg:border-b lg:border-blue-900/50 safe-top">
+    <header className="fixed top-0 left-0 right-0 bg-[#0d1b2a] z-[210] lg:border-b lg:border-[#1b2d44] safe-top">
       <div className="container mx-auto px-4 sm:px-6 py-4 lg:py-4 flex items-center justify-center lg:justify-between">
         <div
           className="cursor-pointer z-[220]"
@@ -128,7 +128,7 @@ export default function Header({ onNavigate, currentPage }: HeaderProps) {
       </div>
 
       {mobileMenuOpen && (
-        <div className="fixed inset-0 w-screen h-screen bg-[#0a1628] lg:hidden z-[200]">
+        <div className="fixed inset-0 w-screen h-screen bg-[#0d1b2a] lg:hidden z-[200]">
           <nav className="flex flex-col items-center justify-center h-full gap-0 px-6">
             {menuItems.map((item, index) => (
               <button
