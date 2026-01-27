@@ -67,7 +67,7 @@ export default function CartModal({ isOpen, onClose }: CartModalProps) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[200] flex items-center justify-center p-4">
       <div className="bg-gray-900 rounded-lg max-w-2xl w-full max-h-[80vh] overflow-hidden flex flex-col">
         <div className="flex items-center justify-between p-6 border-b border-gray-800">
           <h2 className="text-2xl font-bold text-white">Carrinho de Compras</h2>
