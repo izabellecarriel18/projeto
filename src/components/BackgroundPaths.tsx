@@ -49,7 +49,7 @@ function FloatingPaths({ position }: { position: number }) {
 export default function BackgroundPaths() {
   return (
     <>
-      <div className="fixed inset-0 -z-10 bg-black">
+      <div className="fixed inset-0 -z-10 bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900">
         <FloatingPaths position={1} />
         <FloatingPaths position={-1} />
       </div>

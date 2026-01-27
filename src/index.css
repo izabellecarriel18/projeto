@@ -4,23 +4,18 @@
 
 @layer base {
   html {
-    background-color: #000000;
-    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+    background: linear-gradient(to bottom right, #0f172a, #172554, #0f172a);
     padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
   }
 
   body {
-    background-color: #000000;
-    min-height: 100dvh;
-    min-height: 100vh;
+    background: transparent;
     min-height: 100dvh;
   }
 
   #root {
     min-height: 100dvh;
-    background-color: #000000;
-    min-height: 100vh;
-    min-height: 100dvh;
+    background: transparent;
   }
 }
 
