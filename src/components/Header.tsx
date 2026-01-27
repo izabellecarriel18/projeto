@@ -30,10 +30,10 @@ export default function Header({ onNavigate, currentPage }: HeaderProps) {
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 bg-blue-950/70 backdrop-blur-sm z-50 lg:border-b lg:border-blue-900/50 safe-top">
+    <header className="fixed top-0 left-0 right-0 bg-blue-950/70 backdrop-blur-sm z-[210] lg:border-b lg:border-blue-900/50 safe-top">
       <div className="container mx-auto px-4 sm:px-6 py-4 lg:py-4 flex items-center justify-center lg:justify-between">
         <div
-          className="cursor-pointer z-[110]"
+          className="cursor-pointer z-[220]"
           onClick={() => onNavigate('home')}
         >
           <img
@@ -44,7 +44,7 @@ export default function Header({ onNavigate, currentPage }: HeaderProps) {
         </div>
 
         <button
-          className="lg:hidden text-white z-[110] absolute right-4 sm:right-6"
+          className="lg:hidden text-white z-[220] absolute right-4 sm:right-6"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           aria-label="Toggle menu"
         >
@@ -128,7 +128,7 @@ export default function Header({ onNavigate, currentPage }: HeaderProps) {
       </div>
 
       {mobileMenuOpen && (
-        <div className="fixed inset-0 w-screen h-screen bg-[#0a1628] lg:hidden z-[90]">
+        <div className="fixed inset-0 w-screen h-screen bg-[#0a1628] lg:hidden z-[200]">
           <nav className="flex flex-col items-center justify-center h-full gap-0 px-6">
             {menuItems.map((item, index) => (
               <button
