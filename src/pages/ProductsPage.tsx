@@ -19,7 +19,10 @@ interface Product {
 
 export default function ProductsPage() {
   const { profile } = useAuth();
-  const [products, setProducts] = useState<Product[]>([]);
+  const [products, setProducts] = useState<Product[]>(() => {
+    const cached = localStorage.getItem('products_cache');
+    return cached ? JSON.parse(cached) : [];
+  });
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>('wheels');
   const [selectedBrand, setSelectedBrand] = useState<string>('all');
@@ -27,6 +30,7 @@ export default function ProductsPage() {
   const [uploadModalOpen, setUploadModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [addProductModalOpen, setAddProductModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const isAdmin = profile?.role === 'admin';
 
   console.log('[ProductsPage] Auth state:', { profile, isAdmin });
@@ -167,6 +171,16 @@ export default function ProductsPage() {
 
 
   useEffect(() => {
+    const cached = localStorage.getItem('products_cache');
+    const cacheTime = localStorage.getItem('products_cache_time');
+
+    if (cached && cacheTime) {
+      const cacheAge = Date.now() - parseInt(cacheTime);
+      if (cacheAge < 5 * 60 * 1000) {
+        setIsLoading(false);
+      }
+    }
+
     loadProducts();
   }, []);
 
@@ -180,6 +194,8 @@ export default function ProductsPage() {
 
   async function loadProducts() {
     console.log('=== LOADING PRODUCTS ===');
+    setIsLoading(true);
+
     const { data, error } = await supabase
       .from('products')
       .select('*');
@@ -189,6 +205,7 @@ export default function ProductsPage() {
 
     if (error) {
       console.error('Error loading products:', error);
+      setIsLoading(false);
       return;
     }
 
@@ -197,7 +214,12 @@ export default function ProductsPage() {
         a.name.localeCompare(b.name, 'pt-BR', { sensitivity: 'base' })
       );
       console.log('Setting products, count:', sortedData.length);
+
+      localStorage.setItem('products_cache', JSON.stringify(sortedData));
+      localStorage.setItem('products_cache_time', Date.now().toString());
+
       setProducts(sortedData);
+      setIsLoading(false);
 
       sortedData.forEach((product) => {
         if (product.image_url) {
@@ -388,7 +410,21 @@ export default function ProductsPage() {
           )}
         </div>
 
-        {selectedCategory === 'bus_truck' ? null : filteredProducts.length === 0 ? (
+        {selectedCategory === 'bus_truck' ? null : isLoading && products.length === 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 sm:gap-10">
+            {[...Array(8)].map((_, i) => (
+              <div key={i} className="animate-pulse">
+                <div className="bg-gray-800 rounded-lg overflow-hidden">
+                  <div className="aspect-square bg-gray-700"></div>
+                  <div className="p-4 space-y-3">
+                    <div className="h-4 bg-gray-700 rounded w-3/4"></div>
+                    <div className="h-3 bg-gray-700 rounded w-1/2"></div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : filteredProducts.length === 0 ? (
           <div className="text-center py-12 sm:py-20">
             <ShoppingCart className="w-12 h-12 sm:w-16 sm:h-16 text-white mx-auto mb-4" />
             <p className="text-white text-lg sm:text-xl">Nenhum produto encontrado</p>
