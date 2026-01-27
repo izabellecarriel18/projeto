@@ -1,5 +1,5 @@
-const CACHE_NAME = 'ultimatecar3d-v2';
-const IMAGE_CACHE_NAME = 'ultimatecar3d-images-v1';
+const CACHE_NAME = 'ultimatecar3d-v3';
+const IMAGE_CACHE_NAME = 'ultimatecar3d-images-v2';
 const urlsToCache = [
   '/',
   '/index.html'
