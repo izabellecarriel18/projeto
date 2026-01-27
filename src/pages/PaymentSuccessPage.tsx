@@ -90,7 +90,7 @@ export default function PaymentSuccessPage({ onNavigate }: PaymentSuccessPagePro
 
   if (loading) {
     return (
-      <div className="min-h-screen pt-8 flex items-center justify-center">
+      <div className="min-h-screen pt-4 flex items-center justify-center">
         <div className="text-center">
           <Loader2 className="w-16 h-16 text-white mx-auto mb-4 animate-spin" />
           <h1 className="text-2xl font-bold text-white mb-2">Verificando pagamento...</h1>
@@ -102,7 +102,7 @@ export default function PaymentSuccessPage({ onNavigate }: PaymentSuccessPagePro
 
   if (error) {
     return (
-      <div className="min-h-screen pt-8 flex items-center justify-center">
+      <div className="min-h-screen pt-4 flex items-center justify-center">
         <div className="text-center max-w-md mx-auto px-4">
           <div className="bg-red-600 text-white rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
             ✕
@@ -121,7 +121,7 @@ export default function PaymentSuccessPage({ onNavigate }: PaymentSuccessPagePro
   }
 
   return (
-    <div className="min-h-screen pt-8 flex items-center justify-center">
+    <div className="min-h-screen pt-4 flex items-center justify-center">
       <div className="text-center max-w-md mx-auto px-4">
         <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
         <h1 className="text-2xl font-bold text-white mb-2">Pagamento confirmado!</h1>
