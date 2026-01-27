@@ -51,7 +51,7 @@ export default function Header({ onNavigate, currentPage }: HeaderProps) {
           {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
         </button>
 
-        <nav className="hidden lg:flex gap-0 absolute left-1/2 transform -translate-x-1/2 ml-12">
+        <nav className="hidden lg:flex gap-0 absolute left-1/2 transform -translate-x-1/2">
           {menuItems.map((item, index) => (
             <button
               key={item.id}
