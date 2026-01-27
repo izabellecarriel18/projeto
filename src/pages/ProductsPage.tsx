@@ -282,7 +282,7 @@ export default function ProductsPage() {
         </div>
 
 
-        <div className="backdrop-blur border border-gray-800 rounded-lg p-4 sm:p-6 mb-8 sm:mb-12">
+        <div className="backdrop-blur border border-gray-800 rounded-lg p-4 sm:p-6 mb-8 sm:mb-12 relative z-50">
           <div className="flex flex-wrap items-center gap-1.5 sm:gap-3 mb-4 sm:mb-6">
             {categories.map((cat) => (
               <button
@@ -391,7 +391,7 @@ export default function ProductsPage() {
         </div>
 
         {selectedCategory === 'bus_truck' ? null : isLoading && products.length === 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 sm:gap-10">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 sm:gap-10 relative z-0">
             {[...Array(8)].map((_, i) => (
               <div key={i} className="animate-pulse">
                 <div className="bg-gray-800 rounded-lg overflow-hidden">
@@ -410,7 +410,7 @@ export default function ProductsPage() {
             <p className="text-white text-lg sm:text-xl">Nenhum produto encontrado</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 sm:gap-10">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 sm:gap-10 relative z-0">
             {filteredProducts.map((product) => (
               <ProductCard
                 key={product.id}
