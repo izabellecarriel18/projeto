@@ -1,5 +1,5 @@
-import { Search, ShoppingCart, Plus } from 'lucide-react';
-import { useEffect, useState, useMemo } from 'react';
+import { Search, ShoppingCart, Plus, ChevronDown } from 'lucide-react';
+import { useEffect, useState, useMemo, useRef } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
 import { ProductCard } from '../components/ProductCard';
@@ -30,6 +30,8 @@ export default function ProductsPage() {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [addProductModalOpen, setAddProductModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [brandDropdownOpen, setBrandDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
   const isAdmin = profile?.role === 'admin';
 
   console.log('[ProductsPage] Auth state:', { profile, isAdmin });
@@ -48,11 +50,11 @@ export default function ProductsPage() {
   };
 
   const categories = [
-    { id: 'wheels', label: 'RODAS' },
-    { id: 'solid_cars', label: 'CARROS SÓLIDOS' },
-    { id: 'complete_cars', label: 'CARROS COMPLETOS' },
-    { id: 'tires', label: 'PNEUS' },
-    { id: 'bus_truck', label: 'ÔNIBUS E CAMINHÃO' },
+    { id: 'wheels', label: 'RODAS', mobileLabel: 'RODAS' },
+    { id: 'solid_cars', label: 'CARROS SÓLIDOS', mobileLabel: 'CR SÓLIDOS' },
+    { id: 'complete_cars', label: 'CARROS COMPLETOS', mobileLabel: 'CR COMPLETOS' },
+    { id: 'tires', label: 'PNEUS', mobileLabel: 'PNEUS' },
+    { id: 'bus_truck', label: 'ÔNIBUS E CAMINHÃO', mobileLabel: 'ÔNIBUS/CAM' },
   ];
 
   const solidCarsBrands = [
@@ -182,7 +184,18 @@ export default function ProductsPage() {
 
   useEffect(() => {
     setSelectedBrand('all');
+    setBrandDropdownOpen(false);
   }, [selectedCategory]);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setBrandDropdownOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   const filteredProducts = useMemo(() => {
     const categoryMap: { [key: string]: string } = {
@@ -270,103 +283,88 @@ export default function ProductsPage() {
 
 
         <div className="backdrop-blur border border-gray-800 rounded-lg p-4 sm:p-6 mb-8 sm:mb-12">
-          <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
+          <div className="flex flex-nowrap sm:flex-wrap items-center gap-1 sm:gap-3 mb-4 sm:mb-6 overflow-x-auto pb-2 sm:pb-0 scrollbar-hide">
             {categories.map((cat) => (
               <button
                 key={cat.id}
                 onClick={() => setSelectedCategory(cat.id)}
-                className={`px-3 sm:px-4 md:px-6 py-2 rounded-lg font-medium text-sm sm:text-base transition-all ${
+                className={`px-2 sm:px-4 md:px-6 py-2 rounded-lg font-medium text-xs sm:text-base transition-all whitespace-nowrap flex-shrink-0 ${
                   selectedCategory === cat.id
                     ? 'bg-red-600 text-white'
                     : 'bg-gray-800 text-white hover:bg-gray-700'
                 }`}
               >
-                {cat.label}
+                <span className="sm:hidden">{cat.mobileLabel}</span>
+                <span className="hidden sm:inline">{cat.label}</span>
               </button>
             ))}
-            <button className="bg-green-600 hover:bg-green-700 text-white px-3 sm:px-4 md:px-6 py-2 rounded-lg font-medium text-sm sm:text-base transition-all whitespace-nowrap">
-              Solicitar Criação de Arquivo
+            <button className="bg-green-600 hover:bg-green-700 text-white px-2 sm:px-4 md:px-6 py-2 rounded-lg font-medium text-xs sm:text-base transition-all whitespace-nowrap flex-shrink-0">
+              <span className="sm:hidden">SOLICITAR</span>
+              <span className="hidden sm:inline">Solicitar Criacao de Arquivo</span>
             </button>
             {isAdmin && selectedCategory !== 'bus_truck' && (
               <button
                 onClick={() => setAddProductModalOpen(true)}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-3 sm:px-4 md:px-6 py-2 rounded-lg font-medium text-sm sm:text-base transition-all whitespace-nowrap flex items-center gap-2"
+                className="bg-blue-600 hover:bg-blue-700 text-white px-2 sm:px-4 md:px-6 py-2 rounded-lg font-medium text-xs sm:text-base transition-all whitespace-nowrap flex-shrink-0 flex items-center gap-1 sm:gap-2"
               >
-                <Plus className="w-4 h-4" />
-                Adicionar Card
+                <Plus className="w-3 h-3 sm:w-4 sm:h-4" />
+                <span className="sm:hidden">ADD</span>
+                <span className="hidden sm:inline">Adicionar Card</span>
               </button>
             )}
           </div>
 
-          {selectedCategory === 'solid_cars' && (
-            <div className="flex flex-wrap gap-1.5 sm:gap-2 mb-4 sm:mb-6">
-              {solidCarsBrands.map((brand) => (
-                <button
-                  key={brand}
-                  onClick={() => setSelectedBrand(brand)}
-                  className={`px-2.5 sm:px-4 py-1.5 rounded text-xs sm:text-sm font-medium transition-all ${
-                    selectedBrand === brand
-                      ? 'bg-red-600 text-white'
-                      : 'bg-gray-800 text-white hover:bg-gray-700'
-                  }`}
-                >
-                  {brand}
-                </button>
-              ))}
-            </div>
-          )}
+          {selectedCategory !== 'bus_truck' && (
+            <div className="relative mb-4 sm:mb-6" ref={dropdownRef}>
+              <button
+                onClick={() => setBrandDropdownOpen(!brandDropdownOpen)}
+                className={`w-full sm:w-auto px-4 py-2.5 sm:py-2 rounded-lg font-medium text-sm sm:text-base transition-all flex items-center justify-between sm:justify-center gap-2 ${
+                  selectedBrand !== 'all'
+                    ? 'bg-red-600 text-white'
+                    : 'bg-gray-800 text-white hover:bg-gray-700'
+                }`}
+              >
+                <span>{selectedBrand === 'all' ? 'Selecione a Marca' : selectedBrand}</span>
+                <ChevronDown className={`w-4 h-4 transition-transform ${brandDropdownOpen ? 'rotate-180' : ''}`} />
+              </button>
 
-          {selectedCategory === 'complete_cars' && (
-            <div className="flex flex-wrap gap-1.5 sm:gap-2 mb-4 sm:mb-6">
-              {completeCarsBrands.map((brand) => (
-                <button
-                  key={brand}
-                  onClick={() => setSelectedBrand(brand)}
-                  className={`px-2.5 sm:px-4 py-1.5 rounded text-xs sm:text-sm font-medium transition-all ${
-                    selectedBrand === brand
-                      ? 'bg-red-600 text-white'
-                      : 'bg-gray-800 text-white hover:bg-gray-700'
-                  }`}
-                >
-                  {brand}
-                </button>
-              ))}
-            </div>
-          )}
-
-          {selectedCategory === 'wheels' && (
-            <div className="flex flex-wrap gap-1.5 sm:gap-2 mb-4 sm:mb-6">
-              {wheelsBrands.map((brand) => (
-                <button
-                  key={brand}
-                  onClick={() => setSelectedBrand(brand)}
-                  className={`px-2.5 sm:px-4 py-1.5 rounded text-xs sm:text-sm font-medium transition-all ${
-                    selectedBrand === brand
-                      ? 'bg-red-600 text-white'
-                      : 'bg-gray-800 text-white hover:bg-gray-700'
-                  }`}
-                >
-                  {brand}
-                </button>
-              ))}
-            </div>
-          )}
-
-          {selectedCategory === 'tires' && (
-            <div className="flex flex-wrap gap-1.5 sm:gap-2 mb-4 sm:mb-6">
-              {tiresBrands.map((brand) => (
-                <button
-                  key={brand}
-                  onClick={() => setSelectedBrand(brand)}
-                  className={`px-2.5 sm:px-4 py-1.5 rounded text-xs sm:text-sm font-medium transition-all ${
-                    selectedBrand === brand
-                      ? 'bg-red-600 text-white'
-                      : 'bg-gray-800 text-white hover:bg-gray-700'
-                  }`}
-                >
-                  {brand}
-                </button>
-              ))}
+              {brandDropdownOpen && (
+                <div className="absolute top-full left-0 right-0 sm:right-auto mt-2 bg-gray-900 border border-gray-700 rounded-lg shadow-xl z-50 max-h-64 overflow-y-auto min-w-[200px]">
+                  <button
+                    onClick={() => {
+                      setSelectedBrand('all');
+                      setBrandDropdownOpen(false);
+                    }}
+                    className={`w-full px-4 py-2.5 text-left text-sm font-medium transition-all ${
+                      selectedBrand === 'all'
+                        ? 'bg-red-600 text-white'
+                        : 'text-white hover:bg-gray-800'
+                    }`}
+                  >
+                    Todas as Marcas
+                  </button>
+                  {(selectedCategory === 'solid_cars' ? solidCarsBrands :
+                    selectedCategory === 'complete_cars' ? completeCarsBrands :
+                    selectedCategory === 'wheels' ? wheelsBrands :
+                    selectedCategory === 'tires' ? tiresBrands : []
+                  ).map((brand) => (
+                    <button
+                      key={brand}
+                      onClick={() => {
+                        setSelectedBrand(brand);
+                        setBrandDropdownOpen(false);
+                      }}
+                      className={`w-full px-4 py-2.5 text-left text-sm font-medium transition-all ${
+                        selectedBrand === brand
+                          ? 'bg-red-600 text-white'
+                          : 'text-white hover:bg-gray-800'
+                      }`}
+                    >
+                      {brand}
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
           )}
 
