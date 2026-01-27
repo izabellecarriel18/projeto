@@ -1,12 +1,44 @@
-const CACHE_NAME = 'ultimatecar3d-v4';
-const IMAGE_CACHE_NAME = 'ultimatecar3d-images-v3';
+const CACHE_VERSION = 'v5';
+const CACHE_NAME = `ultimatecar3d-${CACHE_VERSION}`;
+const IMAGE_CACHE_NAME = `ultimatecar3d-images-${CACHE_VERSION}`;
 
 self.addEventListener('install', (event) => {
+  console.log('[SW] Installing new version...');
   self.skipWaiting();
+});
+
+self.addEventListener('activate', (event) => {
+  console.log('[SW] Activating new version...');
+  event.waitUntil(
+    (async () => {
+      const cacheNames = await caches.keys();
+      await Promise.all(
+        cacheNames
+          .filter(name => name.startsWith('ultimatecar3d-') &&
+                         name !== CACHE_NAME &&
+                         name !== IMAGE_CACHE_NAME)
+          .map(name => {
+            console.log('[SW] Deleting old cache:', name);
+            return caches.delete(name);
+          })
+      );
+
+      await clients.claim();
+      console.log('[SW] New version activated!');
+    })()
+  );
 });
 
 self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);
+
+  if (url.pathname === '/' || url.pathname === '/index.html') {
+    event.respondWith(
+      fetch(event.request, { cache: 'no-store' })
+        .catch(() => caches.match(event.request))
+    );
+    return;
+  }
 
   if (event.request.destination === 'image' ||
       url.hostname.includes('imgur.com') ||
@@ -40,7 +72,8 @@ self.addEventListener('fetch', (event) => {
   event.respondWith(
     fetch(event.request)
       .then((response) => {
-        if (response && response.status === 200) {
+        if (response && response.status === 200 &&
+            !url.pathname.includes('/sw.js')) {
           const responseToCache = response.clone();
           caches.open(CACHE_NAME).then((cache) => {
             cache.put(event.request, responseToCache);
@@ -60,21 +93,4 @@ self.addEventListener('message', (event) => {
   if (event.data && event.data.type === 'SKIP_WAITING') {
     self.skipWaiting();
   }
-});
-
-self.addEventListener('activate', (event) => {
-  event.waitUntil(
-    Promise.all([
-      clients.claim(),
-      caches.keys().then((cacheNames) => {
-        return Promise.all(
-          cacheNames.map((cacheName) => {
-            if (cacheName !== CACHE_NAME && cacheName !== IMAGE_CACHE_NAME) {
-              return caches.delete(cacheName);
-            }
-          })
-        );
-      })
-    ])
-  );
 });
