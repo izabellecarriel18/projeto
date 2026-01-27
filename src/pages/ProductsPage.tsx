@@ -283,12 +283,12 @@ export default function ProductsPage() {
 
 
         <div className="backdrop-blur border border-gray-800 rounded-lg p-4 sm:p-6 mb-8 sm:mb-12">
-          <div className="flex flex-nowrap sm:flex-wrap items-center gap-1 sm:gap-3 mb-4 sm:mb-6 overflow-x-auto pb-2 sm:pb-0 scrollbar-hide">
+          <div className="flex flex-wrap items-center gap-1.5 sm:gap-3 mb-4 sm:mb-6">
             {categories.map((cat) => (
               <button
                 key={cat.id}
                 onClick={() => setSelectedCategory(cat.id)}
-                className={`px-2 sm:px-4 md:px-6 py-2 rounded-lg font-medium text-xs sm:text-base transition-all whitespace-nowrap flex-shrink-0 ${
+                className={`px-2.5 sm:px-4 md:px-6 py-1.5 sm:py-2 rounded-lg font-medium text-[10px] sm:text-base transition-all whitespace-nowrap ${
                   selectedCategory === cat.id
                     ? 'bg-red-600 text-white'
                     : 'bg-gray-800 text-white hover:bg-gray-700'
@@ -298,14 +298,14 @@ export default function ProductsPage() {
                 <span className="hidden sm:inline">{cat.label}</span>
               </button>
             ))}
-            <button className="bg-green-600 hover:bg-green-700 text-white px-2 sm:px-4 md:px-6 py-2 rounded-lg font-medium text-xs sm:text-base transition-all whitespace-nowrap flex-shrink-0">
+            <button className="bg-green-600 hover:bg-green-700 text-white px-2.5 sm:px-4 md:px-6 py-1.5 sm:py-2 rounded-lg font-medium text-[10px] sm:text-base transition-all whitespace-nowrap">
               <span className="sm:hidden">SOLICITAR</span>
               <span className="hidden sm:inline">Solicitar Criacao de Arquivo</span>
             </button>
             {isAdmin && selectedCategory !== 'bus_truck' && (
               <button
                 onClick={() => setAddProductModalOpen(true)}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-2 sm:px-4 md:px-6 py-2 rounded-lg font-medium text-xs sm:text-base transition-all whitespace-nowrap flex-shrink-0 flex items-center gap-1 sm:gap-2"
+                className="bg-blue-600 hover:bg-blue-700 text-white px-2.5 sm:px-4 md:px-6 py-1.5 sm:py-2 rounded-lg font-medium text-[10px] sm:text-base transition-all whitespace-nowrap flex items-center gap-1 sm:gap-2"
               >
                 <Plus className="w-3 h-3 sm:w-4 sm:h-4" />
                 <span className="sm:hidden">ADD</span>
@@ -315,7 +315,7 @@ export default function ProductsPage() {
           </div>
 
           {selectedCategory !== 'bus_truck' && (
-            <div className="relative mb-4 sm:mb-6" ref={dropdownRef}>
+            <div className="relative mb-4 sm:mb-6 z-40" ref={dropdownRef}>
               <button
                 onClick={() => setBrandDropdownOpen(!brandDropdownOpen)}
                 className={`w-full sm:w-auto px-4 py-2.5 sm:py-2 rounded-lg font-medium text-sm sm:text-base transition-all flex items-center justify-between sm:justify-center gap-2 ${
@@ -329,7 +329,7 @@ export default function ProductsPage() {
               </button>
 
               {brandDropdownOpen && (
-                <div className="absolute top-full left-0 right-0 sm:right-auto mt-2 bg-gray-900 border border-gray-700 rounded-lg shadow-xl z-50 max-h-64 overflow-y-auto min-w-[200px]">
+                <div className="absolute top-full left-0 right-0 sm:right-auto mt-2 bg-gray-900 border border-gray-700 rounded-lg shadow-2xl z-[100] max-h-64 overflow-y-auto min-w-[200px]">
                   <button
                     onClick={() => {
                       setSelectedBrand('all');
