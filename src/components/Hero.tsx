@@ -75,7 +75,7 @@ export default function Hero({ onNavigate }: HeroProps) {
       currentUrl={heroImage}
       isAdmin={isAdmin}
       onUpdate={loadHeroImage}
-      className="flex items-center justify-center overflow-hidden px-4 pt-20 sm:pt-24"
+      className="flex items-center justify-center overflow-hidden px-4"
       style={{ minHeight: '75vh' }}
     >
 
