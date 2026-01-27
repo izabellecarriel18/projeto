@@ -31,9 +31,9 @@ export default function Header({ onNavigate, currentPage }: HeaderProps) {
 
   return (
     <header className="fixed top-0 left-0 right-0 bg-[#050d18] z-[210] lg:border-b lg:border-[#0f1a28] safe-top">
-      <div className="container mx-auto px-4 sm:px-6 py-4 lg:py-4 flex items-center justify-center lg:justify-between">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-12 py-4 lg:py-4 flex items-center justify-center lg:justify-between">
         <div
-          className="cursor-pointer z-[220]"
+          className="cursor-pointer z-[220] lg:ml-4"
           onClick={() => onNavigate('home')}
         >
           <img
@@ -70,7 +70,7 @@ export default function Header({ onNavigate, currentPage }: HeaderProps) {
         {!loading && (
           <>
             {user && profile ? (
-              <div className="hidden lg:flex items-center gap-4">
+              <div className="hidden lg:flex items-center gap-4 mr-4">
                 {profile.role !== 'admin' && (
                   <>
                     <button
@@ -114,7 +114,7 @@ export default function Header({ onNavigate, currentPage }: HeaderProps) {
             ) : (
               <button
                 onClick={() => setAuthModalOpen(true)}
-                className="hidden lg:flex items-center gap-2 text-white hover:text-red-600 transition-colors"
+                className="hidden lg:flex items-center gap-2 text-white hover:text-red-600 transition-colors mr-4"
               >
                 <User className="w-5 h-5" />
                 <span className="text-sm font-medium">LOGIN</span>
