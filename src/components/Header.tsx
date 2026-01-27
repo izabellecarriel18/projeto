@@ -122,87 +122,87 @@ export default function Header({ onNavigate, currentPage }: HeaderProps) {
           </>
         )}
 
-        {mobileMenuOpen && (
-          <div className="fixed inset-0 bg-blue-950 lg:hidden z-[100]">
-            <nav className="flex flex-col items-center justify-center h-full gap-0 px-6 pt-16">
-              {menuItems.map((item, index) => (
+        <AuthModal isOpen={authModalOpen} onClose={() => setAuthModalOpen(false)} />
+        <CartModal isOpen={cartModalOpen} onClose={() => setCartModalOpen(false)} />
+      </div>
+
+      {mobileMenuOpen && (
+        <div className="fixed inset-0 w-screen h-screen bg-[#0a1628] lg:hidden z-[90]">
+          <nav className="flex flex-col items-center justify-center h-full gap-0 px-6">
+            {menuItems.map((item, index) => (
+              <button
+                key={item.id}
+                onClick={() => handleNavigation(item.id)}
+                className={`text-lg font-medium transition-colors py-6 w-full text-center ${
+                  currentPage === item.id
+                    ? 'text-red-600'
+                    : 'text-white hover:text-red-600'
+                } ${index === 0 ? 'border-t border-gray-700' : ''} border-b border-gray-700`}
+              >
+                {item.label}
+              </button>
+            ))}
+            {user && profile ? (
+              <>
+                {profile.role !== 'admin' && (
+                  <>
+                    <button
+                      onClick={() => {
+                        setCartModalOpen(true);
+                        setMobileMenuOpen(false);
+                      }}
+                      className="flex items-center justify-center gap-2 text-white hover:text-red-600 transition-colors py-6 w-full border-b border-gray-700 relative"
+                    >
+                      <ShoppingCart className="w-5 h-5" />
+                      {totalItems > 0 && (
+                        <span className="absolute top-4 left-1/2 -ml-8 bg-red-600 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
+                          {totalItems}
+                        </span>
+                      )}
+                      <span className="text-lg font-medium">CARRINHO</span>
+                    </button>
+                    <button
+                      onClick={() => handleNavigation('purchases')}
+                      className="flex items-center justify-center gap-2 text-white hover:text-red-600 transition-colors py-6 w-full border-b border-gray-700"
+                    >
+                      <ShoppingBag className="w-5 h-5" />
+                      <span className="text-lg font-medium">COMPRAS</span>
+                    </button>
+                  </>
+                )}
                 <button
-                  key={item.id}
-                  onClick={() => handleNavigation(item.id)}
-                  className={`text-lg font-medium transition-colors py-6 w-full text-center ${
-                    currentPage === item.id
-                      ? 'text-red-600'
-                      : 'text-white hover:text-red-600'
-                  } ${index === 0 ? 'border-t border-gray-700' : ''} border-b border-gray-700`}
+                  onClick={() => handleNavigation('profile')}
+                  className="flex items-center justify-center gap-2 text-white hover:text-red-600 transition-colors py-6 w-full border-b border-gray-700"
                 >
-                  {item.label}
+                  <User className="w-5 h-5" />
+                  <span className="text-lg font-medium">CREDENCIAIS</span>
                 </button>
-              ))}
-              {user && profile ? (
-                <>
-                  {profile.role !== 'admin' && (
-                    <>
-                      <button
-                        onClick={() => {
-                          setCartModalOpen(true);
-                          setMobileMenuOpen(false);
-                        }}
-                        className="flex items-center justify-center gap-2 text-white hover:text-red-600 transition-colors py-6 w-full border-b border-gray-700 relative"
-                      >
-                        <ShoppingCart className="w-5 h-5" />
-                        {totalItems > 0 && (
-                          <span className="absolute top-4 left-1/2 -ml-8 bg-red-600 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
-                            {totalItems}
-                          </span>
-                        )}
-                        <span className="text-lg font-medium">CARRINHO</span>
-                      </button>
-                      <button
-                        onClick={() => handleNavigation('purchases')}
-                        className="flex items-center justify-center gap-2 text-white hover:text-red-600 transition-colors py-6 w-full border-b border-gray-700"
-                      >
-                        <ShoppingBag className="w-5 h-5" />
-                        <span className="text-lg font-medium">COMPRAS</span>
-                      </button>
-                    </>
-                  )}
-                  <button
-                    onClick={() => handleNavigation('profile')}
-                    className="flex items-center justify-center gap-2 text-white hover:text-red-600 transition-colors py-6 w-full border-b border-gray-700"
-                  >
-                    <User className="w-5 h-5" />
-                    <span className="text-lg font-medium">CREDENCIAIS</span>
-                  </button>
-                  <button
-                    onClick={() => {
-                      signOut(onNavigate);
-                      setMobileMenuOpen(false);
-                    }}
-                    className="flex items-center justify-center gap-2 text-white hover:text-red-600 transition-colors py-6 w-full border-b border-gray-700"
-                  >
-                    <LogOut className="w-5 h-5" />
-                    <span className="text-lg font-medium">SAIR</span>
-                  </button>
-                </>
-              ) : (
                 <button
                   onClick={() => {
-                    setAuthModalOpen(true);
+                    signOut(onNavigate);
                     setMobileMenuOpen(false);
                   }}
                   className="flex items-center justify-center gap-2 text-white hover:text-red-600 transition-colors py-6 w-full border-b border-gray-700"
                 >
-                  <User className="w-5 h-5" />
-                  <span className="text-lg font-medium">LOGIN</span>
+                  <LogOut className="w-5 h-5" />
+                  <span className="text-lg font-medium">SAIR</span>
                 </button>
-              )}
-            </nav>
-          </div>
-        )}
-
-        <AuthModal isOpen={authModalOpen} onClose={() => setAuthModalOpen(false)} />
-        <CartModal isOpen={cartModalOpen} onClose={() => setCartModalOpen(false)} />
-      </div>
+              </>
+            ) : (
+              <button
+                onClick={() => {
+                  setAuthModalOpen(true);
+                  setMobileMenuOpen(false);
+                }}
+                className="flex items-center justify-center gap-2 text-white hover:text-red-600 transition-colors py-6 w-full border-b border-gray-700"
+              >
+                <User className="w-5 h-5" />
+                <span className="text-lg font-medium">LOGIN</span>
+              </button>
+            )}
+          </nav>
+        </div>
+      )}
     </header>
   );
 }
