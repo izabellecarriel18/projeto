@@ -37,7 +37,7 @@ export default function Header({ onNavigate, currentPage }: HeaderProps) {
           onClick={() => onNavigate('home')}
         >
           <img
-            src="https://i.imgur.com/69rWBpm.png"
+            src="https://i.imgur.com/HZU5pso.png"
             alt="ULTIMATECAR3D"
             className="h-8 sm:h-10 w-auto"
           />
