@@ -31,7 +31,7 @@ export default function Header({ onNavigate, currentPage }: HeaderProps) {
 
   return (
     <header className="fixed top-0 left-0 right-0 bg-blue-950/70 backdrop-blur-sm z-50 lg:border-b lg:border-blue-900/50 safe-top">
-      <div className="container mx-auto px-4 sm:px-6 py-2 lg:py-4 flex items-center justify-center lg:justify-between">
+      <div className="container mx-auto px-4 sm:px-6 py-5 lg:py-4 flex items-center justify-center lg:justify-between">
         <div
           className="cursor-pointer z-[110]"
           onClick={() => onNavigate('home')}
@@ -39,7 +39,7 @@ export default function Header({ onNavigate, currentPage }: HeaderProps) {
           <img
             src="https://i.imgur.com/HZU5pso.png"
             alt="ULTIMATECAR3D"
-            className="h-6 sm:h-8 lg:h-10 w-auto lg:scale-x-150 lg:scale-y-150"
+            className="h-8 sm:h-10 w-auto scale-x-150 scale-y-150"
           />
         </div>
 
