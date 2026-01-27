@@ -272,7 +272,7 @@ export default function ProductsPage() {
   }
 
   return (
-    <div className="min-h-screen pt-4 sm:pt-10 pb-12 sm:pb-20">
+    <div className="min-h-screen pt-2 sm:pt-10 pb-12 sm:pb-20">
       <div className="container mx-auto px-4 sm:px-6">
         <div className="text-center mb-8 sm:mb-12">
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-3 sm:mb-4">Modelos 3D</h1>
