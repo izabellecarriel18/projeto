@@ -20,16 +20,15 @@ export default function AuthorityProof() {
         <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white text-center mb-8 sm:mb-12 px-4">
           Provas de Autoridade
         </h2>
-        <div className="md:hidden overflow-x-auto scrollbar-hide px-4">
-          <div className="flex gap-4 py-4" style={{ width: 'max-content', paddingLeft: '4px', paddingRight: '4px' }}>
+        <div className="md:hidden px-4">
+          <div className="flex flex-col gap-3">
             {metrics.map((metric, index) => (
               <div
                 key={index}
-                className="bg-red-600/10 backdrop-blur-sm border-2 border-red-600 rounded-2xl p-8 text-center flex-shrink-0"
-                style={{ width: '280px' }}
+                className="bg-red-600/10 backdrop-blur-sm border-2 border-red-600 rounded-xl p-4 text-center"
               >
-                <div className="text-5xl font-bold text-red-600 mb-3">{metric.value}</div>
-                <div className="text-white text-base">{metric.label}</div>
+                <div className="text-3xl font-bold text-red-600 mb-1">{metric.value}</div>
+                <div className="text-white text-sm">{metric.label}</div>
               </div>
             ))}
           </div>
