@@ -1,4 +1,4 @@
-import { Zap, Menu, X, User, LogOut, ShoppingBag, ShoppingCart } from 'lucide-react';
+import { Menu, X, User, LogOut, ShoppingBag, ShoppingCart } from 'lucide-react';
 import { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useCart } from '../contexts/CartContext';
@@ -33,13 +33,14 @@ export default function Header({ onNavigate, currentPage }: HeaderProps) {
     <header className="fixed top-0 left-0 right-0 bg-blue-950/70 backdrop-blur-sm z-50 border-b border-blue-900/50 safe-top">
       <div className="container mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
         <div
-          className="flex items-center gap-2 cursor-pointer z-[110]"
+          className="cursor-pointer z-[110]"
           onClick={() => onNavigate('home')}
         >
-          <Zap className="w-6 h-6 sm:w-8 sm:h-8 text-red-600" />
-          <span className="text-base sm:text-xl font-bold text-white tracking-wider">
-            ULTIMATECAR<span className="text-red-600">3D</span>
-          </span>
+          <img
+            src="https://i.imgur.com/69rWBpm.png"
+            alt="ULTIMATECAR3D"
+            className="h-8 sm:h-10 w-auto"
+          />
         </div>
 
         <button
