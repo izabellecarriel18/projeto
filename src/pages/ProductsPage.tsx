@@ -283,12 +283,12 @@ export default function ProductsPage() {
 
 
         <div className="backdrop-blur border border-gray-800 rounded-lg p-4 sm:p-6 mb-8 sm:mb-12 relative z-50">
-          <div className="flex flex-wrap items-center gap-1.5 sm:gap-3 mb-4 sm:mb-6">
+          <div className="grid grid-cols-3 sm:flex sm:flex-wrap gap-1.5 sm:gap-3 mb-4 sm:mb-6">
             {categories.map((cat) => (
               <button
                 key={cat.id}
                 onClick={() => setSelectedCategory(cat.id)}
-                className={`px-2.5 sm:px-4 md:px-6 py-1.5 sm:py-2 rounded-lg font-medium text-[10px] sm:text-base transition-all whitespace-nowrap ${
+                className={`px-1 sm:px-4 md:px-6 py-1.5 sm:py-2 rounded-lg font-medium text-[10px] sm:text-base transition-all text-center ${
                   selectedCategory === cat.id
                     ? 'bg-red-600 text-white'
                     : 'bg-gray-800 text-white hover:bg-gray-700'
@@ -298,14 +298,14 @@ export default function ProductsPage() {
                 <span className="hidden sm:inline">{cat.label}</span>
               </button>
             ))}
-            <button className="bg-green-600 hover:bg-green-700 text-white px-2.5 sm:px-4 md:px-6 py-1.5 sm:py-2 rounded-lg font-medium text-[10px] sm:text-base transition-all whitespace-nowrap">
+            <button className="bg-green-600 hover:bg-green-700 text-white px-1 sm:px-4 md:px-6 py-1.5 sm:py-2 rounded-lg font-medium text-[10px] sm:text-base transition-all text-center">
               <span className="sm:hidden">SOLICITAR</span>
               <span className="hidden sm:inline">Solicitar Criacao de Arquivo</span>
             </button>
             {isAdmin && selectedCategory !== 'bus_truck' && (
               <button
                 onClick={() => setAddProductModalOpen(true)}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-2.5 sm:px-4 md:px-6 py-1.5 sm:py-2 rounded-lg font-medium text-[10px] sm:text-base transition-all whitespace-nowrap flex items-center gap-1 sm:gap-2"
+                className="bg-blue-600 hover:bg-blue-700 text-white px-1 sm:px-4 md:px-6 py-1.5 sm:py-2 rounded-lg font-medium text-[10px] sm:text-base transition-all flex items-center justify-center gap-1 sm:gap-2"
               >
                 <Plus className="w-3 h-3 sm:w-4 sm:h-4" />
                 <span className="sm:hidden">ADD</span>
