@@ -1,6 +1,7 @@
 import { X, Trash2 } from 'lucide-react';
 import { useCart } from '../contexts/CartContext';
 import { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { supabase } from '../lib/supabase';
 
 interface CartModalProps {
@@ -66,7 +67,7 @@ export default function CartModal({ isOpen, onClose }: CartModalProps) {
 
   if (!isOpen) return null;
 
-  return (
+  return createPortal(
     <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[200] flex items-center justify-center p-4">
       <div className="bg-gray-900 rounded-lg max-w-2xl w-full max-h-[80vh] overflow-hidden flex flex-col">
         <div className="flex items-center justify-between p-6 border-b border-gray-800">
@@ -82,7 +83,7 @@ export default function CartModal({ isOpen, onClose }: CartModalProps) {
         <div className="flex-1 overflow-y-auto p-6">
           {cart.length === 0 ? (
             <div className="text-center py-12">
-              <p className="text-gray-400 text-lg">Seu carrinho está vazio</p>
+              <p className="text-gray-400 text-lg">Seu carrinho esta vazio</p>
             </div>
           ) : (
             <div className="space-y-4">
@@ -140,6 +141,7 @@ export default function CartModal({ isOpen, onClose }: CartModalProps) {
           </div>
         )}
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

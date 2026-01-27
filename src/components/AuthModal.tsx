@@ -1,5 +1,6 @@
 import { X, Mail, Lock, User as UserIcon } from 'lucide-react';
 import { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { supabase } from '../lib/supabase';
 
 interface AuthModalProps {
@@ -74,7 +75,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
     onClose();
   };
 
-  return (
+  return createPortal(
     <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[200] flex items-center justify-center p-4 overflow-y-auto">
       <div className="bg-gray-900 border border-gray-700 rounded-2xl w-full max-w-md relative my-auto">
         <button
@@ -137,7 +138,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="w-full bg-gray-800 border border-gray-700 rounded-lg pl-10 pr-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:border-red-600 transition-colors"
-                  placeholder="••••••••"
+                  placeholder="********"
                   required
                   minLength={6}
                 />
@@ -176,12 +177,12 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
             >
               {mode === 'login' ? (
                 <>
-                  Não tem uma conta?{' '}
+                  Nao tem uma conta?{' '}
                   <span className="text-red-600 font-semibold">Cadastre-se</span>
                 </>
               ) : (
                 <>
-                  Já tem uma conta?{' '}
+                  Ja tem uma conta?{' '}
                   <span className="text-red-600 font-semibold">Entrar</span>
                 </>
               )}
@@ -189,6 +190,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
