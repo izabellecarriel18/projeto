@@ -604,6 +604,9 @@ export function ProductCard({ product, onImageUpload, onDelete }: ProductCardPro
             alt={product.name}
             className="w-full h-auto cursor-pointer"
             onClick={() => setIsImageViewerOpen(true)}
+            loading="eager"
+            decoding="async"
+            fetchpriority="high"
           />
           {isAdmin && onImageUpload && (
             <button

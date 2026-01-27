@@ -198,6 +198,13 @@ export default function ProductsPage() {
       );
       console.log('Setting products, count:', sortedData.length);
       setProducts(sortedData);
+
+      sortedData.forEach((product) => {
+        if (product.image_url) {
+          const img = new Image();
+          img.src = product.image_url;
+        }
+      });
     }
   }
 
