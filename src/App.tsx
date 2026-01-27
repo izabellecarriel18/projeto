@@ -29,7 +29,7 @@ function App() {
           <BackgroundPaths />
           <Header onNavigate={handleNavigate} currentPage={currentPage} />
 
-          <main className="safe-bottom pt-[80px] lg:pt-[72px]">
+          <main className="safe-bottom pt-[56px] sm:pt-[64px] lg:pt-[72px]">
             {currentPage === 'home' && <HomePage onNavigate={handleNavigate} />}
             {currentPage === 'products' && <ProductsPage />}
             {currentPage === 'instructions' && <InstructionsPage />}
