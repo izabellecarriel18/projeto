@@ -29,17 +29,15 @@ function App() {
           <BackgroundPaths />
           <Header onNavigate={handleNavigate} currentPage={currentPage} />
 
-          <main className="safe-bottom">
-            {currentPage === 'home' && <HomePage onNavigate={handleNavigate} />}
-            {currentPage === 'products' && <ProductsPage />}
-            {currentPage === 'instructions' && <InstructionsPage />}
-            {currentPage === 'courses' && <CoursesPage />}
-            {currentPage === 'profile' && <ProfilePage />}
-            {currentPage === 'purchases' && <PurchasesPage />}
-            {currentPage === 'payment-success' && <PaymentSuccessPage onNavigate={handleNavigate} />}
-          </main>
+      {currentPage === 'home' && <HomePage onNavigate={handleNavigate} />}
+      {currentPage === 'products' && <ProductsPage />}
+      {currentPage === 'instructions' && <InstructionsPage />}
+      {currentPage === 'courses' && <CoursesPage />}
+      {currentPage === 'profile' && <ProfilePage />}
+      {currentPage === 'purchases' && <PurchasesPage />}
+      {currentPage === 'payment-success' && <PaymentSuccessPage onNavigate={handleNavigate} />}
 
-          <Footer />
+        <Footer />
         </div>
       </CartProvider>
     </AuthProvider>

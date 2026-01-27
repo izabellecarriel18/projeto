@@ -30,7 +30,7 @@ export default function Header({ onNavigate, currentPage }: HeaderProps) {
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 bg-black z-50 border-b border-gray-800 safe-top">
+    <header className="fixed top-0 left-0 right-0 bg-black z-50 border-b border-gray-800">
       <div className="container mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
         <div
           className="flex items-center gap-2 cursor-pointer z-50"
