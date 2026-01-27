@@ -1,4 +1,4 @@
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Smartphone } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
@@ -63,6 +63,13 @@ export default function Hero({ onNavigate }: HeroProps) {
           >
             Ver Cursos
             <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform" />
+          </button>
+          <button
+            onClick={() => window.open('https://play.google.com/store/apps/details?id=com.ultimatecar3d', '_blank')}
+            className="group bg-white hover:bg-gray-100 hover:scale-105 text-black px-6 sm:px-8 py-3 sm:py-4 rounded-lg font-semibold text-base sm:text-lg transition-all flex items-center justify-center gap-2 w-full sm:w-auto"
+          >
+            <Smartphone className="w-4 h-4 sm:w-5 sm:h-5" />
+            Baixar Aplicativo
           </button>
         </div>
       </div>
