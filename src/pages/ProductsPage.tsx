@@ -1,5 +1,5 @@
 import { Search, ShoppingCart, Plus } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
 import { ProductCard } from '../components/ProductCard';
@@ -23,7 +23,6 @@ export default function ProductsPage() {
     const cached = localStorage.getItem('products_cache');
     return cached ? JSON.parse(cached) : [];
   });
-  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>('wheels');
   const [selectedBrand, setSelectedBrand] = useState<string>('all');
   const [searchTerm, setSearchTerm] = useState<string>('');
@@ -172,29 +171,56 @@ export default function ProductsPage() {
 
   useEffect(() => {
     const cached = localStorage.getItem('products_cache');
-    const cacheTime = localStorage.getItem('products_cache_time');
 
-    if (cached && cacheTime) {
-      const cacheAge = Date.now() - parseInt(cacheTime);
-      if (cacheAge < 5 * 60 * 1000) {
-        setIsLoading(false);
-      }
+    if (cached) {
+      setIsLoading(false);
+      loadProducts();
+    } else {
+      loadProducts();
     }
-
-    loadProducts();
   }, []);
 
   useEffect(() => {
     setSelectedBrand('all');
   }, [selectedCategory]);
 
-  useEffect(() => {
-    filterProducts();
+  const filteredProducts = useMemo(() => {
+    const categoryMap: { [key: string]: string } = {
+      'solid_cars': 'Carros Sólidos',
+      'complete_cars': 'Carros Completos',
+      'wheels': 'Rodas',
+      'tires': 'Pneus',
+      'bus_truck': 'Ônibus e Caminhão'
+    };
+
+    let filtered = products.filter((p) => p.category === categoryMap[selectedCategory]);
+
+    if (selectedBrand !== 'all') {
+      filtered = filtered.filter((p) => {
+        const productBrand = (p.brand || '').toUpperCase();
+        const filterBrand = selectedBrand.toUpperCase();
+        return productBrand === filterBrand;
+      });
+    }
+
+    if (searchTerm) {
+      filtered = filtered.filter(
+        (p) =>
+          p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          (p.brand || '').toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+
+    return filtered;
   }, [products, selectedCategory, selectedBrand, searchTerm]);
 
   async function loadProducts() {
     console.log('=== LOADING PRODUCTS ===');
-    setIsLoading(true);
+    const hasCache = localStorage.getItem('products_cache');
+
+    if (!hasCache) {
+      setIsLoading(true);
+    }
 
     const { data, error } = await supabase
       .from('products')
@@ -205,7 +231,9 @@ export default function ProductsPage() {
 
     if (error) {
       console.error('Error loading products:', error);
-      setIsLoading(false);
+      if (!hasCache) {
+        setIsLoading(false);
+      }
       return;
     }
 
@@ -228,52 +256,6 @@ export default function ProductsPage() {
         }
       });
     }
-  }
-
-  function filterProducts() {
-    console.log('=== FILTER DEBUG ===');
-    console.log('Total products:', products.length);
-    console.log('Selected category:', selectedCategory);
-    console.log('Selected brand:', selectedBrand);
-    console.log('Search term:', searchTerm);
-
-    let filtered = [...products];
-
-    const categoryMap: { [key: string]: string } = {
-      'solid_cars': 'Carros Sólidos',
-      'complete_cars': 'Carros Completos',
-      'wheels': 'Rodas',
-      'tires': 'Pneus',
-      'bus_truck': 'Ônibus e Caminhão'
-    };
-
-    console.log('Looking for category:', categoryMap[selectedCategory]);
-    filtered = filtered.filter((p) => {
-      console.log('Product category:', p.category, '===', categoryMap[selectedCategory], '?', p.category === categoryMap[selectedCategory]);
-      return p.category === categoryMap[selectedCategory];
-    });
-    console.log('After category filter:', filtered.length);
-
-    if (selectedBrand !== 'all') {
-      filtered = filtered.filter((p) => {
-        const productBrand = (p.brand || '').toUpperCase();
-        const filterBrand = selectedBrand.toUpperCase();
-        console.log('Brand check:', productBrand, '===', filterBrand, '?', productBrand === filterBrand);
-        return productBrand === filterBrand;
-      });
-    }
-    console.log('After brand filter:', filtered.length);
-
-    if (searchTerm) {
-      filtered = filtered.filter(
-        (p) =>
-          p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          (p.brand || '').toLowerCase().includes(searchTerm.toLowerCase())
-      );
-    }
-    console.log('Final filtered:', filtered.length);
-
-    setFilteredProducts(filtered);
   }
 
   return (
