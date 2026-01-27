@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v5';
+const CACHE_VERSION = 'v6';
 const CACHE_NAME = `ultimatecar3d-${CACHE_VERSION}`;
 const IMAGE_CACHE_NAME = `ultimatecar3d-images-${CACHE_VERSION}`;
 
@@ -37,6 +37,14 @@ self.addEventListener('fetch', (event) => {
       fetch(event.request, { cache: 'no-store' })
         .catch(() => caches.match(event.request))
     );
+    return;
+  }
+
+  if (url.pathname.includes('/src/') ||
+      url.pathname.includes('/@') ||
+      url.pathname.match(/\.(tsx?|jsx?)$/i) ||
+      event.request.destination === 'script') {
+    event.respondWith(fetch(event.request));
     return;
   }
 
