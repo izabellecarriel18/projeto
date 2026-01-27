@@ -4,7 +4,7 @@
 
 @layer base {
   html {
-    background: linear-gradient(to bottom right, #0f172a, #172554, #0f172a);
+    background-color: #000000;
     padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
   }
 
