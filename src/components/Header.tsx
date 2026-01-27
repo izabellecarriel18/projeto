@@ -33,7 +33,7 @@ export default function Header({ onNavigate, currentPage }: HeaderProps) {
     <header className="fixed top-0 left-0 right-0 bg-blue-950/70 backdrop-blur-sm z-50 border-b border-blue-900/50 safe-top">
       <div className="container mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
         <div
-          className="flex items-center gap-2 cursor-pointer z-50"
+          className="flex items-center gap-2 cursor-pointer z-[110]"
           onClick={() => onNavigate('home')}
         >
           <Zap className="w-6 h-6 sm:w-8 sm:h-8 text-red-600" />
@@ -43,7 +43,7 @@ export default function Header({ onNavigate, currentPage }: HeaderProps) {
         </div>
 
         <button
-          className="lg:hidden text-white z-50"
+          className="lg:hidden text-white z-[110]"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           aria-label="Toggle menu"
         >
@@ -123,8 +123,8 @@ export default function Header({ onNavigate, currentPage }: HeaderProps) {
         )}
 
         {mobileMenuOpen && (
-          <div className="fixed inset-0 bg-blue-950/95 backdrop-blur-sm lg:hidden">
-            <nav className="flex flex-col items-center justify-center h-full gap-0 px-6">
+          <div className="fixed inset-0 bg-blue-950 lg:hidden z-[100]">
+            <nav className="flex flex-col items-center justify-center h-full gap-0 px-6 pt-16">
               {menuItems.map((item, index) => (
                 <button
                   key={item.id}
