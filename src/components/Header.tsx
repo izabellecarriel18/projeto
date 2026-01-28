@@ -31,7 +31,7 @@ export default function Header({ onNavigate, currentPage }: HeaderProps) {
 
   return (
     <header className="fixed top-0 left-0 right-0 bg-[#050d18] z-[210] lg:border-b lg:border-[#0f1a28] safe-top">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-12 py-4 lg:py-4 flex items-center justify-center lg:justify-between">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-12 py-4 lg:py-4 flex items-center justify-start lg:justify-between">
         <div
           className="cursor-pointer z-[220] lg:ml-24"
           onClick={() => onNavigate('home')}
