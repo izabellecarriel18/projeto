@@ -356,7 +356,7 @@ export default function ProductsPage() {
         </div>
 
         {selectedCategory === 'bus_truck' ? null : isLoading && (!products || products.length === 0) ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 sm:gap-10 relative z-0">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-10 relative z-0">
             {[...Array(8)].map((_, i) => (
               <div key={i} className="animate-pulse">
                 <div className="bg-gray-800 rounded-lg overflow-hidden">
@@ -375,7 +375,7 @@ export default function ProductsPage() {
             <p className="text-white text-lg sm:text-xl">Nenhum produto encontrado</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 sm:gap-10 relative z-0">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-10 relative z-0">
             {filteredProducts.map((product) => (
               <ProductCard
                 key={product.id}
