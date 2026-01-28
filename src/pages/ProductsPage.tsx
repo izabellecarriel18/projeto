@@ -241,7 +241,7 @@ export default function ProductsPage() {
         </div>
 
 
-        <div className="backdrop-blur border border-gray-800 rounded-lg p-4 sm:p-6 mb-8 sm:mb-12 relative z-50">
+        <div className="backdrop-blur border border-gray-800 rounded-lg p-4 sm:p-6 mb-8 sm:mb-12 relative z-30">
           <div className="grid grid-cols-3 sm:flex sm:flex-wrap gap-1.5 sm:gap-3 mb-4 sm:mb-6">
             {categories.map((cat) => (
               <button
@@ -274,7 +274,7 @@ export default function ProductsPage() {
           </div>
 
           {selectedCategory !== 'bus_truck' && (
-            <div className="relative mb-4 sm:mb-6 z-40" ref={dropdownRef}>
+            <div className="relative mb-4 sm:mb-6 z-20" ref={dropdownRef}>
               <button
                 onClick={() => setBrandDropdownOpen(!brandDropdownOpen)}
                 className={`w-full sm:w-auto px-4 py-2.5 sm:py-2 rounded-lg font-medium text-sm sm:text-base transition-all flex items-center justify-between sm:justify-center gap-2 ${
@@ -288,7 +288,7 @@ export default function ProductsPage() {
               </button>
 
               {brandDropdownOpen && (
-                <div className="absolute top-full left-0 right-0 sm:right-auto mt-2 bg-gray-900 border border-gray-700 rounded-lg shadow-2xl z-[100] max-h-64 overflow-y-auto min-w-[200px]">
+                <div className="absolute top-full left-0 right-0 sm:right-auto mt-2 bg-gray-900 border border-gray-700 rounded-lg shadow-2xl z-[50] max-h-64 overflow-y-auto min-w-[200px]">
                   <button
                     onClick={() => {
                       setSelectedBrand('all');
