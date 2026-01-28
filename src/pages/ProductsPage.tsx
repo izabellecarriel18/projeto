@@ -273,12 +273,6 @@ export default function ProductsPage() {
             )}
           </div>
 
-          <div className="bg-gray-900/50 border-2 border-red-600 rounded-lg p-4 sm:p-6 mb-6 text-center">
-            <p className="text-red-500 text-base sm:text-lg font-bold">
-              Compatível com Resina e Filamento, Escala Adaptável.
-            </p>
-          </div>
-
           {selectedCategory !== 'bus_truck' && (
             <div className="relative mb-4 sm:mb-6 z-40" ref={dropdownRef}>
               <button
@@ -332,6 +326,12 @@ export default function ProductsPage() {
               )}
             </div>
           )}
+
+          <div className="bg-gray-900/50 border-2 border-red-600 rounded-lg p-4 sm:p-6 mb-6 text-center">
+            <p className="text-red-500 text-base sm:text-lg font-bold">
+              Todos os arquivos são compatíveis com Resina e Filamento. (Escala Adaptável)
+            </p>
+          </div>
 
           {selectedCategory === 'bus_truck' && (
             <div className="bg-gray-900/50 border border-red-600/50 rounded-lg p-4 sm:p-6 mb-4 sm:mb-6 text-center">
