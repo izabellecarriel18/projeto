@@ -637,29 +637,9 @@ export function ProductCard({ product, onImageUpload, onDelete }: ProductCardPro
           >
             {name}
           </h3>
-          <p className="text-gray-400 text-xs mb-2 uppercase tracking-wide">
+          <p className="text-gray-400 text-xs mb-4 uppercase tracking-wide">
             {product.formats.join(' , ')}
           </p>
-          <div className="flex-1 mb-3">
-            <p
-              onClick={handleDescriptionClick}
-              className={`text-gray-300 text-sm leading-relaxed ${isAdmin ? 'cursor-pointer hover:text-white transition-colors' : ''}`}
-              title={isAdmin ? 'Clique para editar descrição' : ''}
-            >
-              {isGenerating ? 'Gerando descrição...' : description}
-            </p>
-            {isAdmin && (
-              <button
-                onClick={handleRegenerateDescription}
-                disabled={isGenerating}
-                className="mt-2 flex items-center gap-2 text-xs text-gray-400 hover:text-red-500 transition-colors disabled:opacity-50"
-                title="Gerar nova descrição com IA"
-              >
-                <RefreshCw className={`w-3 h-3 ${isGenerating ? 'animate-spin' : ''}`} />
-                {isGenerating ? 'Gerando...' : 'Regenerar com IA'}
-              </button>
-            )}
-          </div>
           <div
             onClick={handlePriceClick}
             className={`text-white font-bold text-2xl mb-3 ${isAdmin ? 'cursor-pointer hover:text-red-500 transition-colors' : ''}`}
