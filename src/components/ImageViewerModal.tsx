@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import { X } from 'lucide-react';
 
 interface ImageViewerModalProps {
@@ -237,7 +238,7 @@ export function ImageViewerModal({ isOpen, onClose, imageUrl, alt }: ImageViewer
 
   if (!isOpen) return null;
 
-  return (
+  return createPortal(
     <div className="fixed inset-0 z-[9999] flex flex-col bg-black">
       <div
         ref={containerRef}
@@ -282,6 +283,7 @@ export function ImageViewerModal({ isOpen, onClose, imageUrl, alt }: ImageViewer
           Fechar
         </button>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
