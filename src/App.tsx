@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { AuthProvider } from './contexts/AuthContext';
 import { CartProvider } from './contexts/CartContext';
 import Header from './components/Header';
@@ -11,11 +11,32 @@ import CoursesPage from './pages/CoursesPage';
 import ProfilePage from './pages/ProfilePage';
 import PurchasesPage from './pages/PurchasesPage';
 import PaymentSuccessPage from './pages/PaymentSuccessPage';
+import { prefetch } from './lib/cache';
+import { supabase } from './lib/supabase';
+
+async function fetchProducts() {
+  const { data, error } = await supabase.from('products').select('*');
+  if (error) throw error;
+  const sorted = [...(data || [])].sort((a, b) =>
+    a.name.localeCompare(b.name, 'pt-BR', { sensitivity: 'base' })
+  );
+  sorted.forEach((product) => {
+    if (product.image_url) {
+      const img = new Image();
+      img.src = product.image_url;
+    }
+  });
+  return sorted;
+}
 
 function App() {
   const urlParams = new URLSearchParams(window.location.search);
   const hasSessionId = urlParams.get('session_id');
   const [currentPage, setCurrentPage] = useState(hasSessionId ? 'payment-success' : 'home');
+
+  useEffect(() => {
+    prefetch('products', fetchProducts);
+  }, []);
 
   const handleNavigate = (page: string) => {
     setCurrentPage(page);

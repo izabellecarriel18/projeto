@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useCallback } from 'react';
 import { ShoppingBag, Download, Calendar } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
+import { useSWR } from '../lib/cache';
 
 interface Purchase {
   id: string;
@@ -26,57 +27,44 @@ interface Purchase {
 
 export default function PurchasesPage() {
   const { user } = useAuth();
-  const [purchases, setPurchases] = useState<Purchase[]>([]);
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    if (user) {
-      loadPurchases();
-    }
-  }, [user]);
-
-  async function loadPurchases() {
-    try {
-      const { data, error } = await supabase
-        .from('user_purchases')
-        .select(`
+  const fetchPurchases = useCallback(async (): Promise<Purchase[]> => {
+    if (!user?.id) return [];
+    const { data, error } = await supabase
+      .from('user_purchases')
+      .select(`
+        id,
+        product_id,
+        amount_paid,
+        currency,
+        status,
+        purchased_at,
+        products (
           id,
-          product_id,
-          amount_paid,
-          currency,
-          status,
-          purchased_at,
-          products (
-            id,
-            name,
-            image_url,
-            category,
-            brand,
-            formats,
-            file_url,
-            file_name,
-            wheel_file_url,
-            wheel_file_name
-          )
-        `)
-        .eq('user_id', user?.id)
-        .eq('status', 'completed')
-        .order('purchased_at', { ascending: false });
+          name,
+          image_url,
+          category,
+          brand,
+          formats,
+          file_url,
+          file_name,
+          wheel_file_url,
+          wheel_file_name
+        )
+      `)
+      .eq('user_id', user.id)
+      .eq('status', 'completed')
+      .order('purchased_at', { ascending: false });
 
-      if (error) {
-        console.error('Error loading purchases:', error);
-        return;
-      }
+    if (error) throw error;
+    return (data || []) as Purchase[];
+  }, [user?.id]);
 
-      if (data) {
-        setPurchases(data as Purchase[]);
-      }
-    } catch (error) {
-      console.error('Error loading purchases:', error);
-    } finally {
-      setLoading(false);
-    }
-  }
+  const { data: purchases, isLoading: loading } = useSWR<Purchase[]>(
+    user?.id ? `purchases_${user.id}` : null,
+    fetchPurchases,
+    { staleTime: 60000 }
+  );
 
   const formatDate = (date: string) => {
     return new Date(date).toLocaleDateString('pt-BR', {
@@ -148,7 +136,7 @@ export default function PurchasesPage() {
             <div className="text-center py-12">
               <p className="text-white text-lg">Carregando...</p>
             </div>
-          ) : purchases.length === 0 ? (
+          ) : (!purchases || purchases.length === 0) ? (
             <div className="text-center py-12">
               <ShoppingBag className="w-12 h-12 sm:w-16 sm:h-16 text-white mx-auto mb-4 opacity-50" />
               <p className="text-white text-lg">Você ainda não fez nenhuma compra</p>

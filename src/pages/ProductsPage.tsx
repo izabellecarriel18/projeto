@@ -1,10 +1,11 @@
 import { Search, ShoppingCart, Plus, ChevronDown } from 'lucide-react';
-import { useEffect, useState, useMemo, useRef } from 'react';
+import { useEffect, useState, useMemo, useRef, useCallback } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
 import { ProductCard } from '../components/ProductCard';
 import ProductImageUploadModal from '../components/ProductImageUploadModal';
 import { AddProductModal } from '../components/AddProductModal';
+import { useSWR } from '../lib/cache';
 
 interface Product {
   id: string;
@@ -17,37 +18,49 @@ interface Product {
   description?: string;
 }
 
+async function fetchProducts(): Promise<Product[]> {
+  const { data, error } = await supabase.from('products').select('*');
+  if (error) throw error;
+  const sorted = [...(data || [])].sort((a, b) =>
+    a.name.localeCompare(b.name, 'pt-BR', { sensitivity: 'base' })
+  );
+  sorted.forEach((product) => {
+    if (product.image_url) {
+      const img = new Image();
+      img.src = product.image_url;
+    }
+  });
+  return sorted;
+}
+
 export default function ProductsPage() {
   const { profile } = useAuth();
-  const [products, setProducts] = useState<Product[]>(() => {
-    const cached = localStorage.getItem('products_cache');
-    return cached ? JSON.parse(cached) : [];
-  });
+  const { data: products, isLoading, mutate } = useSWR<Product[]>(
+    'products',
+    fetchProducts,
+    { staleTime: 30000 }
+  );
   const [selectedCategory, setSelectedCategory] = useState<string>('wheels');
   const [selectedBrand, setSelectedBrand] = useState<string>('all');
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [uploadModalOpen, setUploadModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [addProductModalOpen, setAddProductModalOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
   const [brandDropdownOpen, setBrandDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const isAdmin = profile?.role === 'admin';
 
-  console.log('[ProductsPage] Auth state:', { profile, isAdmin });
-
   const handleImageUpload = (productId: string) => {
-    console.log('[ProductsPage] handleImageUpload called:', productId);
-    const product = products.find(p => p.id === productId);
+    const product = (products || []).find(p => p.id === productId);
     if (product) {
       setSelectedProduct(product);
       setUploadModalOpen(true);
     }
   };
 
-  const handleUploadSuccess = () => {
-    loadProducts();
-  };
+  const handleUploadSuccess = useCallback(() => {
+    mutate();
+  }, [mutate]);
 
   const categories = [
     { id: 'wheels', label: 'RODAS', mobileLabel: 'RODAS' },
@@ -172,17 +185,6 @@ export default function ProductsPage() {
 
 
   useEffect(() => {
-    const cached = localStorage.getItem('products_cache');
-
-    if (cached) {
-      setIsLoading(false);
-      loadProducts();
-    } else {
-      loadProducts();
-    }
-  }, []);
-
-  useEffect(() => {
     setSelectedBrand('all');
     setBrandDropdownOpen(false);
   }, [selectedCategory]);
@@ -198,6 +200,7 @@ export default function ProductsPage() {
   }, []);
 
   const filteredProducts = useMemo(() => {
+    const productsList = products || [];
     const categoryMap: { [key: string]: string } = {
       'solid_cars': 'Carros Sólidos',
       'complete_cars': 'Carros Completos',
@@ -206,7 +209,7 @@ export default function ProductsPage() {
       'bus_truck': 'Ônibus e Caminhão'
     };
 
-    let filtered = products.filter((p) => p.category === categoryMap[selectedCategory]);
+    let filtered = productsList.filter((p) => p.category === categoryMap[selectedCategory]);
 
     if (selectedBrand !== 'all') {
       filtered = filtered.filter((p) => {
@@ -226,50 +229,6 @@ export default function ProductsPage() {
 
     return filtered;
   }, [products, selectedCategory, selectedBrand, searchTerm]);
-
-  async function loadProducts() {
-    console.log('=== LOADING PRODUCTS ===');
-    const hasCache = localStorage.getItem('products_cache');
-
-    if (!hasCache) {
-      setIsLoading(true);
-    }
-
-    const { data, error } = await supabase
-      .from('products')
-      .select('*');
-
-    console.log('Supabase response - data:', data);
-    console.log('Supabase response - error:', error);
-
-    if (error) {
-      console.error('Error loading products:', error);
-      if (!hasCache) {
-        setIsLoading(false);
-      }
-      return;
-    }
-
-    if (data) {
-      const sortedData = [...data].sort((a, b) =>
-        a.name.localeCompare(b.name, 'pt-BR', { sensitivity: 'base' })
-      );
-      console.log('Setting products, count:', sortedData.length);
-
-      localStorage.setItem('products_cache', JSON.stringify(sortedData));
-      localStorage.setItem('products_cache_time', Date.now().toString());
-
-      setProducts(sortedData);
-      setIsLoading(false);
-
-      sortedData.forEach((product) => {
-        if (product.image_url) {
-          const img = new Image();
-          img.src = product.image_url;
-        }
-      });
-    }
-  }
 
   return (
     <div className="min-h-screen pt-2 sm:pt-10 pb-12 sm:pb-20">
@@ -390,7 +349,7 @@ export default function ProductsPage() {
           )}
         </div>
 
-        {selectedCategory === 'bus_truck' ? null : isLoading && products.length === 0 ? (
+        {selectedCategory === 'bus_truck' ? null : isLoading && (!products || products.length === 0) ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 sm:gap-10 relative z-0">
             {[...Array(8)].map((_, i) => (
               <div key={i} className="animate-pulse">
@@ -416,7 +375,7 @@ export default function ProductsPage() {
                 key={product.id}
                 product={product}
                 onImageUpload={isAdmin ? handleImageUpload : undefined}
-                onDelete={isAdmin ? loadProducts : undefined}
+                onDelete={isAdmin ? handleUploadSuccess : undefined}
               />
             ))}
           </div>
