@@ -327,8 +327,8 @@ export default function ProductsPage() {
             </div>
           )}
 
-          <div className="bg-gray-900/50 border-2 border-red-600 rounded-lg p-4 sm:p-6 mb-6 text-center">
-            <p className="text-red-500 text-base sm:text-lg font-bold">
+          <div className="bg-gray-900/50 border-2 border-red-600 rounded-lg p-3 sm:p-6 mb-6 text-center">
+            <p className="text-red-500 text-[13px] sm:text-lg font-bold leading-snug">
               Todos os arquivos são compatíveis com Resina e Filamento. (Escala Adaptável)
             </p>
           </div>

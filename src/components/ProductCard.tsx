@@ -733,11 +733,11 @@ export function ProductCard({ product, onImageUpload, onDelete }: ProductCardPro
             <button
               onClick={handleAddToCart}
               disabled={!hasBothFiles || isInCart}
-              className="w-full bg-gray-700 hover:bg-gray-600 disabled:bg-gray-800 disabled:cursor-not-allowed text-white py-3 px-3 rounded-lg font-bold text-xs sm:text-sm transition-colors z-20 relative mt-auto flex items-center justify-center gap-1.5 sm:gap-2 mb-2"
+              className="w-full bg-gray-700 hover:bg-gray-600 disabled:bg-gray-800 disabled:cursor-not-allowed text-white py-2.5 sm:py-3 px-3 rounded-lg font-bold text-xs sm:text-sm transition-colors z-20 relative mt-auto flex items-center justify-center gap-1.5 sm:gap-2 mb-2"
               title={!hasBothFiles ? (isWheel ? 'Produto precisa ter o arquivo da roda' : 'Produto precisa ter os 2 arquivos (carro e roda)') : isInCart ? 'Já está no carrinho' : ''}
             >
               <ShoppingCart className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" />
-              <span className="truncate">{isInCart ? 'No Carrinho' : 'Adicionar ao Carrinho'}</span>
+              <span className="text-center leading-tight">{isInCart ? 'No Carrinho' : 'Adicionar ao Carrinho'}</span>
             </button>
           )}
           <button
